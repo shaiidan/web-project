@@ -16,7 +16,7 @@ const config = {
     encrypt: true,
     enableArithAbort: true,
     rowCollectionOnRequestCompletion:true,
-    trustServerCertificate: false
+    trustServerCertificate: true,
   }
 };
 class RentalHousingUnits
