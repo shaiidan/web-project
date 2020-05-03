@@ -55,10 +55,9 @@ class RentalHousingUnits
     // update the unit , unit - is the instance of RentalHousingUnit
     static updateUnit(unit)
     {
-        let connection = new Connection(config);
         if(unit instanceof RentalHousingUnit)
         {
-            
+          let connection = new Connection(config);       
             connection.on("connect", err => {
             if (err) {
               console.error(err.message);
@@ -97,10 +96,9 @@ class RentalHousingUnits
     // add unit to DB, unit is instance of RentalHousingUnit
     static addUnit(unit)
     {
-        let connection = new Connection(config);
         if(unit instanceof RentalHousingUnit)
         {
-            const connection = new Connection(config);
+            let connection = new Connection(config);
             connection.on("connect", err => {
             if (err) {
               console.error(err.message);
