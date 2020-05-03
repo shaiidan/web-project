@@ -11,7 +11,9 @@ const registerStudentRoutes = require('./routes/registerstudent');
 const termsRoutes = require('./routes/terms');
 const privacyRoutes = require('./routes/privacy');
 const contactUsRoutes = require('./routes/contactus');
-
+const studentHomePage = require('./routes/StudentHomepage');
+const ApartmentOwnerHomepage = require('./routes/ApartmentOwnerHomepage');
+const uploadUnit = require('./routes/uploadUnit');
 
 dotenv.config();
 config.options.trustServerCertificate = true;
@@ -35,14 +37,12 @@ app.use(registerStudentRoutes);
 app.use(termsRoutes);
 app.use(privacyRoutes);
 app.use(contactUsRoutes);
+app.use(studentHomePage);
+app.use(ApartmentOwnerHomepage);
+app.use(uploadUnit);
 
 
 
 app.listen(3000, function(){
 	console.log("server listen on port 3000");
 });
-
-
-// app.listen(process.env.PORT, process.env.IP, function(){
-// 	console.log("Server has started");
-// });

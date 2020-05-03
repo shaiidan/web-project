@@ -1,0 +1,64 @@
+<%- include('partials/header_ApartmentOwner') %>
+
+<div class="container mt-5">
+              <h3>Upload a rental housing unit:</h3>
+              <form action="/uploadUnit" method="POST">
+                <div class="form-group">
+                    <label for="city" ><b>City</b></label>
+                    <select class="form-control" id="city" name="city" required>
+                        <option value="Ashdod">Ashdod</option>
+                        <option value="Beer Sheva">Beer Sheva</option>
+                      </select>
+                </div>
+                <div class="form-group">
+                    <label for="address"><b>Address</b></label>
+                    <input type="text" class="form-control" name="address" id="address" required>
+                </div>
+                <div class="form-group">
+                    <label for="pricePerMonth"><b>Price per month</b></label>
+                    <input type="text" class="form-control" name="pricePerMonth" id ="pricePerMonth" required>
+                </div>
+                <div class="form-group">
+                    <label for="numberOfRooms"><b>Number of rooms:</b></label>
+                    <select class="form-control" id="numberOfRooms" name="numberOfRooms" required>
+                        <option value="1">1</option>
+                        <option value="1.5">1.5</option>
+                        <option value="2">2</option>
+                        <option value="2.5">2.5</option>
+                        <option value="3">3</option>
+                        <option value="3.5">3.5</option>
+                        <option value="4">4</option>
+                        <option value="4.5">4.5</option>
+                        <option value="5">5</option>
+                        <option value="5.5">5.5</option>
+                        <option value="6">6</option>
+                      </select>
+                </div>
+                      <div class="form-group">
+                      <label for="unitTypes"><b>Unit types</b></label>
+                      <select class="form-control" id="unitTypes" name="unitTypes" required>
+                          <option value="villa">Villa</option>
+                          <option value="loft">Loft</option>
+                          <option value="apartment">Apartment</option>
+                          <option value="basement">Basement</option>
+                      </select>
+                      </div>
+                      <div class="form-group">
+                      <label for="="minRentalPeriod><b>Minmum rental period (months)</b><small style="color:red">&nbsp&nbspThe default is 1 month</small></label>
+                      <input class="form-control" type="number" value="1" name="minRentalPeriod" id="minRentalPeriod" min=1 max=36>
+                      </div>
+                      <div class="form-group">
+                      <label for="="maxRentalPeriod><b>Maxmum rental period (months)</b><small style="color:red">&nbsp&nbspThe default is 36 months</small></label>
+                      <input type="number" class="form-control" value="36" name="maxRentalPeriod" id="maxRentalPeriod" min=1 max=36>
+                      </div>
+                      <div class="form-group">
+                      <label for="descriptionUnit"><b>Description</b></label>
+                      <textarea class="form-control" name="descriptionUnit" id="descriptionUnit" rows="5" cols="50">
+                        </textarea>
+                      </div>
+                      <button type="submit" class="btn btn-dark">Upload</button>
+              </form>
+          </div>
+     
+
+<%- include("partials/footer") %>

@@ -9,7 +9,7 @@
         <div class="card-body">
 
           <!-- Makes POST request to /register route -->
-          <form action="/registerstudent" method="POST">
+          <form action="/registerstudent" method="POST" id="rentalHousingUnit">
             <div class="form-group">
               <label for="id">ID</label>
               <input type="text" class="form-control" name="id" required>
@@ -40,10 +40,8 @@
               <input type="file" id="studentCard" name="studentCard" required>
             </div>
             <br>
-    
-            <button type="submit" class="btn btn-dark">Register</button>
           </form>
-
+            <button type="submit" class="btn btn-dark" form="rentalHousingUnit">Register</button>
         </div>
       </div>
     </div>
