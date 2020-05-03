@@ -1,18 +1,19 @@
 module.exports = {
-    "env": {
+    env: {
         "browser": true,
         "es6": true,
         "node": true
     },
-    "globals": {
+    globals: {
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly"
     },
-    "parserOptions": {
+    parser: "babel-eslint",
+    parserOptions: {
         "ecmaVersion": 2018,
         "sourceType": "module"
     },
-    "rules": {
+    rules: {
         "no-use-before-define": ["error", { "functions": true, "classes": true, "variables": true }],
         "no-unused-vars": ["error", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }]
     }
