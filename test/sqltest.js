@@ -14,7 +14,8 @@ const config = {
     database: "samiroomDB",
     encrypt: true,
     enableArithAbort: true,
-    rowCollectionOnRequestCompletion:true
+    rowCollectionOnRequestCompletion:true,
+    trustServerCertificate: true,
   }
 };
 
