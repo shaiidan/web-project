@@ -1,44 +1,55 @@
+
+
 const { Connection, Request } = require("tedious");
-const dbConfig = require ('./dbconfig');
 
-config.options.trustServerCertificate = true;
+// Create connection to database
+const config = {
+  authentication: {
+    options: {
+      userName: "samiroom", 
+      password: "Lucas2020"
+    },
+    type: "default"
+  },
+  server: "samiroom.database.windows.net", 
+  options: {
+    database: "samiroomDB",
+    encrypt: true,
+    enableArithAbort: true,
+    rowCollectionOnRequestCompletion:true,
+    trustServerCertificate: true,
+  }
+};
 
-
-
-module.exports = function checkEmailAndId(email, id){
-
-    const connection = new Connection(dbConfig);
-    connection.connect();
-
+class registerUtils {
+  static checkEmailAndId(email, id,callback)
+  {
+    let connection = new Connection(config);
     connection.on("connect", err => {
         if (err) {
           console.error(err.message);
-        } else {
-          queryDatabase();
+          connection.close();
+          return false;
+        } 
+        else
+        {
+            const request = new Request( 
+              `SELECT * FROM StudentUser, ApartmentOwnerUser WHERE ApartmentOwnerUser.EmailAddress=('${email}') OR ApartmentOwnerUser.ID=('${id}') OR StudentUser.EmailAddress=('${email}') OR StudentUser.ID=('${id}')`,
+              (err, rowCount) => {
+                if (err) {
+                  console.error(err.message);
+                  connection.close();
+                  return false;
+                } else {
+                  console.log(`${rowCount} row(s) returned`);
+                  connection.close();
+                  return callback(rowCount);
+                }
+              }
+            );
+            connection.execSql(request);
         }
       });
-      
-    function queryDatabase() {
-        console.log("Reading rows from the Table...");
-        
-        // Read all rows from table
-        const request = new Request( 
-          `SELECT * FROM StudentUser, ApartmentOwnerUser WHERE ApartmentOwnerUser.EmailAddress=('${email}') OR ApartmentOwnerUser.ID=('${id}') OR StudentUser.EmailAddress=('${email}') OR StudentUser.ID=('${id}')`,
-          (err, rowCount) => {
-            if (err) {
-              console.error(err.message);
-            } else {
-              console.log(`${rowCount} row(s) returned`);
-              
-              if(rowCount != 0){
-                return false;
-                }
-            }
-          } 
-        )    
-        connection.execSql(request);
-    }
-    
-
-    return true;
 }
+}
+module.exports = registerUtils;
