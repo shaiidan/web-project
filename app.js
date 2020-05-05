@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const bodyParser = require("body-parser");
 const express = require("express");
 const app = express();
@@ -14,6 +15,8 @@ const contactUsRoutes = require('./routes/contactus');
 const studentHomePage = require('./routes/StudentHomepage');
 const ApartmentOwnerHomepage = require('./routes/ApartmentOwnerHomepage');
 const uploadUnit = require('./routes/uploadUnit');
+const apartmentRouter = require('./routes/apartment');
+
 
 dotenv.config();
 config.options.trustServerCertificate = true;
@@ -40,6 +43,7 @@ app.use(contactUsRoutes);
 app.use(studentHomePage);
 app.use(ApartmentOwnerHomepage);
 app.use(uploadUnit);
+app.use(apartmentRouter);
 
 
 
