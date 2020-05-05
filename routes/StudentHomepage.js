@@ -3,7 +3,8 @@ const experss = require("express");
 const router = experss.Router();
 const units = require("../src/RentalHousingUnits");
 
-router.get("/StudentHomepage",function(req, res){
+router.get("/StudentHomepage",function(req, res,id){
+    console.log(id);
     res.render('StudentHomepage');
 });
 

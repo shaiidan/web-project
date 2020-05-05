@@ -63,7 +63,6 @@ router.post("/index", function(req, res){
 		});
 
 		connection.execSql(request);
-		res.render("index");
 	}}
 	else if(userType == 'owner'){
 		const connection = new Connection(dbConfig);
