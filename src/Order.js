@@ -14,8 +14,7 @@ class Order
         this.FullName = full_name;
         this.EmailAddress = email_address;
     }
-
-        
+    
     get fullName()
     {
         return this.FullName;

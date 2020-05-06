@@ -27,10 +27,10 @@
                         <input type="number" id="quantity" name="quantity" min="1" max="6" step="0.5" placeholder="1">
 
                         <label for="startDate" >Start date</label>
-                        <input type="date" id="startDate" name="startDate" required onchange="checkStartDate()">
+                        <input type="date" id="startDate" name="startDate" >
 
                         <label for="endDate">End date</label>
-                        <input type="date" id="endDate" name="endDate" required onchange="checkEndDate()">
+                        <input type="date" id="endDate" name="endDate"  onchange="checkEndDate()">
 
                         <label for="totalPrice">From price</label>
                         <input type="text" id="totalPrice" name="totalPrice" onkeypress="return isNumberKey(event)">
@@ -71,9 +71,7 @@
                                 <td><%= rows[i].endOrder %></td>
                                 <td><%= rows[i].totalPrice %></td>
                                 <td><%= rows[i].FullName %></td>
-                                <td><%= rows[i].EmailAddress %></td>
-
-                                
+                                <td><%= rows[i].EmailAddress %></td>                                
                             </tr>
                         <% }} %>
                     </tbody>
@@ -83,16 +81,6 @@
     </div>  
     
 <script>
-    function checkStartDate()
-    {
-        var start = new Date(document.getElementById("startDate").value);
-        var today = new Date();
-        if(start.getTime() < today.getTime())
-        {
-            alert("Please enter a date greater than to today's date");
-            document.getElementById("startDate").value = '';
-        }
-    }
     function checkEndDate()
     {
         var start = new Date(document.getElementById("startDate").value);

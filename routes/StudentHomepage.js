@@ -23,7 +23,6 @@ router.post("/StudentHomepage",function(req,res){
     units.getAvailableUnits(startDate,endDate,minPeriod,function(result){ 
         res.render('StudentHomepage',{statrDate:startDate,endDate:endDate,rows:result});
     });
-
 });
 
 module.exports = router;

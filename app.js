@@ -15,7 +15,7 @@ const contactUsRoutes = require('./routes/contactus');
 const studentHomePage = require('./routes/StudentHomepage');
 const ApartmentOwnerHomepage = require('./routes/ApartmentOwnerHomepage');
 const uploadUnit = require('./routes/uploadUnit');
-const apartmentRouter = require('./routes/apartment');
+const apartmentRouter = require('./routes/rentalHistory');
 
 
 dotenv.config();
