@@ -1,14 +1,13 @@
 
 const experss = require("express");
 const router = experss.Router();
-const units = require("../src/RentalHousingUnits");
+const units = require("../models/RentalHousingUnits");
 
 router.get("/StudentHomepage",function(req, res){
-    res.render('StudentHomepage');
+    res.render('StudentHomepage',{param:req.query});
 });
 
 router.post("/StudentHomepage",function(req,res){
-
     const startDate = req.body.startDate;
     const endDate = req.body.endDate;
     const city = req.body.city; //default empty

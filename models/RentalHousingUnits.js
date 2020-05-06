@@ -1,35 +1,18 @@
-const RentalHousingUnit = require("./RentalHousingUnit")
+const RentalHousingUnit = require("./RentalHousingUnit");
 const { Connection, Request } = require("tedious");
+const config = require("./dbconfig");
 
-// Create connection to database
-const config = {
-  authentication: {
-    options: {
-      userName: "samiroom", 
-      password: "Lucas2020"
-    },
-    type: "default"
-  },
-  server: "samiroom.database.windows.net", 
-  options: {
-    database: "samiroomDB",
-    encrypt: true,
-    enableArithAbort: true,
-    rowCollectionOnRequestCompletion:true,
-    trustServerCertificate: true,
-  }
-};
 class RentalHousingUnits
 {
     // delete unit -> change the status
-    static deleteUnit(unit_id)
+    static deleteUnit(unit_id,callback)
     {
         let connection = new Connection(config);
         connection.on("connect", err => {
             if (err) {
               console.error(err.message);
               connection.close();
-              return false;
+              return callback(false);
             } 
             else
             {
@@ -39,21 +22,22 @@ class RentalHousingUnits
                     if (err) {
                       console.error(err.message);
                       connection.close();
-                      return false;
+                      return callback(false);
                     } else {
-                      console.log(`${rowCount} row(s) returned`);
                       connection.close();
-                    }
-                  }
+                      if(rowCount != 0)
+                        return callback(true);
+                      else
+                        return callback(false);
+                    }}
                 );
                 connection.execSql(request);
             }
           });
-          return true;
     }
 
     // update the unit , unit - is the instance of RentalHousingUnit
-    static updateUnit(unit)
+    static updateUnit(unit, callback)
     {
         if(unit instanceof RentalHousingUnit)
         {
@@ -62,7 +46,7 @@ class RentalHousingUnits
             if (err) {
               console.error(err.message);
               connection.close();
-              return false;
+              return callback(false);
             } 
             else
             {
@@ -78,19 +62,21 @@ class RentalHousingUnits
                     if (err) {
                       console.error(err.message);
                       connection.close();
+                      return callback(false);
                       
                     } else {
-                      console.log(`${rowCount} row(s) returned`);
                       connection.close();
-                    }
-                  }
+                      if(rowCount != 0)
+                         return callback(true);
+                      else
+                         return callback(false);
+                    }}
                 );
                 connection.execSql(request);
             }
           });
-          return true; 
         }
-        return false;
+        return callback(false);
     }
 
     // add unit to DB, unit is instance of RentalHousingUnit
@@ -103,7 +89,7 @@ class RentalHousingUnits
             if (err) {
               console.error(err.message);
               connection.close();
-              return false;
+              return callback(false);
             } 
             else
             {
@@ -120,17 +106,19 @@ class RentalHousingUnits
                       connection.close();
                       return false;
                     } else {
-                      console.log(`${rowCount} row(s) returned`);
                       connection.close();
+                      if(rowCount != 0)
+                         return callback(true);
+                      else
+                         return callback(false);
                       
-                    }
-                  }
+                    }}
                 );
                 connection.execSql(request);
             }
           });
         }
-        return false;
+        return callback(true);
     }
     //
     static getAvailableUnits(start_date,end_date,min_period,callback)
