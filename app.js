@@ -47,6 +47,11 @@ app.use(apartmentRouter);
 
 
 
+ //app.listen(process.env.PORT, process.env.IP, function(){
+ //	console.log("Server has started");
+ //});
+
+ 
 app.listen(3000, function(){
 	console.log("server listen on port 3000");
 });
