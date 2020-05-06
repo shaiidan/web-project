@@ -4,8 +4,6 @@ const { Connection, Request } = require("tedious");
 const dbConfig = require ('../models/dbconfig');
 const alert = require("alert-node");
 const registerUtils = require ('../models/registerUtils');
-
-
 router.get("/registerowner", function(req, res){
 	res.render("registerowner");
 });
@@ -13,7 +11,7 @@ router.get("/registerowner", function(req, res){
 //registerowner post request:
 router.post("/registerowner", function(req, res){
 	const id = req.body.id;
-	const name = req.body.name;
+	const full_name = req.body.name;
 	const email = req.body.email;
 	const password = req.body.password;
 	const phone = req.body.phone;
@@ -31,13 +29,15 @@ router.post("/registerowner", function(req, res){
           	});
         	function queryDatabase() {
 			const request = new Request(
-				`INSERT INTO ApartmentOwnerUser VALUES ('${id}', '${name}', '${email}', '${password}', '${phone}')`,
+				`INSERT INTO ApartmentOwnerUser VALUES ('${id}', '${full_name}', '${email}', '${password}', '${phone}')`,
 				(err, rowCount) => {
 					if (err) {
 			  		console.error(err.message);
 					} else {
-				  	console.log(`${rowCount} row(s) returned`);
-				  	console.log("user is succesfuly registered!");
+				  		console.log(`${rowCount} row(s) returned`);
+						console.log("user is succesfuly registered!");
+						console.log("Login success by user: " +id);
+						res.redirect("/ApartmentOwnerHomePage?id="+id+'&fullName='+full_name);
 					}
 		  		}
 				);
@@ -48,6 +48,5 @@ router.post("/registerowner", function(req, res){
 			alert("Login failed,Email or ID already exist");
 		}
 	});
-	res.render("index");
 });
 module.exports = router;

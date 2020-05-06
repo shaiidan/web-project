@@ -3,6 +3,10 @@ const router = express.Router();
 const { Connection, Request } = require("tedious");
 const dbConfig = require ('../models/dbconfig');
 const alert = require("alert-node");
+var multer  = require('multer');
+// const upload = require('../middlewares/upload');
+var upload = multer({ dest: 'uploads/' });
+
 const registerUtils = require('../models/registerUtils');
 
 router.get("/registerstudent", function(req, res){
@@ -10,13 +14,15 @@ router.get("/registerstudent", function(req, res){
 });
 
 //registerstudent post request:
-router.post("/registerstudent", function(req, res, file){
+router.post('/registerstudent', upload.single('studentCard') ,function(req, res, next){
 	const id = req.body.id;
 	const name = req.body.name;
 	const phone = req.body.phone;
 	const email = req.body.email;
 	const password = req.body.password;
 	const validation = 0;
+
+
 
 	registerUtils.checkEmailAndId(email,id,function(result){
 		if(result===0){
