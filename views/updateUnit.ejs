@@ -1,0 +1,63 @@
+<%- include('partials/header_ApartmentOwner') %>
+
+<div class="container mt-5">
+<div class="container mt-5">
+    <% if(typeof unit !== 'false' && typeof fullName !== 'undefined'){%>
+              <h3>Update a rental housing unit:</h3>    <br>
+              <form action="/updateUnit" method="POST">
+                <div class="form-group">
+                    <input type="hidden"  name="fullName" id="fullName" value="<%=fullName%>">   
+                    <input type="hidden"  name="ownerId" id="ownerId" value="<%=unit.ApartmentOwnerId%>">
+                    <label for="unitId" ><b>Unit ID: </b><%=unit.UnitID%>.</label>
+                    <input type="hidden"  name="unitId" id="unitId" value="<%=unit.UnitID%>">
+                </div>
+                <div class="form-group">
+                    <label for="city" ><b>City: </b><%=unit.City%>.</label>
+                    <input type="hidden"  name="city" id="city" value="<%=unit.City%>">
+                </div>
+                <div class="form-group">
+                    <label for="address"><b>Address: </b><%=unit.Adderss%>.</label> 
+                    <input type="hidden"  name="address" id="address" value="<%=unit.Address%>">
+                </div>
+                <div class="form-group">
+                    <label for="numberOfRooms"><b>Number of rooms: </b><%=unit.NumberOfRooms%>.</label>
+                    <input type="hidden"  name="numberOfRooms" id="numberOfRooms" value="<%=unit.NumberOfRooms%>">
+                </div>
+                      <div class="form-group">
+                      <label for="unitTypes"><b>Unit types: </b><%=unit.UnitTypes%>.</label>
+                      <input type="hidden"  name="unitTypes" id="unitTypes" value="<%=unit.UnitTypes%>">
+                    </div>
+                    
+                <div class="form-group">
+                    <label for="pricePerMonth"><b>Price per month</b></label>
+                    <input type="text" value='<%=unit.PricePerMonth%>' class="form-control" name="pricePerMonth" id ="pricePerMonth" required>
+                </div>
+                      <div class="form-group">
+                      <label for="="minRentalPeriod><b>Minmum rental period (months)</b><small style="color:red">&nbsp&nbspThe default is 12 month</small></label>
+                      <input class="form-control" value='<%=unit.MinRentalPeriod%>' type="number" value="12" name="minRentalPeriod" id="minRentalPeriod" min=1 max=36>
+                      </div>
+                      <div class="form-group">
+                      <label for="="maxRentalPeriod><b>Maxmum rental period (months)</b><small style="color:red">&nbsp&nbspThe default is 36 months</small></label>
+                      <input type="number" value='<%=unit.MaxRentalPeriod%>' class="form-control" value="36" name="maxRentalPeriod" id="maxRentalPeriod" min=1 max=36>
+                      </div>
+                      <div class="form-group">
+                      <label for="descriptionUnit"><b>Description</b></label>
+                      <textarea class="form-control" name="descriptionUnit" id="descriptionUnit" rows="5" cols="50"><%=unit.DescriptionApartment%></textarea>
+                      </div>
+                      <div class="form-group">
+                      <button type="submit" class="btn btn-dark">Update</button>
+                      <button type="button" class="btn btn-dark" onclick="backToHome('<%=unit.ApartmentOwnerId%>','<%= fullName%>')">Cancel</button>
+                    </div>
+              </form>
+          </div>
+        </div>
+          <br>
+<%} %>
+
+<script>
+    function backToHome(id,full_name)
+    {
+        return location.replace("./ApartmentOwnerHomePage?id="+id+"&fullName="+full_name);
+    }
+</script>
+<%- include("partials/footer") %>

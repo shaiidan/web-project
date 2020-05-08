@@ -16,7 +16,7 @@ const studentHomePage = require('./routes/StudentHomepage');
 const ApartmentOwnerHomepage = require('./routes/ApartmentOwnerHomepage');
 const uploadUnit = require('./routes/uploadUnit');
 const apartmentRouter = require('./routes/apartment');
-
+const updateUnit = require('./routes/updateUnit');
 
 dotenv.config();
 config.options.trustServerCertificate = true;
@@ -33,6 +33,7 @@ connection.on("connect", err => {
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.json());
 app.use(express.static("public"));
 app.use(indexRoutes);
 app.use(registerOnwerRoutes);
@@ -44,7 +45,7 @@ app.use(studentHomePage);
 app.use(ApartmentOwnerHomepage);
 app.use(uploadUnit);
 app.use(apartmentRouter);
-
+app.use(updateUnit);
 
 
  //app.listen(process.env.PORT, process.env.IP, function(){

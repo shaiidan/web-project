@@ -1,4 +1,141 @@
 <%- include('partials/header_ApartmentOwner') %>
+<head>
+    <link rel="stylesheet" type="text/css" href="css/Homepage.css">
+</head>
+<script
+    type="text/javascript"
+    src="//code.jquery.com/jquery-2.1.0.js"
+    
+  ></script>
+    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+      <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>
+      <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
+      
+<div class="container mt-5">
+    <% if(typeof owner_full_name !== 'undefined' && typeof owner_id !== 'undefined'){%>
+        <h4>Hello  <%= owner_full_name %></h4>
+    <table  id="tableUnits" data-toggle="table" data-detail-view="true"
+     data-detail-formatter="detailFormatter" data-sortable="true" >
+     <thead>
+        <tr>
+          <th></th>
+          <th>Publishing date</th>
+          <th>City</th>
+          <th>Address</th>
+          <th>Number of rooms</th>
+          <th>Unit types</th>
+          <th>Number of times ordered</th>
+          <th>Minimum rental period</th>
+          <th>Maximum rental period</th>
+          <th>Price per month</th>
+          <th data-sortable="true">Unit's status <img src="image/sort-icon.jpg"  style="height: 3ch; width: 3ch;"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <% if(typeof rows !== 'undefined'){%>
+            <%for (var i = 0; i < rows.length; i++) { %>
+                <tr  class="tableclass" >
+                    <td id="td<%=i%>"><b>+</b></td>
+                    <td><%= rows[i].PublishingDate.getDate() + '/' +rows[i].PublishingDate.getMonth() + '/' + rows[i].PublishingDate.getFullYear() %></td>
+                    <td><%= rows[i].City %></td>
+                    <td><%= rows[i].Adderss %></td>
+                    <td><%= rows[i].NumberOfRooms %></td>
+                    <td><%= rows[i].UnitTypes %></td>
+                    <td><%= rows[i].NumberOfTimes %></td>
+                    <td><%= rows[i].MinRentalPeriod %></td>
+                    <td><%= rows[i].MaxRentalPeriod %></td>
+                    <td><%= rows[i].PricePerMonth %></td>
+                    <td><%= rows[i].Status %></td>
+                <span style="display: none;" id="desc<%=i%>">
+                    <h4>Details:</h4>
+                    <br>
+                    <p>
+                        <b>Unit id: </b> <%= rows[i].UnitID %>.<br>
+                        <b>Publishing date: </b> <%= rows[i].PublishingDate.getDate() + '/' +rows[i].PublishingDate.getMonth() + '/' + rows[i].PublishingDate.getFullYear() %>.
+                        <br>
+                        <b>City: </b> <%= rows[i].City %>. <br>
+                        <b>Adderss: </b> <%= rows[i].Adderss %>.
+                        <br>
+                        <b>Number of Rooms: </b><%= rows[i].NumberOfRooms %>.<br>
+                        <b>Unit types: </b><%= rows[i].UnitTypes %>. <br>
+                        <b>Minimum rental period: </b><%= rows[i].MinRentalPeriod %>. <br>
+                        <b>Maximoum rental period: </b><%= rows[i].MaxRentalPeriod %>. <br>
+                        <b>Price per month: </b><%= rows[i].PricePerMonth %>.  <br>
+                        <b>Number of times ordered: </b><%= rows[i].NumberOfTimes %>.  <br>
+                        <b>Status: </b><%= rows[i].Status %>.<br>
+                        <b>Discription: </b><%= rows[i].DescriptionApartment %>.<br><br>
+                        <input type="hidden" value=" <%= owner_full_name %>" id="fullName" name="fullName">
+                        <% if (rows[i].Status == 'available'){ %>
+                            <button  type="button" value="Update" id="update_unit" onclick="updateUnit('<%= rows[i].UnitID %>','<%=owner_id %>','<%=owner_full_name%>')" class="btn btn-dark">Update</button>
+                            <button type="button" value="Delete" id="delete_unit" onclick="deleteUnit('<%= rows[i].UnitID %>')" class="btn btn-dark">Delete</button>
+                     
+                        <% } %>
+                    </p>
+                </span>
+            </tr>                               
+            <% }} %>
+        </tbody>
+      </table>
+    </div>
+<div class="container mt-5"></div>
+<script>
+ 
+ var $table = $('#tableUnits');
 
+$table.on('expand-row.bs.table', function(e, index, row, $detail) {
+  var res = $("#desc" + index).html();
+  var td_open = document.getElementById("td"+index);
+  td_open.innerHTML ='<b>-</b>';
+  $detail.html(res);
+});
+
+$table.on("click-row.bs.table", function(e, row, $tr) {
+  if ($tr.next().is('tr.detail-view')) {
+    $table.bootstrapTable('collapseRow', $tr.data('index'));
+    var td_close = document.getElementById("td"+$tr.data('index'));
+    td_close.innerHTML ='<b>+</b>';
+    
+  } else {
+    $table.bootstrapTable('expandRow', $tr.data('index')); 
+  }
+});
+
+function deleteUnit(unit_id)
+{
+    if(confirm("Are you sure you want to delete?")){
+        fetch(window.location.href +'&unitID='+unit_id, {
+            method: 'delete'
+        })
+        .then(function(meg){
+            if(meg.status == 300){
+                alert("Sorry, something wrong!\nThe unit wasn't deleted");
+            }
+            else{
+                alert("The unit was deleted, its status became unavailable")
+                location.reload();
+            }
+        }
+
+        )
+        .catch(function(error){
+            alert("Sorry, something wrong!\n"+error);
+            return;
+        });
+    }
+    else
+    {
+        return;
+    }
+}
+
+// update unit go to update page
+function updateUnit(unit_id,id,full_name)
+{
+    location.replace("./updateUnit?id="+id +"&fullName="+ full_name +"&unitId="+unit_id);
+}
+
+</script>
+<% } %>
 <%- include("partials/footer") %>

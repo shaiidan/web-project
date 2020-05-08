@@ -1,7 +1,7 @@
 
 const experss = require("express");
 const router = experss.Router();
-const Orders = require("../src/Orders");
+const Orders = require("../models/Orders");
 
 // router.get("/apartment", function(req, res){
 //     res.render("apartment");
@@ -11,12 +11,6 @@ router.get("/apartment", function(req,res){
      Orders.getOrders(12, function(result){ //במקום 12 צריך להיות פונקציה שלוקחת את הת.ז של בעל הדירה שמחובר!
         res.render("apartment" ,{rows:result});
     });
-});
-
-router.get("/apartment", function(req,res){
-    Orders.getOrders(12, function(result){ //במקום 12 צריך להיות פונקציה שלוקחת את הת.ז של בעל הדירה שמחובר!
-       res.render("apartment" ,{rows:result});
-   });
 });
 
 
