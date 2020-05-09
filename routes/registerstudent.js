@@ -26,7 +26,7 @@ router.post("/registerowner", function(req, res){
 	else{
     registerUtils.checkEmailAndId(email,id,function(result){ 
 		if(result == true){
-            registerUtils.addOwner(id, name, enmail, password, phone, function(result){
+            registerUtils.addOwner(id, name, email, password, phone, function(result){
                 if(result == true){
                     res.redirect("/ApartmentOwnerHomePage?id="+id+'&fullName='+full_name);
                 }else {
