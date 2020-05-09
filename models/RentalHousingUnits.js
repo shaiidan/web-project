@@ -17,7 +17,7 @@ class RentalHousingUnits
             else
             {
                 const request = new Request( 
-                    "UPDATE RentalHousingUnit SET UnitStatus = 'unavailable' WHERE UnitId= " +unit_id,
+                    "UPDATE RentalHousingUnit SET UnitStatus = 'deleted' WHERE UnitId= " +unit_id,
                   (err, rowCount) => {
                     if (err) {
                       console.error(err.message);
@@ -34,6 +34,52 @@ class RentalHousingUnits
                 connection.execSql(request);
             }
           });
+    }
+    // change status to unit. 
+    // codeStatus = 0 -> the unit in the order process
+    // codeStatus = 1 -> the unit is available
+    static changeStatusForOrder(unit_id,codeStatus,callback)
+    {
+      const status = null;
+      switch(codeStatus){
+        case 0: {status= 'Order process'; break;}
+        case 1: {status= 'available'; break;}
+        default: {status = null; break;}
+      }
+
+      if(status != null)
+      {
+        let connection = new Connection(config);
+      connection.on("connect", err => {
+          if (err) {
+            console.error(err.message);
+            connection.close();
+            return callback(false);
+          } 
+          else
+          {
+              const request = new Request( 
+                  "UPDATE RentalHousingUnit SET UnitStatus = '"+status+"' WHERE UnitId= " +unit_id,
+                (err, rowCount) => {
+                  if (err) {
+                    console.error(err.message);
+                    connection.close();
+                    return callback(false);
+                  } else {
+                    connection.close();
+                    if(rowCount != 0)
+                      return callback(true);
+                    else
+                      return callback(false);
+                  }}
+              );
+              connection.execSql(request);
+          }
+        });
+
+      }
+
+      
     }
 
     // update the unit , unit - is the instance of RentalHousingUnit
@@ -90,39 +136,41 @@ class RentalHousingUnits
             connection.on("connect", err => {
             if (err) {
               console.error(err.message);
+              callback(false);
               connection.close();
-              return callback(false);
+              return;
             } 
             else
             {
-                const request =  new Request( 
-                    `insert into RentalHousingUnit(apartmentOwnerId,city,UnitAddress,pricePerMonth,unitTypes,
-                      minRentalPeriod,maxRentalPeriod,pictures,numberOfrooms,descriptionApartment)
-                    values (` +
-                    unit.ApartmentOwnerId + ",'" + unit.City + "','"
-                    + unit.Adderss +"',"+ unit.PricePerMonth +",'" + unit.UnitTypes + "'," +
-                    unit.MinRentalPeriod + ',' + unit.MaxRentalPeriod + ",'" + unit.Pictures +
-                    "'," + unit.NumberOfRooms + ",'" + unit.DescriptionApartment + "')"
-                  ,(err, rowCount) => {
+              const query = `insert into RentalHousingUnit(apartmentOwnerId,city,UnitAddress,pricePerMonth,unitTypes,
+                minRentalPeriod,maxRentalPeriod,pictures,numberOfrooms,descriptionApartment)
+              values (` +
+              unit.ApartmentOwnerId + ",'" + unit.City + "','"
+              + unit.Adderss +"',"+ unit.PricePerMonth +",'" + unit.UnitTypes + "'," +
+              unit.MinRentalPeriod + ',' + unit.MaxRentalPeriod + ",'" + unit.Pictures +
+              "'," + unit.NumberOfRooms + ",'" + unit.DescriptionApartment + "')";
+                const request =  new Request( query ,(err, rowCount) => {
                     if (err) {
                       console.error(err.message);
+                      callback(false);
                       connection.close();
-                      return callback(false);
-                    } 
-                    else {
+                      return;      
+                    } else {
+                      if(rowCount != 0){
+                         callback(true);
+                      }else{
+                         callback(false);
+                      }
                       connection.close();
-                      if(rowCount != 0)
-                         return callback(true);
-                      else
-                         return callback(false);
-                      
+                      return;
                     }}
                 );
                 connection.execSql(request);
             }
           });
         }
-        return callback(false);
+        callback(false);
+        return;
     }
     //
     static getAvailableUnits(start_date,end_date,min_period,filter_query,callback)
@@ -137,8 +185,8 @@ class RentalHousingUnits
           ,u.[minRentalPeriod],u.[maxRentalPeriod],u.[pictures],u.[UnitStatus],u.[numberOfrooms],u.[numberOftimes]
           ,u.[descriptionApartment],ow.[FullName],ow.[PhoneNumber]
     from [dbo].[RentalHousingUnit] u, [dbo].[ApartmentOwnerUser] ow
-    where`+filter_query +` u.[apartmentOwnerId] = ow.ID and u.[UnitStatus] = 'available'and u.[minRentalPeriod] = `+min_period+` 
-    and unitId not in (select unitId from [dbo].[Order] o
+    where`+filter_query +` u.[apartmentOwnerId] = ow.ID and u.[UnitStatus] = 'available'and u.[minRentalPeriod] <= `+min_period+`
+    and u.[maxRentalPeriod] >=`+min_period +`and unitId not in (select unitId from [dbo].[Order] o
     where  (CAST('`+start_date+`' as date)  BETWEEN o.[startOrder] AND o.[endOrder]) or
         (CAST('`+end_date+`' as date)  BETWEEN o.[startOrder] AND o.[endOrder]))`,
           (err, rowCount,rows) => {
@@ -151,7 +199,7 @@ class RentalHousingUnits
               connection.close();
               var units =[];
               rows.forEach(element => {
-                var unitId,owner_id,city,address,number_of_rooms, price_per_month,unit_types,publishing_date,
+                var pic,unitId,owner_id,city,address,number_of_rooms, price_per_month,unit_types,publishing_date,
                 max_rental_period,min_rental_period,description_apartment,status, number_of_times,phone_number,full_name;
                 element.forEach(column =>{
                   switch(column.metadata.colName)
@@ -243,11 +291,17 @@ class RentalHousingUnits
                       description_apartment = column.value;
                       break;
                     }
+                    case 'pictures':
+                    {
+                      pic = column.value;
+                      break;
+                    }
                   }// end of switch 
                   });
                   var unit = new RentalHousingUnit(unitId,owner_id,city,address,number_of_rooms,price_per_month,
                     unit_types,number_of_times,publishing_date,status,max_rental_period,min_rental_period,
                     description_apartment,full_name,phone_number);
+                    unit.Pictures = pic;
                   units.push(unit); 
               });
               return callback(units);
@@ -279,7 +333,7 @@ class RentalHousingUnits
               connection.close();
               var units =[];
               rows.forEach(element => {
-                var unitId,owner_id,city,address,number_of_rooms, price_per_month,unit_types,publishing_date,
+                var pic, unitId,owner_id,city,address,number_of_rooms, price_per_month,unit_types,publishing_date,
                 max_rental_period,min_rental_period,description_apartment,status, number_of_times,phone_number,full_name;
                 element.forEach(column =>{
                   switch(column.metadata.colName)
@@ -371,11 +425,18 @@ class RentalHousingUnits
                       description_apartment = column.value;
                       break;
                     }
+
+                    case 'pictures':
+                    {
+                      pic = column.value;
+                      break;
+                    }
                   }// end of switch 
                   });
                   var unit = new RentalHousingUnit(unitId,owner_id,city,address,number_of_rooms,price_per_month,
                     unit_types,number_of_times,publishing_date,status,max_rental_period,min_rental_period,
                     description_apartment,full_name,phone_number);
+                    unit.Pictures = pic;
                   units.push(unit); 
               });
               return callback(units);
@@ -407,7 +468,7 @@ class RentalHousingUnits
               var unit;
               connection.close();
               rows.forEach(element => {
-                var unitId,owner_id,city,address,number_of_rooms, price_per_month,unit_types,publishing_date,
+                var pic, unitId,owner_id,city,address,number_of_rooms, price_per_month,unit_types,publishing_date,
                 max_rental_period,min_rental_period,description_apartment,status, number_of_times,phone_number,full_name;
                 element.forEach(column =>{
                   switch(column.metadata.colName)
@@ -499,11 +560,17 @@ class RentalHousingUnits
                       description_apartment = column.value;
                       break;
                     }
+                    case 'pictures':
+                    {
+                      pic = column.value;
+                      break;
+                    }
                   }// end of switch 
                   });
                   unit = new RentalHousingUnit(unitId,owner_id,city,address,number_of_rooms,price_per_month,
                     unit_types,number_of_times,publishing_date,status,max_rental_period,min_rental_period,
                     description_apartment,full_name,phone_number); 
+                    unit.Pictures = pic;
               });
               return callback(unit);
             }
@@ -512,9 +579,7 @@ class RentalHousingUnits
         connection.execSql(request);
       }
     });
-    
   }
-
 } // end of class
 
 module.exports = RentalHousingUnits;

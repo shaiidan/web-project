@@ -2,6 +2,8 @@
 const experss = require("express");
 const router = experss.Router();
 const units = require("../models/RentalHousingUnits");
+const MAX_MONTH_TO_DAY = 31;
+
 
 router.get("/StudentHomepage",function(req, res){
     const user_id = req.query.id;
@@ -17,10 +19,16 @@ router.post("/StudentHomepage",function(req,res){
     const from_price = parseInt(req.body.fromPrice);
     const to_price = parseInt(req.body.toPrice);
     const unit_types = req.body.unitTypes;
-    var start = new Date(start_date), end = new Date(end_date);
-    const min_period = (end.getFullYear() - start.getFullYear()) *12 + (end.getMonth() - start.getMonth()) ;
     const id = req.body.userId;
     const full_name = req.body.fullName; 
+
+    // Calculate the rental period for user selected dates
+    var start = new Date(start_date), end = new Date(end_date);
+    const utc_start = Date.UTC(start.getFullYear(), start.getMonth(), start.getDate());
+    const utc_end = Date.UTC(end.getFullYear(), end.getMonth(), end.getDate());
+    days = Math.floor((utc_end - utc_start) / (1000 * 60 * 60 * 24));
+    const min_period = Math.floor(days / MAX_MONTH_TO_DAY); 
+ 
     var filter = ' ';
     // for filter
     if(city !='empty'){
@@ -40,17 +48,21 @@ router.post("/StudentHomepage",function(req,res){
        filter += ' and ';
     }
     filter += ' ';
-
+    console.log(min_period + "  f= "+ filter);
     console.log("The IP= "+req.ip +" connection to student home page.");
 
     if(typeof start_date !== 'undefined' && typeof end_date !== 'undefined'){
         try{
             units.getAvailableUnits(start_date,end_date,min_period,filter,function(result){ 
-                res.render('StudentHomepage',{startDate:start_date,endDate:end_date,fullName:full_name,userId:id,rows:result});
+                res.render('StudentHomepage',{startDate:start_date,endDate:end_date,fullName:full_name,
+                    userId:id,rows:result,city:city,numberOfRooms:number_of_rooms,
+                    unitTypes:unit_types,fromPrice:from_price,toPrice:to_price
+                });
             });
         }
         catch(e){
             console.log(e);
+            res.redirect('/',404);
         }
     }
     else{

@@ -19,7 +19,6 @@ const apartmentRouter = require('./routes/apartment');
 const updateUnit = require('./routes/updateUnit');
 
 dotenv.config();
-config.options.trustServerCertificate = true;
 const connection = new Connection(dbConfig);
 connection.connect(); 
 // Attempt to connect and execute queries if connection goes through

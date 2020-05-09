@@ -1,16 +1,12 @@
 <%- include('partials/header_ApartmentOwner') %>
 <head>
     <link rel="stylesheet" type="text/css" href="css/Homepage.css">
+    <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 </head>
-<script
-    type="text/javascript"
-    src="//code.jquery.com/jquery-2.1.0.js"
-    
-  ></script>
-    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-      <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>
-      <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<script type="text/javascript" src="//code.jquery.com/jquery-2.1.0.js" ></script>
+<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>
 
       
 <div class="container mt-5">
@@ -51,6 +47,7 @@
                 <span style="display: none;" id="desc<%=i%>">
                     <h4>Details:</h4>
                     <br>
+                    <div>
                     <p>
                         <b>Unit id: </b> <%= rows[i].UnitID %>.<br>
                         <b>Publishing date: </b> <%= rows[i].PublishingDate.getDate() + '/' +rows[i].PublishingDate.getMonth() + '/' + rows[i].PublishingDate.getFullYear() %>.
@@ -66,13 +63,23 @@
                         <b>Number of times ordered: </b><%= rows[i].NumberOfTimes %>.  <br>
                         <b>Status: </b><%= rows[i].Status %>.<br>
                         <b>Discription: </b><%= rows[i].DescriptionApartment %>.<br><br>
+                    </p>
+                        <div style="float:inline-start;" >
+                            <% var pic = rows[i].Pictures; 
+                            pic = pic.split(","); 
+                            for(var j=0 ; j< pic.length -1; j++)
+                            { 
+                            %>
+                                <img width="200" height="170" src="uploadsImages/<%=pic[j]%>">
+                            <%}%>
+                        </div>
+                        <br>
                         <input type="hidden" value=" <%= owner_full_name %>" id="fullName" name="fullName">
                         <% if (rows[i].Status == 'available'){ %>
                             <button  type="button" value="Update" id="update_unit" onclick="updateUnit('<%= rows[i].UnitID %>','<%=owner_id %>','<%=owner_full_name%>')" class="btn btn-dark">Update</button>
                             <button type="button" value="Delete" id="delete_unit" onclick="deleteUnit('<%= rows[i].UnitID %>')" class="btn btn-dark">Delete</button>
-                     
                         <% } %>
-                    </p>
+                </div>
                 </span>
             </tr>                               
             <% }} %>

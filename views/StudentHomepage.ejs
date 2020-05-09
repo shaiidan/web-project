@@ -2,18 +2,17 @@
 <head>
     <meta charset="UTF-8" />
     <link rel="stylesheet" type="text/css" href="css/Homepage.css">
+    <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 </head>
-<script
-    type="text/javascript"
-    src="//code.jquery.com/jquery-2.1.0.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-      <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>
-      <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
-      
-<div class="container mt-5">
+<script type="text/javascript" src="//code.jquery.com/jquery-2.1.0.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>
+
+<body onload="checkLoad()">   
+<div class="container mt-5" >
     <div class="row">
         <div class="col-sm-8">
           <div class="card">
@@ -135,6 +134,16 @@
                         <b>Price per month: </b><%= rows[i].PricePerMonth %>.  <br>
                         <b>Number of times ordered: </b><%= rows[i].NumberOfTimes %>.  <br>
                         <b>Discription: </b><%= rows[i].DescriptionApartment %>.<br><br>
+                        <div style="float:inline-start;" >
+                          <% var pic = rows[i].Pictures; 
+                          pic = pic.split(","); 
+                          for(var j=0 ; j< pic.length -1; j++)
+                          { 
+                          %>
+                              <img width="200" height="170" src="uploadsImages/<%=pic[j]%>">
+                          <%}%>
+                      </div>
+                      <br>
                         <button id="order" name="order" onclick="orderUnit('<%= startDate %>','<%= endDate %>','<%= fullName %>','<%= userId %>','<%= rows[i].UnitID %>')" type="button" class="btn btn-dark">Order</button>
                     </p>
                 </span>
@@ -143,10 +152,16 @@
         </tbody>
       </table>
     </div>
-<div class="container mt-5"></div>
+    <div class="container mt-5"></div>
 
+</body>
 
 <script>
+function checkLoad()
+{
+ 
+}
+      
 function orderUnit(start_date,end_date,full_name,user_id,unit_id)
 {
   const data = {startDate:start_date,endDate:end_date,fullName:full_name, id:user_id,unitID:unit_id};
