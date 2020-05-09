@@ -8,6 +8,9 @@ const alert = require("alert-node");
 router.get("/", function(req, res){
 	res.render("index");
 });
+router.get("/index", function(req, res){
+	res.render("index");
+});
 
 
 //login post request:
@@ -22,17 +25,18 @@ router.post("/index", function(req, res){
 		connection.connect(); 
 		connection.on("connect", err => {
             if (err) {
-              console.error(err.message);
+			  console.error(err.message);
             } else {
               queryDatabase();
             }
           });
         function queryDatabase() {
 		const request = new Request(
-			`SELECT Password, Validation, ID, FullName FROM StudentUser WHERE EmailAddress=('${email}')`,
+			`SELECT Password, Exp, ID, FullName FROM StudentUser WHERE EmailAddress=('${email}')`,
 			(err, rowCount,rows) => {
 				if (err) {
 				  console.error(err.message);
+				  connection.close();
 				} else {
 					  console.log(`${rowCount} row(s) returned`);
 					if(rowCount == 0){
@@ -42,7 +46,7 @@ router.post("/index", function(req, res){
 					else
 					{
 						rows.forEach(element => {
-							var pass,full_name,id, valid;
+							var pass,full_name,id, exp;
 							element.forEach(column =>{
 								switch(column.metadata.colName)
 								{
@@ -58,20 +62,23 @@ router.post("/index", function(req, res){
 										full_name = column.value;
 										break;
 									}
-									case 'Validation':{
-										valid = column.value;
+									case 'Exp':{
+										exp = column.value;
 										break;
 									}
 								}
 							});
 							if(password == pass){
-								if(valid==0){
+								if(exp< Date.now()){
 									console.log("no validation");
 									alert("Your account is not valid yet");
+									res.redirect("/upload?email="+email);
+									connection.close();
 								}
 								else{
 									console.log("Login success by user: " +id);
 									res.redirect("/StudentHomePage?id="+id+'&fullName='+full_name);
+									connection.close();
 								}
 							}
 						});
@@ -87,7 +94,7 @@ router.post("/index", function(req, res){
             if (err) {
               console.error(err.message);
             } else {
-              queryDatabase();
+			  queryDatabase();
             }
           });
         function queryDatabase() {
@@ -101,6 +108,7 @@ router.post("/index", function(req, res){
 					if(rowCount == 0){
 						console.log("login failed, wrong email or password");
 						alert("Login failed, wrong Email or Password");
+						connection.close();
 					}
 					else
 					{
@@ -126,6 +134,7 @@ router.post("/index", function(req, res){
 							if(password == pass){
 								console.log("Login success by user: " +id);
 								res.redirect("/ApartmentOwnerHomePage?id="+id+'&fullName='+full_name);
+								connection.close();
 								}
 							});
 					}

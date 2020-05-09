@@ -1,0 +1,30 @@
+<%- include("partials/header") %>
+
+
+
+<div class="container" id="reset">
+    <br>
+    <h1>Recover password</h1>
+    <br><br>
+    
+    <form action="/reset/<%=param.token%>" method="POST">
+        <div class="form-group">
+          <label for="Password">Password</label>
+          <input type="Password" class="form-control" id="Password" name="Password" required>
+        </div>
+        <div class="form-group">
+            <label for="confirm">Confirm Password</label>
+            <input type="confirm" class="form-control" id="confirm" name="confirm" required>
+          </div>
+          <div class="form-group">
+
+          </div>
+         <br>
+            <!-- <input type="submit" value="Send"> -->
+            <button type="submit" class="btn btn-lg" style="color: #54cc21;">send</button>
+    </form>
+</div>
+
+
+<br><br><br><br><br><br>
+<%- include("partials/footer") %>
