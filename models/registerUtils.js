@@ -34,6 +34,38 @@ class registerUtils
             }
           });
   }
+  tatic addOwner(id, name, email, password, phone, callback){
+
+        let connection = new Connection(config);
+        connection.on("connect", err => {
+        if (err) {
+            console.error(err.message);
+            connection.close();
+            return callback(false);
+            } 
+        else
+       {
+        const request =  new Request( 
+          `INSERT INTO ApartmentOwnerUser VALUES ('${id}', '${name}', '${email}', '${password}', '${phone}'')`,
+          (err, rowCount) => {
+            if (err) {
+              console.error(err.message);
+              connection.close();
+              return callback(false);
+              } 
+              else {
+              connection.close();
+              if(rowCount != 0)
+                return callback(true);
+              else
+                return callback(false);
+                        }}
+                  );
+                  connection.execSql(request);
+              }
+            });
+          }
+  
   static updateExp(email, exp, callback)
   {
       let connection = new Connection(config);
