@@ -1,0 +1,134 @@
+<%- include('partials/header_student') %>
+
+<div class="container mt-5">
+    <div class="row">
+      <div class="col-sm-8">
+        <div class="card">
+          <div class="card-body">
+        <h4 id="messageNoDate">Enter dates to start...</h4>
+    <form id="filtering" action="/StudentHomepage" method="POST">
+        <div class="form-group">
+            <label for="startDate" ><b>Start date:</b></label>
+            <input type="date" id="startDate" name="startDate" required onchange="checkStartDate()">
+            <b>&nbsp&nbsp</b>
+            <label for="endDate"><b>End date:</b></label>
+            <input type="date" id="endDate" name="endDate" required onchange="checkEndDate()"><b>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</b>
+            <label for="city" ><b>City:</b></label>
+            <select id="city" name="city">
+                <option value="empty"></option>
+                <option value="Ashdod">Ashdod</option>
+                <option value="Beer Sheva">Beer Sheva</option>
+              </select>
+        </div> 
+            <div class="form-group"> 
+                <b>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    &nbsp&nbsp&nbsp&nbsp
+                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                </b>
+            <label for="numberOfRooms"><b>Number of rooms:</b></label>
+            <select id="numberOfRooms" name="numberOfRooms">
+                <option value="empty"></option>
+                <option value="1">1</option>
+                <option value="1.5">1.5</option>
+                <option value="2">2</option>
+                <option value="2.5">2.5</option>
+                <option value="3">3</option>
+                <option value="3.5">3.5</option>
+                <option value="4">4</option>
+                <option value="4.5">4.5</option>
+                <option value="5">5</option>
+                <option value="5.5">5.5</option>
+                <option value="6">6</option>
+              </select><b>&nbsp&nbsp&nbsp&nbsp</b>
+              <label for="unitTypes"><b>Unit types:</b></label>
+              <select id="unitTypes" name="unitTypes">
+                  <option value="empty"></option>
+                  <option value="villa">Villa</option>
+                  <option value="loft">Loft</option>
+                  <option value="apartment">Apartment</option>
+                  <option value="basement">Basement</option>
+              </select>
+              <br>
+                <B>Price per month-</label></B><br>
+                <label for="FromPrice"><b>From Price</b></label>
+                <input type="text" id="fromPrice" name="fromPrice"><b>&nbsp&nbsp</b>
+                <label for="toPrice"><b>To Price:</b></label>
+                <input type="text" id="toPrice" name="toPrice"> 
+                <button type="submit" class="btn btn-dark">Search</button>
+    </div>
+    </from>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="container mt-5">
+    <table  id="tableUnits">
+        <tr>
+          <th>Publishing date</th>
+          <th>City</th>
+          <th>Address</th>
+          <th>Number of rooms</th>
+          <th>Unit types</th>
+          <th>Number of times ordered</th>
+          <th>Minimum rental period</th>
+          <th>Maximum rental period</th>
+          <th>Price per month</th>
+        </tr>
+        <% if(typeof rows !== 'undefined'){%>
+            <%for (var i = 0; i < rows.length; i++) { %>
+            <tr  class="tableclass" onclick="openDetails(this)">
+                <td><%= rows[i].PublishingDate.getDate() + '/' +rows[i].PublishingDate.getMonth() + '/' + rows[i].PublishingDate.getFullYear() %></td>
+                <td><%= rows[i].City %></td>
+                <td><%= rows[i].Adderss %></td>
+                <td><%= rows[i].NumberOfRooms %></td>
+                <td><%= rows[i].UnitTypes %></td>
+                <td><%= rows[i].MinRentalPeriod %></td>
+                <td><%= rows[i].MaxRentalPeriod %></td>
+                <td><%= rows[i].PricePerMonth %></td>
+                <td><%= rows[i].NumberOfTimes %></td>
+            </tr>
+            <p id=<%'p' + i+1%></p>
+            <% }} %>
+      </table>
+    </div>
+
+
+<script>
+    function openDetails(doc)
+    {
+       // table_units =document.getElementById("tableUnits");
+      
+    }
+    function checkStartDate()
+    {
+        var start = new Date(document.getElementById("startDate").value);
+        var today = new Date();
+        if(start.getTime() < today.getTime())
+        {
+            alert("Please enter a date greater than to today's date");
+            document.getElementById("startDate").value = '';
+        }
+    }
+    function checkEndDate()
+    {
+        var start = new Date(document.getElementById("startDate").value);
+        var end = new Date(document.getElementById("endDate").value);
+        if(start.getTime() >= end.getTime())
+        {
+            alert("Please enter a date greater than to start's date");
+            document.getElementById("endDate").value = '';
+        }
+    }
+</script>
+<%- include('partials/footer') %>
+</body>
+</html>

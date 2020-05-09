@@ -1,0 +1,32 @@
+form {
+    border: 2px solid #252525;
+    font-family: Arial;
+    background-color:  #54cc21;
+    color:  #252525;
+    padding: 20px;
+    margin: 20px;
+    width: 80vw;
+    height: 30%;
+  }
+
+  button {
+    float: right ;
+  }
+
+ table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 80vw;
+  padding: 20px;
+  margin: 40px;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color:#54cc21;
+}

@@ -29,42 +29,57 @@ router.post("/index", function(req, res){
           });
         function queryDatabase() {
 		const request = new Request(
-			`SELECT Password, Validation FROM StudentUser WHERE EmailAddress=('${email}')`,
-			(err, rowCount) => {
+			`SELECT Password, Validation, ID, FullName FROM StudentUser WHERE EmailAddress=('${email}')`,
+			(err, rowCount,rows) => {
 				if (err) {
 				  console.error(err.message);
 				} else {
 					  console.log(`${rowCount} row(s) returned`);
 					if(rowCount == 0){
 						console.log("login failed, wrong email or password");
-						popupS.alert({
-							content: 'Login failed, wrong Email or Password'
+						alert("Login failed, wrong Email or Password");
+					}
+					else
+					{
+						rows.forEach(element => {
+							var pass,full_name,id, valid;
+							element.forEach(column =>{
+								switch(column.metadata.colName)
+								{
+									case 'Password':{
+										pass = column.value;
+										break;
+									}
+									case 'ID':{
+										id = column.value;
+										break;
+									}
+									case 'FullName':{
+										full_name = column.value;
+										break;
+									}
+									case 'Validation':{
+										valid = column.value;
+										break;
+									}
+								}
+							});
+							if(password == pass){
+								if(valid==0){
+									console.log("no validation");
+									alert("Your account is not valid yet");
+								}
+								else{
+									console.log("Login success by user: " +id);
+									res.redirect("/StudentHomePage?id="+id+'&fullName='+full_name);
+								}
+							}
 						});
 					}
-				}
-			  }
-			);
-
-		request.on("row", columns => {
-			if(password == columns[0].value){
-				if(columns[1].value==0){
-					console.log("no validation")
-					alert("Your account is not valid yet");
-				}
-				else{
-					console.log("Login success");
-					//render student homepage:->
-				}
-
-			}else{
-				console.log("login failed, wrong e email or password");
-				alert("Login failed, wrong Email or Password");
+				}});
+				connection.execSql(request);
 			}
-		});
-
-		connection.execSql(request);
-		res.render("index");
-	}}
+		}
 	else if(userType == 'owner'){
 		const connection = new Connection(dbConfig);
 		connection.connect(); 
@@ -77,8 +92,8 @@ router.post("/index", function(req, res){
           });
         function queryDatabase() {
 		const request = new Request(
-			`SELECT Password FROM ApartmentOwnerUser WHERE EmailAddress=('${email}')`,
-			(err, rowCount) => {
+			`SELECT Password, ID, FullName FROM ApartmentOwnerUser WHERE EmailAddress=('${email}')`,
+			(err, rowCount, rows) => {
 				if (err) {
 					console.error(err.message);
 				}else {
@@ -87,22 +102,36 @@ router.post("/index", function(req, res){
 						console.log("login failed, wrong email or password");
 						alert("Login failed, wrong Email or Password");
 					}
-				}
+					else
+					{
+						rows.forEach(element => {
+							var pass, full_name, id;
+							element.forEach(column =>{
+								switch(column.metadata.colName)
+								{
+									case 'Password':{
+										pass = column.value;
+										break;
+									}
+									case 'ID':{
+										id = column.value;
+										break;
+									}
+									case 'FullName':{
+										full_name = column.value;
+										break;
+									}
+								}
+							});
+							if(password == pass){
+								console.log("Login success by user: " +id);
+								res.redirect("/ApartmentOwnerHomePage?id="+id+'&fullName='+full_name);
+								}
+							});
+					}
+				}});
+				connection.execSql(request);
 			}
-		);
-		request.on("row", columns => {
-			columns.forEach(column => {
-				if(password == column.value){
-					console.log("login success");
-					//render Apartment Owner homepage:->
-				}else{
-					console.log("login failed, wrong e email or password");
-					alert("Login failed, wrong Email or Password");
-				}
-			});
-		});
-		connection.execSql(request);
-		res.render("index");	
-	}
-}});
+			}
+});
 module.exports = router;
