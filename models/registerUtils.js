@@ -1,55 +1,245 @@
-
-
 const { Connection, Request } = require("tedious");
+const config = require("./dbconfig");
 
-// Create connection to database
-const config = {
-  authentication: {
-    options: {
-      userName: "samiroom", 
-      password: "Lucas2020"
-    },
-    type: "default"
-  },
-  server: "samiroom.database.windows.net", 
-  options: {
-    database: "samiroomDB",
-    encrypt: true,
-    enableArithAbort: true,
-    rowCollectionOnRequestCompletion:true,
-    trustServerCertificate: true,
+class registerUtils
+{
+  static checkEmailAndId(email, id, callback)
+    {
+        let connection = new Connection(config);
+        connection.on("connect", err => {
+            if (err) {
+              console.error(err.message);
+              connection.close();
+              return callback(false);
+            } 
+            else
+            {
+                const request = new Request( 
+                  `SELECT * FROM StudentUser, ApartmentOwnerUser WHERE ApartmentOwnerUser.EmailAddress=('${email}') OR ApartmentOwnerUser.ID=('${id}') OR StudentUser.EmailAddress=('${email}') OR StudentUser.ID=('${id}')`,
+                  (err, rowCount) => {
+                    if (err) {
+                      console.error(err.message);
+                      connection.close();
+                      return callback(false);
+                    } else {
+                      connection.close();
+                      console.log(`${rowCount} row(s) returned`);
+                      if(rowCount === 0)
+                        return callback(true);
+                      else
+                        return callback(false);
+                    }}
+                );
+                connection.execSql(request);
+            }
+          });
   }
-};
+  static updateExp(email, exp, callback)
+  {
+      let connection = new Connection(config);
+      connection.on("connect", err => {
+          if (err) {
+            console.error(err.message);
+            connection.close();
+            return callback(false);
+          } 
+          else
+          {
+              const request = new Request( 
+                `UPDATE StudentUser SET Exp = ('${exp}')  WHERE EmailAddress=('${email}')`,
+                (err, rowCount) => {
+                  if (err) {
+                    console.error(err.message);
+                    connection.close();
+                    return callback(false);
+                  } else {
+                    connection.close();
+                    console.log(`${rowCount} row(s) returned`);
+                    if(rowCount === 1)
+                      return callback(true);
+                    else
+                      return callback(false);
+                  }}
+              );
+              connection.execSql(request);
+          }
+        });
+}
 
-class registerUtils {
-  static checkEmailAndId(email, id,callback)
+
+
+
+  static addStudent(email, id, phone, name, password, validation, callback)
   {
     let connection = new Connection(config);
     connection.on("connect", err => {
+    if (err) {
+        console.error(err.message);
+        connection.close();
+        return callback(false);
+        } 
+    else
+   {
+    const request =  new Request( 
+      `INSERT INTO StudentUser VALUES ('${id}', '${name}', '${phone}', '${email}', '${password}','${validation}','1/1/1900')`,
+      (err, rowCount) => {
         if (err) {
           console.error(err.message);
           connection.close();
-          return false;
-        } 
-        else
-        {
-            const request = new Request( 
-              `SELECT * FROM StudentUser, ApartmentOwnerUser WHERE ApartmentOwnerUser.EmailAddress=('${email}') OR ApartmentOwnerUser.ID=('${id}') OR StudentUser.EmailAddress=('${email}') OR StudentUser.ID=('${id}')`,
-              (err, rowCount) => {
+          return callback(false);
+          } 
+          else {
+          connection.close();
+          if(rowCount != 0)
+            return callback(true);
+          else
+            return callback(false);
+                    }}
+              );
+              connection.execSql(request);
+          }
+        });
+      }
+static checkEmail(email, callback)
+{
+  const connection1 = new Connection(config);
+  connection1.on("connect", err => {
+      if (err) {
+        console.error(err.message);
+        connection1.close();
+        return false;
+      } 
+      else
+      {
+          const request1 = new Request( 
+            `SELECT * FROM StudentUser, ApartmentOwnerUser WHERE ApartmentOwnerUser.EmailAddress=('${email}') OR StudentUser.EmailAddress=('${email}')`,
+            (err, rowCount) => {
+              if (err) {
+                console.error(err.message);
+                connection.close();
+                return false;
+              } else {
+                console.log(`${rowCount} row(s) returned`);
+                connection1.close();
+                return callback(rowCount);
+              }
+            }
+          );
+          request1.on("row", columns => {
+            columns.forEach(column => {
+              console.log("%s\t%s", column.metadata.colName, column.value);
+            });
+          });
+          connection1.execSql(request1);
+      }
+    });
+}
+
+static updateOwnerPassword(email, password){
+  const connection8 = new Connection(config);
+  connection8.on("connect", err => {
+      if (err) {
+        console.error(err.message);
+        connection8.close();
+        return false;
+      } 
+      else
+      {
+          const request8 = new Request( 
+            `UPDATE ApartmentOwnerUser SET Password=('${password}') WHERE EmailAddress=('${email}')`,
+            (err, rowCount) => {
+              if (err) {
+                console.error(err.message);
+                connection8.close();
+                return false;
+              } else {
+                console.log(`${rowCount} row(s) returned`);
+              }
+            }
+          );
+          connection8.execSql(request8);
+      }
+    });
+}
+static updatePassword(email, password)
+{
+  const connection3 = new Connection(config);
+  connection3.on("connect", err => {
+      if (err) {
+        console.error(err.message);
+        connection3.close();
+        return false;
+      } 
+      else
+      {
+          const request3 = new Request( 
+            `SELECT * FROM StudentUser WHERE EmailAddress=('${email}')`,
+            (err, rowCount) => {
+              if (err) {
+                console.error(err.message);
+                connection3.close();
+                return false;
+              } else {
+                console.log(`${rowCount} row(s) returned`);
+                if(rowCount == 0){
+                  let connection5 = new Connection(config);
+                  connection5.on("connect", err => {
                 if (err) {
                   console.error(err.message);
-                  connection.close();
+                  connection5.close();
                   return false;
-                } else {
-                  console.log(`${rowCount} row(s) returned`);
-                  connection.close();
-                  return callback(rowCount);
-                }
+                } 
+                else
+              {
+                const request5 = new Request( 
+                `UPDATE ApartmentOwnerUser SET Password=('${password}') WHERE EmailAddress=('${email}')`,
+                (err, rowCount) => {
+                if (err) {
+                console.error(err.message);
+                connection5.close();
+                return false;
+              } else {
+                console.log(`Password updated`);
               }
-            );
-            connection.execSql(request);
-        }
-      });
+            }
+          );
+          connection5.execSql(request5);
+      }
+    });
+                }
+                else{
+                  const connection4 = new Connection(config);
+                  connection4.on("connect", err => {
+                      if (err) {
+                        console.error(err.message);
+                        connection4.close();
+                        return false;
+                      } 
+                      else
+                      {
+                          const request4 = new Request( 
+                            `UPDATE StudentUser SET Password=('${password}') WHERE EmailAddress=('${email}')`,
+                            (err, rowCount) => {
+                              if (err) {
+                                console.error(err.message);
+                                connection4.close();
+                                return false;
+                              } else {
+                                console.log(`password updated`);
+                              }
+                            }
+                          );
+                          connection4.execSql(request4);
+                      }
+                    });
+                }
+                connection3.close();
+              }
+            }
+          );
+          connection3.execSql(request3);
+      }
+    });
 }
 }
 module.exports = registerUtils;

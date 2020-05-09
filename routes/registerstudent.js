@@ -1,59 +1,61 @@
 const express = require ("express");
 const router = express.Router();
 const { Connection, Request } = require("tedious");
-const dbConfig = require ('../models/dbconfig');
 const alert = require("alert-node");
-var multer  = require('multer');
-// const upload = require('../middlewares/upload');
-var upload = multer({ dest: 'uploads/' });
-
 const registerUtils = require('../models/registerUtils');
+
+module.exports = configa = {
+	authentication: {
+	  options: {
+		userName: "samiroom", 
+		password: "Lucas2020" 
+	  },
+	  type: "default"
+	},
+	server: "samiroom.database.windows.net", 
+	options: {
+	  database: "samiroomDB",
+	  encrypt: true
+	}
+  };
+  config.options.trustServerCertificate = true;
+
 
 router.get("/registerstudent", function(req, res){
 	res.render("registerstudent");
 });
 
 //registerstudent post request:
-router.post('/registerstudent', upload.single('studentCard') ,function(req, res, next){
+router.post("/registerstudent", function(req, res, file){
 	const id = req.body.id;
 	const name = req.body.name;
 	const phone = req.body.phone;
 	const email = req.body.email;
 	const password = req.body.password;
 	const validation = 0;
-
-
-
+	const confirm = req.body.confirm;
+	if(confirm!=password){
+		alert("Password not match, try again");
+	}
+	else{
 	registerUtils.checkEmailAndId(email,id,function(result){
-		if(result===0){
-        	const connection = new Connection(dbConfig);
-        	connection.connect();
-        	connection.on("connect", err => {
-            	if (err) {
-              	console.error(err.message);
-            	} else {
-              	queryDatabase();
-            	}
-          	});
-        	function queryDatabase() {
-		    	const request = new Request(
-				`INSERT INTO StudentUser VALUES ('${id}', '${name}', '${phone}', '${email}', '${password}', '${validation}', null)`,
-				(err, rowCount) => {
-					if (err) {
-			  		console.error(err.message);
-					} else {
-				  	console.log(`${rowCount} row(s) returned`);
-				  	console.log("user is succesfuly registered!");
-					}
-			});	  
-        	connection.execSql(request);
-		}}
+		if(result==true){
+      registerUtils.addStudent(email, id, phone, name, password, validation,function(result){
+        if(result == true){
+          res.redirect("/upload?email="+email);
+        }
+        else{
+            console.log("somthingwrong");
+            res.redirect("/registerstudent");
+        }
+      });
+    }
 		else{
 			console.log("login failed,Email or ID already exist");
 			alert("Login failed,Email or ID already exist");
-		}
-	});
-		res.render("index");
+    }
+});
+	}
 });
 
 module.exports = router;
