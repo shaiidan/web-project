@@ -3,7 +3,8 @@ const router = express.Router();
 const { Connection, Request } = require("tedious");
 const dbConfig = require ('../models/dbconfig');
 const alert = require("alert-node");
-
+const app = express();
+app.set("view engine", "ejs");
 
 router.get("/", function(req, res){
 	res.render("index");
