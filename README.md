@@ -1,89 +1,105 @@
-# Project Title
+# SamiRoom
 
-One Paragraph of project description goes here
+Our website simulate rental housing units for SCE students.
 
-## Getting Started
+SamiRoom is a full-stack JavaScript open-source , which provides a simulation for rental housing units for SCE students.
+The idea is to connect between apartment owners and SCE students, in order to ofer them rental their units.
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+You can watch the site by enter this link - 
+[SiteView](https://samiroom.herokuapp.com/)
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+Make sure you have installed all of the following prerequisites on your development machine:
+* Git - [Download & Install Git](https://git-scm.com/downloads). OSX and Linux machines typically have this already installed.
+* Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager. If you encounter any  problems, you can also use this [GitHub Gist](https://gist.github.com/isaacs/579814) to install Node.js.
+*AzureDB - [Download & Install AzureDB](https://docs.microsoft.com/en-us/sql/azure-data-studio/download-azure-data-studio?view=sql-server-ver15).
 
-```
-Give examples
-```
+### Downloading SamiRoom
 
-### Installing
+There are several ways you can get the SamiRoom boilerplate:
 
-A step by step series of examples that tell you how to get a development env running
+### Cloning The GitHub Repository
+The recommended way to get SamiRoom is to use git to directly clone the SamiRoon repository:
 
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
+```bash
+$ git clone https://github.com/shaiidan/web-project.git
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
+This will clone the latest version of the SamiRoom repository to a **web-project** folder.
+
+### Downloading The Repository Zip File
+Another way to use the SamiRoom boilerplate is to download a zip copy from the [master branch on GitHub](https://github.com/shaiidan/web-project/archive/master.zip). You can also do this using the `wget` command:
+
+```bash
+$ wget https://github.com/shaiidan/web-project/archive/master.zip -O web-project.zip; unzip web-project.zip; rm web-project.zip
+```
+
+## Quick Install
+
+Once you've downloaded the boilerplate and installed all the prerequisites, you're just a few steps away from upload the site - 
+The boilerplate comes pre-bundled with a `package.json` files that contain the list of modules you need to start your application.
+
+To install the dependencies, run this in the application folder from the command-line:
+
+```bash
+$ npm install
+```
+
+This command does a few things:
+* First it will install the dependencies needed for the application to run.
+* If you're running in a development environment, it will then also install development dependencies needed for testing and running your application.
+* When the npm packages install process is over, npm will initiate a bower install command to install all the front-end modules needed for the application
+
+## Running Your Application
+
+Run your application using npm:
+
+```bash
+$ npm start
+```
+
+Your application should run on port 3000 with the *development* environment configuration, so in your browser just go to [http://localhost:3000](http://localhost:3000)
+
+That's it! Your application should be running. To proceed with your development, check the other sections in this documentation.
+
 
 ## Running the tests
 
-Explain how to run the automated tests for this system
+Run test application using npm:
 
-### Break down into end to end tests
-
-Explain what these tests test and why
-
+```bash
+$ npm test
 ```
-Give an example
-```
+## Running test linter
 
-### And coding style tests
+Run linter test application using npm:
 
-Explain what these tests test and why
-
-```
-Give an example
+```bash
+$ npm npm install eslint
+$ npx eslint src/**
 ```
 
-## Deployment
+###  Deploying SamiRoom To Heroku
 
-Add additional notes about how to deploy this on a live system
+By clicking the button below you can signup for Heroku and deploy a working copy of SamiRoom to the cloud without having to do the steps above.
 
-## Built With
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://dashboard.heroku.com/apps/samiroom/deploy/github)
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+### Technologies
 
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+* bootstrap/4.2.1
+* bootstrap/4.4.1
+* Javascript
+* NodeJS
+* Express 4.17.1
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* **Rotem Reshef** - [Rotemgold](https://github.com/Rotemgold)
+* **Shai Idan** - [ShaiIdan](https://github.com/shaiidan)
+* **Stav Shlomovich** - [Rotemgold](https://github.com/stav1997)
+* **Harel Jerbi** - [Rotemgold](https://github.com/Rotemgold)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
 
 
