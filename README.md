@@ -96,10 +96,10 @@ By clicking the button below you can signup for Heroku and deploy a working copy
 
 ## Authors
 
-* **Rotem Reshef** - [Rotemgold](https://github.com/Rotemgold)
+* **Rotem Reshef** - [RotemReshef](https://github.com/Rotemgold)
 * **Shai Idan** - [ShaiIdan](https://github.com/shaiidan)
-* **Stav Shlomovich** - [Rotemgold](https://github.com/stav1997)
-* **Harel Jerbi** - [Rotemgold](https://github.com/Rotemgold)
+* **Stav Shlomovich** - [StavShlomovich](https://github.com/stav1997)
+* **Harel Jerbi** - [HarelJerbi](https://github.com/Rotemgold)
 
 
 
