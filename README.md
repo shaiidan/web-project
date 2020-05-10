@@ -99,7 +99,7 @@ By clicking the button below you can signup for Heroku and deploy a working copy
 * **Rotem Reshef** - [RotemReshef](https://github.com/Rotemgold)
 * **Shai Idan** - [ShaiIdan](https://github.com/shaiidan)
 * **Stav Shlomovich** - [StavShlomovich](https://github.com/stav1997)
-* **Harel Jerbi** - [HarelJerbi](https://github.com/Rotemgold)
+* **Harel Jerbi** - [HarelJerbi](https://github.com/harel159)
 
 
 
