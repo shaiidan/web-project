@@ -40,10 +40,10 @@ class RentalHousingUnits
     // codeStatus = 1 -> the unit is available
     static changeStatusForOrder(unit_id,codeStatus,callback)
     {
-      const status = null;
+      var status = null;
       switch(codeStatus){
-        case 0: {status= 'Order process'; break;}
-        case 1: {status= 'available'; break;}
+        case 0: {status = 'Order process'; break;}
+        case 1: {status = 'available'; break;}
         default: {status = null; break;}
       }
 
@@ -76,10 +76,7 @@ class RentalHousingUnits
               connection.execSql(request);
           }
         });
-
       }
-
-      
     }
 
     // update the unit , unit - is the instance of RentalHousingUnit
@@ -103,7 +100,7 @@ class RentalHousingUnits
                      ',MaxRentalPeriod =  '+ unit.MaxRentalPeriod +
                      ",pictures =  '"+ unit.Pictures +
                      "',descriptionApartment =  '"+ unit.DescriptionApartment +
-                     "'WHERE unitid = " + unit.UnitID,
+                     "' WHERE unitid = " + unit.UnitID,
                   (err, rowCount) => {
                     if (err) {
                       console.error(err.message);
@@ -124,7 +121,9 @@ class RentalHousingUnits
             }
           });
         }
-        return callback(false);
+        else{
+          return callback(false);
+        }
     }
 
     // add unit to DB, unit is instance of RentalHousingUnit
@@ -136,9 +135,8 @@ class RentalHousingUnits
             connection.on("connect", err => {
             if (err) {
               console.error(err.message);
-              callback(false);
               connection.close();
-              return;
+              return callback(false);
             } 
             else
             {
@@ -152,25 +150,26 @@ class RentalHousingUnits
                 const request =  new Request( query ,(err, rowCount) => {
                     if (err) {
                       console.error(err.message);
-                      callback(false);
                       connection.close();
-                      return;      
-                    } else {
-                      if(rowCount != 0){
-                         callback(true);
-                      }else{
-                         callback(false);
+                      return callback(false);
+                    } 
+                    else {
+                      connection.close();
+                      if(rowCount != 0) {
+                        return callback(true);
                       }
-                      connection.close();
-                      return;
+                      else {
+                        return callback(false);
+                      }
                     }}
                 );
                 connection.execSql(request);
             }
           });
         }
-        callback(false);
-        return;
+        else{
+          return callback(false);
+        }
     }
     //
     static getAvailableUnits(start_date,end_date,min_period,filter_query,callback)
@@ -195,7 +194,6 @@ class RentalHousingUnits
               return callback(false);
             } 
             else {
-              console.log(`${rowCount} row(s) returned`);
               connection.close();
               var units =[];
               rows.forEach(element => {

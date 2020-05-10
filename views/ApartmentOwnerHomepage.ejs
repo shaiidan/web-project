@@ -8,10 +8,10 @@
 <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>
 
-      
+<body onload="loading()">
 <div class="container mt-5">
-    <% if(typeof owner_full_name !== 'undefined' && typeof owner_id !== 'undefined'){%>
-        <h4>Hello  <%= owner_full_name %></h4>
+    <% if(typeof fullName !== 'undefined' && typeof id !== 'undefined'){%>
+        <h4>Hello  <%= fullName %></h4>
     <table  id="tableUnits" data-toggle="table" data-detail-view="true"
      data-detail-formatter="detailFormatter" data-sortable="true" >
      <thead>
@@ -33,7 +33,7 @@
         <% if(typeof rows !== 'undefined'){%>
             <%for (var i = 0; i < rows.length; i++) { %>
                 <tr  class="tableclass" >
-                    <td id="td<%=i%>"><b>+</b></td>
+                    <td id="td<%=i%>"><b style="color:black; font-size:x-large;">+</b></td>
                     <td><%= rows[i].PublishingDate.getDate() + '/' +rows[i].PublishingDate.getMonth() + '/' + rows[i].PublishingDate.getFullYear() %></td>
                     <td><%= rows[i].City %></td>
                     <td><%= rows[i].Adderss %></td>
@@ -74,9 +74,9 @@
                             <%}%>
                         </div>
                         <br>
-                        <input type="hidden" value=" <%= owner_full_name %>" id="fullName" name="fullName">
+                        <input type="hidden" value="<%=fullName %>" id="fullName" name="fullName">
                         <% if (rows[i].Status == 'available'){ %>
-                            <button  type="button" value="Update" id="update_unit" onclick="updateUnit('<%= rows[i].UnitID %>','<%=owner_id %>','<%=owner_full_name%>')" class="btn btn-dark">Update</button>
+                            <button  type="button" value="Update" id="update_unit" onclick="updateUnit('<%= rows[i].UnitID %>','<%= id %>','<%=fullName%>')" class="btn btn-dark">Update</button>
                             <button type="button" value="Delete" id="delete_unit" onclick="deleteUnit('<%= rows[i].UnitID %>')" class="btn btn-dark">Delete</button>
                         <% } %>
                 </div>
@@ -87,14 +87,23 @@
       </table>
     </div>
 <div class="container mt-5"></div>
+</body>
 <script>
- 
+
+function loading()
+{
+    "<% if(typeof rows !== 'undefined'  && rows.length == 0 ) { %>"
+    alert("You don't uploading units yet...");
+       "<% } %>"   
+}
+
  var $table = $('#tableUnits');
 
 $table.on('expand-row.bs.table', function(e, index, row, $detail) {
   var res = $("#desc" + index).html();
   var td_open = document.getElementById("td"+index);
   td_open.innerHTML ='<b>-</b>';
+  td_open.style = "color: black; font-size: x-large;";
   $detail.html(res);
 });
 
@@ -102,6 +111,7 @@ $table.on("click-row.bs.table", function(e, row, $tr) {
   if ($tr.next().is('tr.detail-view')) {
     $table.bootstrapTable('collapseRow', $tr.data('index'));
     var td_close = document.getElementById("td"+$tr.data('index'));
+    td_close.style = "color: black; font-size: x-large;";
     td_close.innerHTML ='<b>+</b>';
     
   } else {
@@ -123,9 +133,7 @@ function deleteUnit(unit_id)
                 alert("The unit was deleted, its status became unavailable")
                 location.reload();
             }
-        }
-
-        )
+        })
         .catch(function(error){
             alert("Sorry, something wrong!\n"+error);
             return;
@@ -142,6 +150,8 @@ function updateUnit(unit_id,id,full_name)
 {
     location.replace("./updateUnit?id="+id +"&fullName="+ full_name +"&unitId="+unit_id);
 }
+
+
 
 </script>
 <% } %>

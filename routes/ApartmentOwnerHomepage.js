@@ -11,15 +11,22 @@ router.get("/ApartmentOwnerHomepage",function(req, res){
     }
     const id = req.query.id;
     const full_name = req.query.fullName;
-    units.getRentalHousingUnitsByOwnerId(id, function(result){
-        if(result != false ){
-             res.render('ApartmentOwnerHomepage',{owner_full_name:full_name,owner_id:id,rows:result});
-        }
-        else {!
-            console.log("Something wrong happend with request="+req.ip);
-            res.redirect('/');
-        }
-    });
+
+    try{
+        units.getRentalHousingUnitsByOwnerId(id, function(result){
+            if(result != false ){
+                 res.render('ApartmentOwnerHomepage',{fullName:full_name,id:id,rows:result});
+            }
+            else {
+                console.log("Something wrong happend with request="+req.ip);
+                res.redirect('/');
+            }
+        });    
+    }
+    catch(e){
+        console.log("Error!!\n" +e);
+        res.redirect('/');
+    }
 });
 
 
@@ -27,20 +34,26 @@ router.get("/ApartmentOwnerHomepage",function(req, res){
 router.delete("/ApartmentOwnerHomepage",function(req,res){
     
     const unit_id = req.query.unitID;
-    units.deleteUnit(unit_id, function(result){
-        if(result == false){
-            res.status(300).json({
-                message: "No deleted!"
-            })
-        }
-        else{
-            res.status(200).json({
-                message: "Deleted!"
-            })
-        }
-    });
+    try{
+        units.deleteUnit(unit_id, function(result){
+            if(result == false){
+                res.status(300).json({
+                    message: "No deleted!"
+                });
+            }
+            else{
+                res.status(200).json({
+                    message: "Deleted!"
+                });
+            }
+        });
+    }
+    catch(e){
+        res.status(300).json({
+            message: e
+        });
+    }
+    
 });
-
-
 
 module.exports = router;

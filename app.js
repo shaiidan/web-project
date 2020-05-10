@@ -15,8 +15,8 @@ const contactUsRoutes = require('./routes/contactus');
 const studentHomePage = require('./routes/StudentHomepage');
 const ApartmentOwnerHomepage = require('./routes/ApartmentOwnerHomepage');
 const uploadUnit = require('./routes/uploadUnit');
-const apartmentRouter = require('./routes/apartment');
 const updateUnit = require('./routes/updateUnit');
+const summaryPayment = require('./routes/summaryPayment');
 
 dotenv.config();
 const connection = new Connection(dbConfig);
@@ -43,9 +43,8 @@ app.use(contactUsRoutes);
 app.use(studentHomePage);
 app.use(ApartmentOwnerHomepage);
 app.use(uploadUnit);
-app.use(apartmentRouter);
 app.use(updateUnit);
-
+app.use(summaryPayment);
 
  //app.listen(process.env.PORT, process.env.IP, function(){
  //	console.log("Server has started");

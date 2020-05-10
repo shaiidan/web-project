@@ -21,6 +21,7 @@
   margin: 40px;
 }
 
+
 td, th {
   border: 1px solid #dddddd;
   text-align: left;
@@ -28,7 +29,7 @@ td, th {
 }
 
 tr:nth-child(even) {
-  background-color:#54cc21;
+  background-color: rgb(39, 197, 181) ;
 }
 
 #tableUnits thead > tr > th.detail,

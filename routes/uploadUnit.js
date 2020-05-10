@@ -2,12 +2,12 @@ const experss = require("express");
 const router = experss.Router();
 const RentalHousingUnit = require("../models/RentalHousingUnit");
 const units = require("../models/RentalHousingUnits");
-const upload = require("../models/UploadingImages")
+const upload = require("../models/UploadingImages");
 
 router.get("/uploadUnit",function(req, res){
     const id = req.query.id; 
     const full_name = req.query.fullName;
-    return res.render('uploadUnit',{owner_id:id,fullName:full_name});
+    return res.render('uploadUnit',{id:id,fullName:full_name});
 });
 
 router.post("/uploadUnit",upload.array("uploadImage",4),function(req, res,next){
@@ -46,8 +46,11 @@ router.post("/uploadUnit",upload.array("uploadImage",4),function(req, res,next){
                     console.log('new unit add by owner id = '+owner_id);
                     res.redirect("/ApartmentOwnerHomepage?id="+owner_id +'&fullName='+full_name);
                 }
+                else{
+                    res.render('uploadUnit',{msg:"Sorry something wrong\nPlease try again", id:owner_id,fullName:full_name});
+                }
             });
-            
+
         }
         catch(e){
             console.log("Error" + e);

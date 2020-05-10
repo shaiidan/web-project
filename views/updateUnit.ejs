@@ -1,12 +1,24 @@
 <%- include('partials/header_ApartmentOwner') %>
 
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<style>
+    label{
+        font-size:large;
+    }
+</style>
+
+<body onload="loading()">
 <div class="container mt-5">
 <div class="container mt-5">
     <% if(typeof unit !== 'false' &&typeof fullName !== 'undefined'){%>
-              <h3>Update a rental housing unit:</h3>    <br>
-              <form action="/updateUnit" method="POST">
+              <h3>Update a rental housing unit</h3>    <br>
+              <form action="/updateUnit" method="POST"  enctype="multipart/form-data">
                 <div class="form-group">
                     <input type="hidden"  name="fullName" id="fullName" value="<%=fullName%>">   
+                    <input type="hidden"  name="pictures" id="pictures" value="<%=unit.Pictures%>">   
                     <input type="hidden"  name="ownerId" id="ownerId" value="<%=unit.ApartmentOwnerId%>">
                     <label for="unitId" ><b>Unit ID: </b><%=unit.UnitID%>.</label>
                     <input type="hidden"  name="unitId" id="unitId" value="<%=unit.UnitID%>">
@@ -30,7 +42,7 @@
                     
                 <div class="form-group">
                     <label for="pricePerMonth"><b>Price per month</b></label>
-                    <input type="text" value='<%=unit.PricePerMonth%>' class="form-control" name="pricePerMonth" id ="pricePerMonth" required>
+                    <input pattern="([1-9]+[0-9]*)*" type="text" value='<%=unit.PricePerMonth%>' class="form-control" name="pricePerMonth" id ="pricePerMonth" required>
                 </div>
                       <div class="form-group">
                       <label for="="minRentalPeriod><b>Minmum rental period (months)</b><small style="color:red">&nbsp&nbspThe default is 12 month</small></label>
@@ -40,6 +52,18 @@
                       <label for="="maxRentalPeriod><b>Maxmum rental period (months)</b><small style="color:red">&nbsp&nbspThe default is 36 months</small></label>
                       <input type="number" value='<%=unit.MaxRentalPeriod%>' class="form-control" value="36" name="maxRentalPeriod" id="maxRentalPeriod" min=1 max=36>
                       </div>
+                      <div class="file-field input-field">
+                        <div class="btn">
+                            <span>Upload images</span>
+                            <input id="uploadImage" name="uploadImage" type="file" multiple>
+                          </div>
+                          <div class="file-path-wrapper">
+                            <label for= "uploadImage"><small style="color:red">&nbsp&nbspYou can upload maximun 4 images!<br>If you change it, your new photos will!</small></label>
+                              <input class="file-path validate" type="text" placeholder="Upload one or more images">
+                          </div>
+                      </div>
+
+
                       <div class="form-group">
                       <label for="descriptionUnit"><b>Description</b></label>
                       <textarea class="form-control" name="descriptionUnit" id="descriptionUnit" rows="5" cols="50"><%=unit.DescriptionApartment%></textarea>
@@ -53,8 +77,18 @@
         </div>
           <br>
 <%} %>
+</body>
 
 <script>
+
+      // for error 
+      function loading()
+    {
+        "<% if(typeof msg !== 'undefined'){ %>"
+        alert("Sorry something wrong\nPlease try again");
+        "<% } %>"
+    }
+
     function backToHome(id,full_name)
     {
         return location.replace("./ApartmentOwnerHomePage?id="+id+"&fullName="+full_name);

@@ -2,19 +2,26 @@ const experss = require("express");
 const router = experss.Router();
 const RentalHousingUnit = require("../models/RentalHousingUnit");
 const units = require("../models/RentalHousingUnits");
+const upload = require("../models/UploadingImages");
 
 router.get("/updateUnit",function(req, res,next){
-    const unit_id = req.query.unitId;
     const full_name= req.query.fullName;
     const user_id = req.query.id;
-    units.getRentalHousingUnitByUnitId(unit_id,function(result){
-        if(result instanceof RentalHousingUnit){
-             res.render('updateUnit',{fullName:full_name,unit:result});
-        }
-    });
+    const unit_id = req.query.unitId;
+    try{
+        units.getRentalHousingUnitByUnitId(unit_id,function(result){
+            if(result instanceof RentalHousingUnit){
+                 res.render('updateUnit',{fullName:full_name,id:user_id,unit:result});
+            }
+        });
+    }
+    catch(e){
+        console.log("Error!!\n" +e);
+        res.redirect('/');
+    }
 });
 
-router.post("/updateUnit",function(req,res){
+router.post("/updateUnit",upload.array("uploadImage",4),function(req,res){
     const unit_id = req.body.unitId;
     const owner_id = req.body.ownerId;
     const full_name = req.body.fullName;
@@ -26,16 +33,46 @@ router.post("/updateUnit",function(req,res){
     const min_rental = req.body.minRentalPeriod;
     const max_rental = req.body.maxRentalPeriod;
     const description_unit = req.body.descriptionUnit;
+    var pictures = req.body.pictures;
     const unit = new RentalHousingUnit(unit_id,owner_id,city,address,number_of_rooms,price_per_month,unit_types,
         null,null,null,max_rental,min_rental,description_unit,null,null);
-    
-    units.updateUnit(unit,function(result){
-        //console.log(result);
-        if(result != false){ // the update is success
-            res.redirect("/ApartmentOwnerHomepage?id="+owner_id +"&fullName="+full_name);
-        }
-    });
-});
 
+        if(typeof full_name === 'undefined' || typeof owner_id === 'undefined')
+        {
+            console.log("Error");
+            res.redirect('/',404);
+        }
+        else
+        {
+            if(typeof req.files !== 'undefined' && req.files.length != 0){
+                pictures = "";
+                req.files.forEach(f =>{
+                    pictures += f.filename + ",";
+                });
+            }
+            try{
+                const unit = new RentalHousingUnit(unit_id,owner_id,city,address,number_of_rooms,price_per_month,
+                    unit_types,null,null,null,max_rental,min_rental,description_unit,null,null);
+                unit.Pictures = pictures;
+                
+                units.updateUnit(unit,function(result){
+                    if(result == true){
+                        // add success
+                        console.log('Update unit ='+ unit_id +  ', add by owner id = '+owner_id);
+                        res.redirect("/ApartmentOwnerHomepage?id="+owner_id +'&fullName='+full_name);
+                    }
+                    else{
+                        res.render('updateUnit',{msg:"Sorry something wrong\nPlease try again", id:owner_id,fullName:full_name,unit:unit});
+                    }
+                });
+    
+            }
+            catch(e){
+                console.log("Error" + e);
+                res.redirect('/',404);
+            }
+        }
+   
+});
 
 module.exports = router;

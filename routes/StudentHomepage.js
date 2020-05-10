@@ -2,13 +2,15 @@
 const experss = require("express");
 const router = experss.Router();
 const units = require("../models/RentalHousingUnits");
-const MAX_MONTH_TO_DAY = 31;
+const MONTH_TO_DAY = 30;
+const order = require("../models/newOrder");
+const orders = require("../models/newOrders");
 
 
 router.get("/StudentHomepage",function(req, res){
     const user_id = req.query.id;
     const full_name = req.query.fullName;
-    res.render('StudentHomepage',{userId:user_id,fullName:full_name});
+    res.render('StudentHomepage',{id:user_id,fullName:full_name});
 });
 
 router.post("/StudentHomepage",function(req,res){
@@ -19,15 +21,14 @@ router.post("/StudentHomepage",function(req,res){
     const from_price = parseInt(req.body.fromPrice);
     const to_price = parseInt(req.body.toPrice);
     const unit_types = req.body.unitTypes;
-    const id = req.body.userId;
+    const id = req.body.id;
     const full_name = req.body.fullName; 
-
     // Calculate the rental period for user selected dates
     var start = new Date(start_date), end = new Date(end_date);
     const utc_start = Date.UTC(start.getFullYear(), start.getMonth(), start.getDate());
     const utc_end = Date.UTC(end.getFullYear(), end.getMonth(), end.getDate());
-    days = Math.floor((utc_end - utc_start) / (1000 * 60 * 60 * 24));
-    const min_period = Math.floor(days / MAX_MONTH_TO_DAY); 
+    var days = Math.floor((utc_end - utc_start) / (1000 * 60 * 60 * 24));
+    const min_period = Math.floor(days / MONTH_TO_DAY); 
  
     var filter = ' ';
     // for filter
@@ -48,14 +49,14 @@ router.post("/StudentHomepage",function(req,res){
        filter += ' and ';
     }
     filter += ' ';
-    console.log(min_period + "  f= "+ filter);
+    
     console.log("The IP= "+req.ip +" connection to student home page.");
 
     if(typeof start_date !== 'undefined' && typeof end_date !== 'undefined'){
         try{
             units.getAvailableUnits(start_date,end_date,min_period,filter,function(result){ 
                 res.render('StudentHomepage',{startDate:start_date,endDate:end_date,fullName:full_name,
-                    userId:id,rows:result,city:city,numberOfRooms:number_of_rooms,
+                    id:id,rows:result,city:city,numberOfRooms:number_of_rooms,
                     unitTypes:unit_types,fromPrice:from_price,toPrice:to_price
                 });
             });
@@ -69,14 +70,56 @@ router.post("/StudentHomepage",function(req,res){
         res.redirect('/',404);
     }
 });
-
-router.put("/StudentHomePage",function(req,res){
-    // save temp order 
+// save temp order 
     // create order object
     // call orders.add to save 
     // and move to summaryPayment page with orderId
     
-    res.end();
+router.put("/StudentHomePage",function(req,res){
+    const start_date = req.body.startDate;
+    const end_date = req.body.endDate;
+    const full_name = req.body.fullName;
+    const student_id = req.body.id;
+    const unit_id = req.body.unitID;
+    const owner_id = req.body.ownerID;
+    const price_per_month = req.body.pricePerMonth;
+    var start = new Date(start_date), end = new Date(end_date);
+    const utc_start = Date.UTC(start.getFullYear(), start.getMonth(), start.getDate());
+    const utc_end = Date.UTC(end.getFullYear(), end.getMonth(), end.getDate());
+    var total_time = Math.floor((utc_end - utc_start) / (1000 * 60 * 60 * 24));
+    const total_price = (price_per_month / MONTH_TO_DAY) * total_time;
+    
+    try{
+        orders.getNextOrderId(function(order_id){
+            if(order_id != false){
+                var newOrder = new order(order_id,total_price,owner_id,unit_id,null,null,full_name,student_id,start_date,
+                    end_date,total_time,0,null,null,null);
+                    orders.addOrder(newOrder,function(result){
+                        //success
+                        if(result != false){
+                            units.changeStatusForOrder(unit_id,0,function(result){
+                                if(result != false){
+                                    res.json({status:200, orderID:order_id,fullName:full_name,id:student_id});
+                                }
+                                else{
+                                    res.json({status:300}); // error!! 
+                                }
+                            });
+                        }
+                        else{
+                            res.json({status:300}); // error!! 
+                        }
+                    });
+            }
+            else{
+                res.json({status:300}); // error!! 
+            }
+        });
+    }
+    catch(e){
+        console.log("Error!!" +e);
+        res.json({status:300}); // error!!
+    }
 });
 
 module.exports = router;

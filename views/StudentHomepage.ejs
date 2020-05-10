@@ -11,18 +11,17 @@
 <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>
 
-<body onload="checkLoad()">   
+<body onload="loading()">   
 <div class="container mt-5" >
     <div class="row">
         <div class="col-sm-8">
           <div class="card">
             <div class="card-body">
-    <% if(typeof userId !== 'undefined' && typeof fullName !== 'undefined'){%>
-        <h4>Hello  <%= fullName %></h4>
+    <% if(typeof id !== 'undefined' && typeof fullName !== 'undefined'){%>
         <h6 id="messageNoDate">Enter dates to start...</h6>
         <form id="filtering" action="/StudentHomepage" method="POST">
-            <input type="hidden" value=" <%= fullName %>" id="fullName" name="fullName">
-            <input type="hidden" value=" <%= userId %>" id="userId" name="userId">
+            <input type="hidden" value="<%=fullName%>" id="fullName" name="fullName">
+            <input type="hidden" value="<%=id%>" id="id" name="id">
           <div class="form-group">
       <label for="startDate" ><b>Start date:</b></label>
       <input type="date" id="startDate" name="startDate" required onchange="checkStartDate()">
@@ -74,9 +73,9 @@
         <br>
           <B>Price per month-</label></B><br>
           <label for="FromPrice"><b>From Price</b></label>
-          <input type="text" id="fromPrice" name="fromPrice"><b>&nbsp&nbsp</b>
+          <input pattern="([1-9]+[0-9]*)*" type="text" id="fromPrice" name="fromPrice"><b>&nbsp&nbsp</b>
           <label for="toPrice"><b>To Price:</b></label>
-          <input type="text" id="toPrice" name="toPrice">
+          <input type="text" id="toPrice" pattern="([1-9]+[0-9]*)*" name="toPrice">
           <button id="searchingUnit"type="submit" class="btn btn-dark">Search</button>
 </div>
 </from>
@@ -86,7 +85,7 @@
 </div>
 </div>
 
-<div class="container mt-5">
+<div class="container mt-5" id="divTable">
     <table  id="tableUnits" data-toggle="table" data-detail-view="true"
      data-detail-formatter="detailFormatter" data-sortable="true" >
      <thead>
@@ -107,7 +106,7 @@
         <% if(typeof rows !== 'undefined'){%>
             <%for (var i = 0; i < rows.length; i++) { %>
                 <tr class="tableclass" >
-                    <td id="td<%=i%>"><b>+</b></td>
+                    <td id="td<%=i%>"><b style="color:black; font-size:x-large;">+</b></td>
                     <td><%= rows[i].PublishingDate.getDate() + '/' +rows[i].PublishingDate.getMonth() + '/' + rows[i].PublishingDate.getFullYear() %></td>
                     <td><%= rows[i].City %></td>
                     <td><%= rows[i].Adderss %></td>
@@ -144,7 +143,7 @@
                           <%}%>
                       </div>
                       <br>
-                        <button id="order" name="order" onclick="orderUnit('<%= startDate %>','<%= endDate %>','<%= fullName %>','<%= userId %>','<%= rows[i].UnitID %>')" type="button" class="btn btn-dark">Order</button>
+                        <button id="order" name="order" onclick="orderUnit('<%=startDate%>','<%=endDate%>','<%=fullName%>','<%=id%>','<%=rows[i].UnitID%>','<%= rows[i].ApartmentOwnerId%>','<%=rows[i].PricePerMonth%>')" type="button" class="btn btn-dark">Order</button>
                     </p>
                 </span>
             </tr>                               
@@ -157,48 +156,56 @@
 </body>
 
 <script>
-function checkLoad()
-{
- 
-}
       
-function orderUnit(start_date,end_date,full_name,user_id,unit_id)
+function orderUnit(start_date,end_date,full_name,user_id,unit_id,owner_id,price_per_month)
 {
-  const data = {startDate:start_date,endDate:end_date,fullName:full_name, id:user_id,unitID:unit_id};
-
+  const data = {startDate:start_date,endDate:end_date,fullName:full_name,
+    id:user_id,unitID:unit_id,ownerID:owner_id,pricePerMonth:price_per_month};
   return fetch(window.location.href, {
       method: 'PUT',
       headers: {
        // 'Accept': 'application/json; charset=UTF-8',
         'Content-Type': 'application/json'
       },
-      credentials: 'same-origin',
       body: JSON.stringify(data)
-    }).catch(error => {
-      console.error('Error:', error);
-    });
+    })
+    .then(res=>res.json())
+    .then(function(res){
+     // move to payment
+     if(res.status == 200){
+       window.location.replace('./summaryPayment?id='+res.id+"&fullName="+res.fullName+"&orderId="+res.orderID);
+     }
+     else{
+       alert("Sorry something wrong!\n Please try again");
+       return;
+     }
+    })
+    .catch(function(error){
+            alert("Sorry, something wrong!\n"+error);
+            return;
+        });
 }
 
  function checkStartDate()
-    {
-        var start = new Date(document.getElementById("startDate").value);
-        var today = new Date();
-        if(start.getTime() < today.getTime())
-        {
-            alert("Please enter a date greater than to today's date");
-            document.getElementById("startDate").value = '';
-        }
+ {
+   var start = new Date(document.getElementById("startDate").value);
+   var today = new Date();
+   if(start.getTime() < today.getTime())
+   {
+     alert("Please enter a date greater than to today's date");
+     document.getElementById("startDate").value = '';
     }
-    function checkEndDate()
-    {
-        var start = new Date(document.getElementById("startDate").value);
-        var end = new Date(document.getElementById("endDate").value);
-        if(start.getTime() >= end.getTime())
-        {
-            alert("Please enter a date greater than to start's date");
-            document.getElementById("endDate").value = '';
-        }
+ }
+ function checkEndDate()
+ {
+   var start = new Date(document.getElementById("startDate").value);
+   var end = new Date(document.getElementById("endDate").value);
+   if(start.getTime() >= end.getTime())
+   {
+     alert("Please enter a date greater than to start's date");
+     document.getElementById("endDate").value = '';
     }
+ }
 
  var $table = $('#tableUnits');
 
@@ -206,6 +213,7 @@ $table.on('expand-row.bs.table', function(e, index, row, $detail) {
   var res = $("#desc" + index).html();
   var td_open = document.getElementById("td"+index);
   td_open.innerHTML ='<b>-</b>';
+  td_open.style = "color: black; font-size: x-large;";
   $detail.html(res);
 });
 
@@ -214,12 +222,12 @@ $table.on("click-row.bs.table", function(e, row, $tr) {
     $table.bootstrapTable('collapseRow', $tr.data('index'));
     var td_close = document.getElementById("td"+$tr.data('index'));
     td_close.innerHTML ='<b>+</b>';
+    td_close.style = "color: black; font-size: x-large;";
     
   } else {
     $table.bootstrapTable('expandRow', $tr.data('index')); 
   }
 });
-
 
 </script>
 <% } %>
