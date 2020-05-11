@@ -1,8 +1,17 @@
 <%- include('partials/header_ApartmentOwner') %>
 
-<div class="container mt-5">
-              <h3>Upload a rental housing unit:</h3>
-              <form action="/uploadUnit" method="POST">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+<body onload="loading()">
+<div class="container mt-5"> 
+    <% if(typeof id !== 'undefined' && typeof fullName !== 'undefined'){%>
+              <h3>Upload a rental housing unit </h3><br>
+              <form action="/uploadUnit" method="POST" enctype="multipart/form-data">
+                <input type="hidden"  name="ownerId" id="ownerId" value="<%=id%>" >
+                <input type="hidden"  name="fullName" id="fullName" value="<%=fullName%>" >
                 <div class="form-group">
                     <label for="city" ><b>City</b></label>
                     <select class="form-control" id="city" name="city" required>
@@ -16,7 +25,7 @@
                 </div>
                 <div class="form-group">
                     <label for="pricePerMonth"><b>Price per month</b></label>
-                    <input type="text" class="form-control" name="pricePerMonth" id ="pricePerMonth" required>
+                    <input pattern="([1-9]+[0-9]*)*" type="text" class="form-control" name="pricePerMonth" id ="pricePerMonth" required>
                 </div>
                 <div class="form-group">
                     <label for="numberOfRooms"><b>Number of rooms:</b></label>
@@ -44,21 +53,59 @@
                       </select>
                       </div>
                       <div class="form-group">
-                      <label for="="minRentalPeriod><b>Minmum rental period (months)</b><small style="color:red">&nbsp&nbspThe default is 1 month</small></label>
-                      <input class="form-control" type="number" value="1" name="minRentalPeriod" id="minRentalPeriod" min=1 max=36>
+                      <label for="="minRentalPeriod ><b>Minmum rental period (months)</b><small style="color:red">&nbsp&nbspThe default is 12 month</small></label>
+                      <input class="form-control"  onchange="checkMinMax()" type="number" value="12" name="minRentalPeriod" id="minRentalPeriod" min=1 max=36>
                       </div>
                       <div class="form-group">
-                      <label for="="maxRentalPeriod><b>Maxmum rental period (months)</b><small style="color:red">&nbsp&nbspThe default is 36 months</small></label>
-                      <input type="number" class="form-control" value="36" name="maxRentalPeriod" id="maxRentalPeriod" min=1 max=36>
+                      <label for="="maxRentalPeriod ><b>Maxmum rental period (months)</b><small style="color:red">&nbsp&nbspThe default is 36 months</small></label>
+                      <input type="number" onchange="checkMinMax()" class="form-control" value="36" name="maxRentalPeriod" id="maxRentalPeriod" min=1 max=36>
                       </div>
+                      <div class="file-field input-field">
+                          <div class="btn">
+                              <span>Upload images</span>
+                              <label for= "uploadImage"><small style="color:red">&nbsp&nbspYou can upload maximun 4 images!</small></label>
+                              <input id="uploadImage" name="uploadImage" type="file" multiple>
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text" placeholder="Upload one or more images">
+                            </div>
+                        </div>
                       <div class="form-group">
                       <label for="descriptionUnit"><b>Description</b></label>
-                      <textarea class="form-control" name="descriptionUnit" id="descriptionUnit" rows="5" cols="50">
-                        </textarea>
+                      <textarea class="form-control" name="descriptionUnit" id="descriptionUnit" rows="5" cols="50"></textarea>
                       </div>
                       <button type="submit" class="btn btn-dark">Upload</button>
               </form>
           </div>
-     
+     </body>
+<%} %>
+<script>
+    // for error 
+    function loading()
+    {
+        "<% if(typeof msg !== 'undefined'){ %>"
+        alert("Sorry something wrong\nPlease try again");
+        "<% } %>"
+    }
+    // for check if not min > max 
+    function checkMinMax()
+    {
+        var min = parseInt(document.getElementById("minRentalPeriod").value);
+        var max = parseInt(document.getElementById("maxRentalPeriod").value);
+        
+        if(!isNaN(min) && !isNaN(max)){
+            if(max < min){
+                alert("Sorry max rental period cann't be less from min rental period!")
+                document.getElementById("minRentalPeriod").value = "12";
+                document.getElementById("maxRentalPeriod").value = "36";
+            }
+        }
+        else if(!isNaN(min) && isNaN(max)){
+            alert("Sorry max rental period cann't be empty if min rental period not empty!")
+                document.getElementById("minRentalPeriod").value = "12";
+                document.getElementById("maxRentalPeriod").value = "36";
+        } 
+    }
+</script>
 
 <%- include("partials/footer") %>

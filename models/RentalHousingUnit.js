@@ -35,8 +35,8 @@ class RentalHousingUnit
         this.#status = status;
         this.#minRentalPeriod = min_rental_period;
         this.#maxRentalPeriod = max_rental_period;
-        this.Pictures = null;
-        this.DescriptionApartment = description_apartemnt;
+        this.#pictures = null;
+        this.#descriptionApartemnt = description_apartemnt;
     }
 
     get UnitID()
@@ -121,7 +121,7 @@ class RentalHousingUnit
 
     set Status(status)
     {
-        if(status != null)
+        if(typeof status !== 'undefined')
         {
             this.#status = statusp; 
             return true;
@@ -129,71 +129,10 @@ class RentalHousingUnit
         return false;
     }
 
-    set PricePerMonth(price)
-    {
-        if(price != null)
-        {
-            this.#pricePerMonth = price;
-            return true;
-        }
-        return false;
-    }
+    set Pictures(pic){
 
-    set MinRentalPeriod(min)
-    {
-        if(min != null)
-        {
-            this.#minRentalPeriod = min;
-            return true;
-        }
-        return false;
-    }
-
-    set MaxRentalPeriod(max)
-    {
-        if(max != null)
-        {
-            this.#maxRentalPeriod = max;
-            return true;
-        }
-        return false;
-    }
-    set NumberOfTimes(num)
-    {
-        if(num != null)
-        {
-            this.number_of_times = num;
-            return true;
-        }
-        return false;
-
-    }
-
-    set Pictures(pic)
-    {
-        if(pic != null)
-        {
+        if(typeof pic !== 'undefined'){
             this.#pictures = pic;
-            return true;
-        }
-        return false;
-    }
-
-    set UnitTypes(unit_type)
-    {
-        if(unit_type != null)
-        {
-            this.#unitTypes = unit_type;
-            return true;
-        }
-        return false;
-    }
-
-    set DescriptionApartment(str)
-    {
-        if(str != null)
-        {
-            this.#descriptionApartemnt = str;
             return true;
         }
         return false;

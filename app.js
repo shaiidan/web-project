@@ -15,11 +15,10 @@ const contactUsRoutes = require('./routes/contactus');
 const studentHomePage = require('./routes/StudentHomepage');
 const ApartmentOwnerHomepage = require('./routes/ApartmentOwnerHomepage');
 const uploadUnit = require('./routes/uploadUnit');
-const apartmentRouter = require('./routes/rentalHistory');
-
+const updateUnit = require('./routes/updateUnit');
+const summaryPayment = require('./routes/summaryPayment');
 
 dotenv.config();
-config.options.trustServerCertificate = true;
 const connection = new Connection(dbConfig);
 connection.connect(); 
 // Attempt to connect and execute queries if connection goes through
@@ -33,6 +32,7 @@ connection.on("connect", err => {
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.json());
 app.use(express.static("public"));
 app.use(indexRoutes);
 app.use(registerOnwerRoutes);
@@ -43,9 +43,8 @@ app.use(contactUsRoutes);
 app.use(studentHomePage);
 app.use(ApartmentOwnerHomepage);
 app.use(uploadUnit);
-app.use(apartmentRouter);
-
-
+app.use(updateUnit);
+app.use(summaryPayment);
 
  app.listen(process.env.PORT, process.env.IP, function(){
  	console.log("Server has started");
