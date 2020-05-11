@@ -313,21 +313,26 @@ class RentalHousingUnits
 
   static getRentalHousingUnitsByOwnerId(owner_id,callback)
   {
+    console.log("in function:"+owner_id);
     let connection = new Connection(config);
       connection.on("connect", err => {
         if (err) {
           console.error(err.message);
         } else {
         const request = new Request( 
-          `SELECT * from RentalHousingUnit where apartmentOwnerId =`+owner_id,
+          `SELECT * FROM RentalHousingUnit WHERE apartmentOwnerId =`+owner_id,
           (err, rowCount,rows) => {
             if (err) {
+              console.log(rowCount);
               console.error(err.message);
               return callback(false);
             } 
             else {
-              if(rowCount == 0)
+              if(rowCount == 0){
+                console.log(rowCount);
                  return callback(false);
+              }
+
               connection.close();
               var units =[];
               rows.forEach(element => {
@@ -361,7 +366,6 @@ class RentalHousingUnits
                       phone_number = column.value;
                       break;
                     }
-                    
                     
                     case 'city': 
                     {
@@ -434,9 +438,12 @@ class RentalHousingUnits
                   var unit = new RentalHousingUnit(unitId,owner_id,city,address,number_of_rooms,price_per_month,
                     unit_types,number_of_times,publishing_date,status,max_rental_period,min_rental_period,
                     description_apartment,full_name,phone_number);
+         
                     unit.Pictures = pic;
+                   
                   units.push(unit); 
               });
+
               return callback(units);
             }
           }

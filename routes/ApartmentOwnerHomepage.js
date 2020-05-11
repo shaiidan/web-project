@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const experss = require("express");
 const router = experss.Router();
 const units = require("../models/RentalHousingUnits");
@@ -11,14 +12,14 @@ router.get("/ApartmentOwnerHomepage",function(req, res){
     }
     const id = req.query.id;
     const full_name = req.query.fullName;
-
+    console.log(id);
     try{
         units.getRentalHousingUnitsByOwnerId(id, function(result){
             if(result != false ){
                  res.render('ApartmentOwnerHomepage',{fullName:full_name,id:id,rows:result});
             }
             else {
-                console.log("Something wrong happend with request="+req.ip);
+                console.log("1Something wrong happend with request="+req.ip);
                 res.redirect('/');
             }
         });    

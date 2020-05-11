@@ -1,62 +1,71 @@
 <%- include('partials/header_ApartmentOwner') %>
+<link rel="stylesheet" href="css/rentalHistory.css">
 
+<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
      <div class="container">
         <hr> 
         <div class="row">
+            <% if(typeof fullName !== 'undefined' && typeof id !== 'undefined' ){%>
             <div class="rentalHistory">
                 <div class = "Filter">   
-                    <form id="filtering" action="/apartment" method="POST">       
-                        <b>which elements would you like to see?</b>
-                        <label for="Location">Location</label>
+                    <form id="filtering" action="/rentalHistory" method="POST">       
+                        
+                        <input type="hidden" value="<%=fullName%>" id="fullName" name="fullName">
+                        <input type="hidden" value="<%=id%>" id="id" name="id">
+
+                        <label for="unitID">unit ID: </label>
+                        <input type="text" id="unitID" name="unitID" onkeypress="return isNumberKey(event)" value= " ">
+
+                        <label for="Location">Location: </label>
                         <select id = "Location" name = "Location" placeholder="Choose location">  
-                            <option value="empty"></option>
-                            <option value="Ashdod">Ashdod</option>
-                            <option value="Beer Sheva">Beer Sheva</option>
+                            <option value=" "></option>
+                            <option value='Ashdod'>Ashdod</option>
+                            <option value='Beer Sheva'>Beer Sheva</option>
                         </select>
 
-                        <label for="Unittype">Unit type</label>
+                        <label for="Unittype">Unit type: </label>
                         <select id = "Unittype" name = "Unittype" placeholder="Choose unit type"> 
-                            <option value="empty"></option>
-                            <option value="villa">Villa</option>
-                            <option value="loft">Loft</option>
-                            <option value="apartment">Apartment</option>
-                            <option value="basement">Basement</option>
+                            <option value=" "></option>
+                            <option value='vila'>vila</option>
+                            <option value='loft'>loft</option>
+                            <option value='apartment'>apartment</option>
+                            <option value='basement'>basement</option>
                         </select>                        
                      
-                        <label for="Unittype">Unit type</label>
-                        <input type="number" id="quantity" name="quantity" min="1" max="6" step="0.5" placeholder="1">
+                        <label for="numberOfRooms">Number of rooms:  </label>
+                        <input type="number" id="numberOfRooms" name="numberOfRooms" min="1" max="6" step="0.5" value=1 >
 
-                        <label for="startDate" >Start date</label>
-                        <input type="date" id="startDate" name="startDate" >
-
-                        <label for="endDate">End date</label>
-                        <input type="date" id="endDate" name="endDate"  onchange="checkEndDate()">
-
-                        <label for="totalPrice">From price</label>
-                        <input type="text" id="totalPrice" name="totalPrice" onkeypress="return isNumberKey(event)">
+                        <label for="totalPrice">From price: </label>
+                        <input type="text" id="totalPrice" name="totalPrice" onkeypress="return isNumberKey(event)" value=" ">
                         
-                        <label for="orderNumber">Order number</label>
-                        <input type="text" id="orderNumber" name="orderNumber" onkeypress="return isNumberKey(event)">
+                        <label for="startDate" >Start date: </label>
+                        <input type="date" id="startDate" name="startDate" value=" ">
+
+                        <label for="endDate">End date: </label>
+                        <input type="date" id="endDate" name="endDate"  onchange="checkEndDate()" value=" ">
+
+                        <label for="orderNumber">Order number: </label>
+                        <input type="text" id="orderNumber" name="orderNumber" onkeypress="return isNumberKey(event)" value=" ">
 
                         <button type="submit" class="btn btn-dark" form="filtering">Search</button>
                     </form>        
                 </div>
-                <table class="table" id="order">
+                <table class="sortable" id="order">
                     <thead class="thead-dark">
-                      <tr>
-                        <th scope="col" onclick="sortIntTable(0)">Order number</th>
-                        <th scope="col" onclick="sortIntTable(1)">Unit ID</th>
-                        <th scope="col" onclick="sortStringTable(2)">Unit type</th>
-                        <th scope="col" onclick="sortStringTable(3)">Location</th> 
-                        <th scope="col" onclick="sortIntTable(4)">Number of rooms</th>
-                        <th scope="col" onclick="sortDateTable(5)">Start date</th>
-                        <th scope="col" onclick="sortDateTable(6)">End date</th>
-                        <th scope="col" onclick="sortIntTable(7)">Price</th> 
-                        <th scope="col" onclick="sortStringTable(8)">Student full name</th> 
-                        <th scope="col" onclick="sortStringTable(9)">Student email address</th> 
+                      <tr id="firts">
+                        <th scope="col">Order number  </th>
+                        <th scope="col">Unit ID  </th>
+                        <th scope="col">Unit type  </th>
+                        <th scope="col">Location  </th> 
+                        <th scope="col">Number of rooms  </th>
+                        <th scope="col">Start date  </th>
+                        <th scope="col">End date  </th>
+                        <th scope="col">Price  </th> 
+                        <th scope="col">Student full name  </th> 
+                        <th scope="col">Student email address  </th> 
+                        <th scope="col" >Number of orders  </th> 
                       </tr>
-                    </thead>
-                   
+                    </thead>                  
                     <tbody>
                     </tr>
                     <% if(typeof rows !== 'undefined'){%>
@@ -67,198 +76,55 @@
                                 <td><%= rows[i].unitType %></td>
                                 <td><%= rows[i].city %></td>
                                 <td><%= rows[i].numberOfRooms %></td>
-                                <td><%= rows[i].startOrder %></td>
-                                <td><%= rows[i].endOrder %></td>
-                                <td><%= rows[i].totalPrice %></td>
+                                <td><%= rows[i].startOrder%></td>
+                                <td><%= rows[i].endOrder%></td>
+                                <td class="totalPrice"><%= rows[i].totalPrice %></td>
                                 <td><%= rows[i].FullName %></td>
-                                <td><%= rows[i].EmailAddress %></td>                                
+                                <td><%= rows[i].EmailAddress %></td>   
+                                <td><%= rows[i].numberOfTimes %></td>  
                             </tr>
                         <% }} %>
                     </tbody>
+                    <tfoot>
+                      <tr id="last">
+                        <td colspan="2" >Total income: </td> 
+                        <td colspan="9" id="totalIncome"> </td>
+                      </tr>
+                    </tfoot>
                   </table>
             </div>
         </div>
     </div>  
-    
+
+<script>//calculate sum of toatlPrice column
+  var tds = document.getElementById('order').getElementsByTagName('td');
+  var sum = 0;
+  for(var i = 0; i < tds.length; i ++) {
+      if(tds[i].className == 'totalPrice') {
+          sum += isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML);
+      }
+  }
+  document.getElementById('totalIncome').innerHTML += sum+ '₪' ;
+</script>
+
+
 <script>
     function checkEndDate()
     {
-        var start = new Date(document.getElementById("startDate").value);
-        var end = new Date(document.getElementById("endDate").value);
-        if(start.getTime() >= end.getTime())
-        {
-            alert("Please enter a date greater than to start's date");
-            document.getElementById("endDate").value = '';
-        }
-    }
+      var start = new Date(document.getElementById("startDate").value);
+      var end = new Date(document.getElementById("endDate").value);
+      if(start.getTime() >= end.getTime())
+      {
+          alert("Please enter a date greater than to start's date");
+          document.getElementById("endDate").value = '';
+      }
+    }   
 </script>
-<script>
-    function sortIntTable(n) {
-    var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-    table = document.getElementById("order");
-    switching = true;
-    // Set the sorting direction to ascending:
-    dir = "asc";
-    /* Make a loop that will continue until
-    no switching has been done: */
-    while (switching) {
-      // Start by saying: no switching is done:
-      switching = false;
-      rows = table.rows;
-      /* Loop through all table rows (except the
-      first, which contains table headers): */
-      for (i = 1; i < (rows.length - 1); i++) {
-        // Start by saying there should be no switching:
-        shouldSwitch = false;
-        /* Get the two elements you want to compare,
-        one from current row and one from the next: */
-        x = rows[i].getElementsByTagName("TD")[n];
-        y = rows[i + 1].getElementsByTagName("TD")[n];
-        /* Check if the two rows should switch place,
-        based on the direction, asc or desc: */
-        if (dir == "asc") {
-          if (x.innerHTML > y.innerHTML) {
-            // If so, mark as a switch and break the loop:
-            shouldSwitch = true;
-            break;
-          }
-        } else if (dir == "desc") {
-          if (x.innerHTML < y.innerHTML) {
-            // If so, mark as a switch and break the loop:
-            shouldSwitch = true;
-            break;
-          }
-        }
-      }
-      if (shouldSwitch) {
-        /* If a switch has been marked, make the switch
-        and mark that a switch has been done: */
-        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-        switching = true;
-        // Each time a switch is done, increase this count by 1:
-        switchcount ++;
-      } else {
-        /* If no switching has been done AND the direction is "asc",
-        set the direction to "desc" and run the while loop again. */
-        if (switchcount == 0 && dir == "asc") {
-          dir = "desc";
-          switching = true;
-        }
-      }
-    }
-  }
-</script>
-<script>
-    function sortStringTable(n) {
-    var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-    table = document.getElementById("order");
-    switching = true;
-    // Set the sorting direction to ascending:
-    dir = "asc";
-    /* Make a loop that will continue until
-    no switching has been done: */
-    while (switching) {
-      // Start by saying: no switching is done:
-      switching = false;
-      rows = table.rows;
-      /* Loop through all table rows (except the
-      first, which contains table headers): */
-      for (i = 1; i < (rows.length - 1); i++) {
-        // Start by saying there should be no switching:
-        shouldSwitch = false;
-        /* Get the two elements you want to compare,
-        one from current row and one from the next: */
-        x = rows[i].getElementsByTagName("TD")[n];
-        y = rows[i + 1].getElementsByTagName("TD")[n];
-        /* Check if the two rows should switch place,
-        based on the direction, asc or desc: */
-        if (dir == "asc") {
-          if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-            // If so, mark as a switch and break the loop:
-            shouldSwitch = true;
-            break;
-          }
-        } else if (dir == "desc") {
-          if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-            // If so, mark as a switch and break the loop:
-            shouldSwitch = true;
-            break;
-          }
-        }
-      }
-      if (shouldSwitch) {
-        /* If a switch has been marked, make the switch
-        and mark that a switch has been done: */
-        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-        switching = true;
-        // Each time a switch is done, increase this count by 1:
-        switchcount ++;
-      } else {
-        /* If no switching has been done AND the direction is "asc",
-        set the direction to "desc" and run the while loop again. */
-        if (switchcount == 0 && dir == "asc") {
-          dir = "desc";
-          switching = true;
-        }
-      }
-    }
-  }
-</script>
-<script>
-    function sortDateTable(n) {
-    var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-    table = document.getElementById("order");
-    switching = true;
-    // Set the sorting direction to ascending:
-    dir = "asc";
-    /* Make a loop that will continue until
-    no switching has been done: */
-    while (switching) {
-      // Start by saying: no switching is done:
-      switching = false;
-      rows = table.rows;
-      /* Loop through all table rows (except the
-      first, which contains table headers): */
-      for (i = 1; i < (rows.length - 1); i++) {
-        // Start by saying there should be no switching:
-        shouldSwitch = false;
-        /* Get the two elements you want to compare,
-        one from current row and one from the next: */
-        x = rows[i].getElementsByTagName("TD")[n];
-        y = rows[i + 1].getElementsByTagName("TD")[n];
-        /* Check if the two rows should switch place,
-        based on the direction, asc or desc: */
-        if (dir == "asc") {
-          if (x.innerHTML > y.innerHTML) {
-            // If so, mark as a switch and break the loop:
-            shouldSwitch = true;
-            break;
-          }
-        } else if (dir == "desc") {
-          if (x.innerHTML< y.innerHTML) {
-            // If so, mark as a switch and break the loop:
-            shouldSwitch = true;
-            break;
-          }
-        }
-      }
-      if (shouldSwitch) {
-        /* If a switch has been marked, make the switch
-        and mark that a switch has been done: */
-        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-        switching = true;
-        // Each time a switch is done, increase this count by 1:
-        switchcount ++;
-      } else {
-        /* If no switching has been done AND the direction is "asc",
-        set the direction to "desc" and run the while loop again. */
-        if (switchcount == 0 && dir == "asc") {
-          dir = "desc";
-          switching = true;
-        }
-      }
-    }
-  }
-</script>
+
+<script src="/routes/rentalHistory.js"></script>
+<script src="/src/Order.js"></script>
+<script src="/src/Orders.js"></script>
+<% } %>
+
 <%- include('partials/footer') %>
 

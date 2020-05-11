@@ -1,0 +1,54 @@
+
+
+.form-group label {
+    margin-bottom: 0rem;
+    color:#252525;
+    font-size: 150%;
+    font-style: italic;
+    font-weight: bold;
+
+ }
+
+ .bg-light {
+     background-color: #bdbebe;
+ }
+ 
+ .card-body {
+     -ms-flex: 1 1 auto;
+     flex: 1 1 auto;
+     padding: 0.75rem;
+     border: #252525;
+ }
+ 
+ #b{
+     background: url("../imgs/2.jpg") no-repeat;
+     background-size: cover;
+
+     width: 100%;
+
+
+ }
+ 
+ .card {
+     background-color: transparent;
+     border: #252525;
+ }
+ 
+ .form-control{
+     width:50%;
+ } 
+ 
+ hr {
+     margin-top: 0rem;
+     margin-bottom: 0rem;
+ }
+ 
+ h5 {
+     margin-bottom: 1rem;
+ }
+ 
+ .jumbotron {
+     padding: 2rem 1rem;
+ }
+ 
+ 
