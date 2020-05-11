@@ -19,8 +19,9 @@ router.get("/ApartmentOwnerHomepage",function(req, res){
                  res.render('ApartmentOwnerHomepage',{fullName:full_name,id:id,rows:result});
             }
             else {
-                console.log("1Something wrong happend with request="+req.ip);
-                res.redirect('/');
+                res.render('ApartmentOwnerHomepage',{fullName:full_name,id:id});//סתיו שינתה
+                console.log("no units yet");
+
             }
         });    
     }
