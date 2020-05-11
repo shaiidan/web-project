@@ -4,23 +4,6 @@ const { Connection, Request } = require("tedious");
 const alert = require("alert-node");
 const registerUtils = require('../models/registerUtils');
 
-module.exports = configa = {
-	authentication: {
-	  options: {
-		userName: "samiroom", 
-		password: "Lucas2020" 
-	  },
-	  type: "default"
-	},
-	server: "samiroom.database.windows.net", 
-	options: {
-	  database: "samiroomDB",
-	  encrypt: true
-	}
-  };
-  config.options.trustServerCertificate = true;
-
-
 router.get("/registerstudent", function(req, res){
 	res.render("registerstudent");
 });

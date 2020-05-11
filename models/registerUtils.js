@@ -66,9 +66,6 @@ class registerUtils
         });
 }
 
-
-
-
   static addStudent(email, id, phone, name, password, validation, callback)
   {
     let connection = new Connection(config);
@@ -97,9 +94,40 @@ class registerUtils
                     }}
               );
               connection.execSql(request);
+            }
+   });
+  }
+      static addOwner(id, full_name, email, password, phone, callback){
+
+        let connection = new Connection(config);
+        connection.on("connect", err => {
+        if (err) {
+            console.error(err.message);
+            connection.close();
+            return callback(false);
+            } 
+        else
+       {
+        const request =  new Request( 
+          `INSERT INTO ApartmentOwnerUser VALUES ('${id}', '${full_name}', '${email}', '${password}', '${phone}')`,
+          (err, rowCount) => {
+            if (err) {
+              console.error(err.message);
+              connection.close();
+              return callback(false);
+              } 
+              else {
+              connection.close();
+              if(rowCount != 0)
+                return callback(true);
+              else
+                return callback(false);
+                        }}
+                  );
+                  connection.execSql(request);
+              }
+            });
           }
-        });
-      }
 static checkEmail(email, callback)
 {
   const connection1 = new Connection(config);
@@ -131,33 +159,6 @@ static checkEmail(email, callback)
             });
           });
           connection1.execSql(request1);
-      }
-    });
-}
-
-static updateOwnerPassword(email, password){
-  const connection8 = new Connection(config);
-  connection8.on("connect", err => {
-      if (err) {
-        console.error(err.message);
-        connection8.close();
-        return false;
-      } 
-      else
-      {
-          const request8 = new Request( 
-            `UPDATE ApartmentOwnerUser SET Password=('${password}') WHERE EmailAddress=('${email}')`,
-            (err, rowCount) => {
-              if (err) {
-                console.error(err.message);
-                connection8.close();
-                return false;
-              } else {
-                console.log(`${rowCount} row(s) returned`);
-              }
-            }
-          );
-          connection8.execSql(request8);
       }
     });
 }

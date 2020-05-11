@@ -3,10 +3,14 @@ const router = express.Router();
 const nodemailer = require('nodemailer');
 const alert = require("alert-node");
 const registerUtils = require('../models/registerUtils');
-
-router.get('/valid/:email', function(req, res) {
-    console.log(req.params.email);
-    res.render('valid',{param:req.params});
+const authenticate = require("./authenticate").redirectHome;
+router.get('/valid/:email',authenticate, function(req, res) {
+	if("admin@admin"===req.session.userId){
+        res.render('valid',{param:req.params});
+    }
+    else{
+		res.render("Error");
+	}
 });
 
 router.post('/valid/:email', function(req, res) {
@@ -65,7 +69,7 @@ router.post('/reject/:email', function(req, res) {
 		to: req.params.email,
 		subject: "Reject student card", // Subject line
         text: 'We reject your student card, please upload new one - \n\n '+
-        'http://' + req.headers.host + '/upload/'+req.body.email+'\n\n'
+        'http://' + req.headers.host + '/uploadnew'+'\n\n'
 	};
 	transporter.sendMail(mailOptions, function(err, data) {
 		if(err){

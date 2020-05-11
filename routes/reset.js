@@ -5,7 +5,6 @@ const nodemailer = require('nodemailer');
 const alert = require("alert-node");
 
 router.get('/reset/:token', function(req, res) {
-    console.log(req.params.token);
     res.render('reset',{param:req.params});
 });
  

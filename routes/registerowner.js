@@ -14,20 +14,20 @@ router.get("/registerowner", function(req, res){
 //registerowner post request:
 router.post("/registerowner", function(req, res){
 	const id = req.body.id;
-	const name = req.body.name;
+	const full_name = req.body.name;
 	const email = req.body.email;
 	const password = req.body.password;
 	const phone = req.body.phone;
 	const confirm = req.body.confirm;
 	if(confirm!=password){
 		alert("Password not match");
-		res.redirect("/registerstudent");
 	}
 	else{
     registerUtils.checkEmailAndId(email,id,function(result){ 
 		if(result == true){
-            registerUtils.addOwner(id, name, enmail, password, phone, function(result){
+            registerUtils.addOwner(id, full_name, email, password, phone, function(result){
                 if(result == true){
+					req.session.userId = id;
                     res.redirect("/ApartmentOwnerHomePage?id="+id+'&fullName='+full_name);
                 }else {
                     console.log("register failed");
@@ -36,8 +36,8 @@ router.post("/registerowner", function(req, res){
             });
         }
         else {
-            console.log("login failed,Email or ID already exist");
-		    alert("Login failed,Email or ID already exist");
+            console.log("register failed, Email or ID already exist");
+		    alert("register failed,Email or ID already exist");
         }
 	});
 }
