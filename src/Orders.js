@@ -159,7 +159,7 @@ class Orders
         } else {
         const request = new Request( 
             `SELECT a.orderNumber, a.unitID, b.unitTypes, b.city, b.numberOfrooms, a.startOrder, a.endOrder, a.totalPrice, s.FullName, s.EmailAddress, c.count
-            FROM [dbo].[Order] AS a , RentalHousingUnit AS b, StudentUser as s, (SELECT unitID, count(*) as count
+            FROM [dbo].[Order] AS a, RentalHousingUnit AS b, StudentUser as s, (SELECT unitID, count(*) as count
                                                                                   FROM [dbo].[Order] 
                                                                                   GROUP BY unitID) AS c
             WHERE a.unitID = c.unitID AND a.status=1 AND a.unitID=b.unitId AND a.studentId = s.ID AND a.apartmentOwnerId = ` + apartmentOwnerId,
