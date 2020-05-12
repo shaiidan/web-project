@@ -77,7 +77,7 @@ Run linter test application using npm:
 
 ```bash
 $ npm npm install eslint
-$ npx eslint src/**
+$ npx eslint /**
 ```
 
 ###  Deploying SamiRoom To Heroku
