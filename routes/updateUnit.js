@@ -13,11 +13,15 @@ router.get("/updateUnit",function(req, res,next){
             if(result instanceof RentalHousingUnit){
                  res.render('updateUnit',{fullName:full_name,id:user_id,unit:result});
             }
+            else{
+                console.log("Update don't get unit is!!\n");
+                res.redirect('/',404);
+            }
         });
     }
     catch(e){
         console.log("Error!!\n" +e);
-        res.redirect('/');
+        res.redirect('/',404);
     }
 });
 

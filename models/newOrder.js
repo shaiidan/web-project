@@ -3,6 +3,8 @@ class newOrder
     #orderID;
     #totalPrice;
     #apartmentOwnerId;
+    #ownerName;
+    #ownerPhone
     #unitID;
     #unitCity;
     #unitAdress;
@@ -16,11 +18,13 @@ class newOrder
     #cvvNumber;
     #expiryCreditCard;
 
-    constructor(orderId,totalPrice,apartmentOwnerId,unitID, unitCity, unitAdress, studentName,studentID, startOrderDate, endOrderDate,totalTime,status, creditCardNumber,cvvNumber, expiryCreditCard )
+    constructor(orderId,totalPrice,apartmentOwnerId,ownername,OwnerPhone,unitID, unitCity, unitAdress, studentName,studentID, startOrderDate, endOrderDate,totalTime,status, creditCardNumber,cvvNumber, expiryCreditCard )
     {
         this.#orderID = orderId;
         this.#totalPrice=totalPrice;
         this.#apartmentOwnerId=apartmentOwnerId;
+        this.#ownerName=ownername;
+        this.#ownerPhone=OwnerPhone;
         this.#unitID=unitID;
         this.#unitCity = unitCity;
         this.#unitAdress = unitAdress;
@@ -33,6 +37,7 @@ class newOrder
         this.#creditCardNumber = creditCardNumber;
         this.#cvvNumber = cvvNumber;
         this.#expiryCreditCard=expiryCreditCard;
+        
     }
 
     get orderID()
@@ -63,7 +68,10 @@ class newOrder
     {
         return this.#totalTime;
     }
-
+    get studentID()
+    {
+        return this.#studentID
+    }
     get unitID()
     {
         return this.#unitID;
@@ -72,14 +80,22 @@ class newOrder
     {
         return this.#studentName;
     }
+
     get apartmentOwnerId()
     {
         return this.#apartmentOwnerId;
     }
-    get studentID()
+    get ownerName()
     {
-        return this.#studentID;
+        return this.#ownerName;
+    }
+    get ownerPhone()
+    {
+        return this.#ownerPhone;
+    }
+    get status()
+    {
+        return this.#status;
     }
 }
 module.exports = newOrder;
-

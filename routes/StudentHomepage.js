@@ -93,7 +93,7 @@ router.put("/StudentHomePage",function(req,res){
     try{
         orders.getNextOrderId(function(order_id){
             if(order_id != false){
-                var newOrder = new order(order_id,total_price,owner_id,unit_id,null,null,full_name,student_id,start_date,
+                var newOrder = new order(order_id,total_price,owner_id,null,null,unit_id,null,null,full_name,student_id,start_date,
                     end_date,total_time,0,null,null,null);
                     orders.addOrder(newOrder,function(result){
                         //success
@@ -103,16 +103,19 @@ router.put("/StudentHomePage",function(req,res){
                                     res.json({status:200, orderID:order_id,fullName:full_name,id:student_id});
                                 }
                                 else{
+                                    console.log("Error! The userId "+ student_id +"unsuccess to order!");
                                     res.json({status:300}); // error!! 
                                 }
                             });
                         }
                         else{
+                            console.log("Error! The userId "+ student_id +"unsuccess to order!");
                             res.json({status:300}); // error!! 
                         }
                     });
             }
             else{
+                console.log("Error! The userId "+ student_id +"unsuccess to order!");
                 res.json({status:300}); // error!! 
             }
         });

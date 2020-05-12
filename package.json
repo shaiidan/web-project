@@ -5,8 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "node ./node_modules/mocha/bin/mocha",
-    "lint": "./node_modules/.bin/eslint src/**",
-    "start": "nodemon app.js"
+    "lint": "./node_modules/.bin/eslint /**",
+    "start": "node app.js"
   },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^2.27.0",

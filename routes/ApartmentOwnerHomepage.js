@@ -15,19 +15,18 @@ router.get("/ApartmentOwnerHomepage",function(req, res){
     console.log(id);
     try{
         units.getRentalHousingUnitsByOwnerId(id, function(result){
-            if(result != false ){
+            if(result != false){
                  res.render('ApartmentOwnerHomepage',{fullName:full_name,id:id,rows:result});
             }
             else {
-                res.render('ApartmentOwnerHomepage',{fullName:full_name,id:id});//סתיו שינתה
-                console.log("no units yet");
-
+                console.log("Something wrong happend with request="+req.ip);
+                res.redirect('/',404);
             }
         });    
     }
     catch(e){
         console.log("Error!!\n" +e);
-        res.redirect('/');
+        res.redirect('/',404);
     }
 });
 
