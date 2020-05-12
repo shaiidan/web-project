@@ -1,5 +1,3 @@
-const express = require ("express");
-const router = express.Router();
 const { Connection, Request } = require("tedious");
 const config = require("./dbconfig");
 
@@ -196,7 +194,7 @@ static updatePassword(email, password)
               {
                 const request5 = new Request( 
                 `UPDATE ApartmentOwnerUser SET Password=('${password}') WHERE EmailAddress=('${email}')`,
-                (err, rowCount) => {
+                (err) => {
                 if (err) {
                 console.error(err.message);
                 connection5.close();
@@ -222,7 +220,7 @@ static updatePassword(email, password)
                       {
                           const request4 = new Request( 
                             `UPDATE StudentUser SET Password=('${password}') WHERE EmailAddress=('${email}')`,
-                            (err, rowCount) => {
+                            (err) => {
                               if (err) {
                                 console.error(err.message);
                                 connection4.close();

@@ -14,7 +14,7 @@ jobs:
             - run: npm test
             # for linter
             - run: npm install eslint 
-            - run: npx eslint /**
+            - run: npx eslint models/**
 workflows:
     build-and-test:
       jobs:

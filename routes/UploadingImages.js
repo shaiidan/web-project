@@ -1,27 +1,12 @@
 const multer = require("multer");
 const path = require("path");
-//var csrf = require('csurf');
 
 const storage = multer.diskStorage({
     destination: './public/uploadsImages/',
-    filename: function(req, file, cb){
+    filename: function(_req, file, cb){
+        req=null;
         cb(null,"unit" + "-" + Date.now() + 
         path.extname(file.originalname));
-    }
-});
-
-const upload = multer({
-    storage: storage,
-    limits:{fileSize:1000000},
-    fileFilter: function(req, file, cb){
-        checkFileType(file,cb);
-    },
-    onFileUploadData: function (file, data, req, res) {
-        console.log(data.length + ' of ' + file.fieldname + ' arrived............................');
-    },
-    onFileUploadComplete: function (file, req, res) {
-        console.log(file.fieldname + '........................... uploaded to  ' + file.path);
-        done=true;
     }
 });
 
@@ -37,5 +22,21 @@ function checkFileType(file, cb){
         cb('Error: imagee only!');
     }
 }
+
+const upload = multer({
+    storage: storage,
+    limits:{fileSize:1000000},
+    fileFilter: function(_req, file, cb){
+        checkFileType(file,cb);
+    },
+    onFileUploadData: function (file, data, _req, _res) {
+        console.log(data.length + ' of ' + file.fieldname + ' arrived............................');
+    },
+    onFileUploadComplete: function (file, _req, _res) {
+        _req = null;
+        console.log(file.fieldname + '........................... uploaded to  ' + file.path);
+        done=true;
+    }
+});
 
 module.exports = upload;

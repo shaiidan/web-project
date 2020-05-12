@@ -2,7 +2,6 @@
 const experss = require("express");
 const router = experss.Router();
 const units = require("../models/RentalHousingUnits");
-const unit = require("../models/RentalHousingUnit");
 
 router.get("/ApartmentOwnerHomepage",function(req, res){
     if(typeof req.query.id == 'undefined' && typeof req.query.fullName == 'undefined' )

@@ -1,12 +1,11 @@
 const newOrder = require("./newOrder")
 const { Connection, Request } = require("tedious");
-const condig = require("./dbconfig");
+const config = require("./dbconfig");
 const nodemailer = require('nodemailer');
 class newOrders{  
   // update order status in DB, unit is instance of newOrder
  static updateOrderStatus(orderID, callback)
   {
-    var positive = 1;
         let connection = new Connection(config);       
           connection.on("connect", err => {
           if (err) {
@@ -135,7 +134,7 @@ class newOrders{
             else {
               connection.close();
               rows.forEach(element => {
-                var studentFullName,unitCity,unitID,unitAddress,startOrder,endOrder,totalTime,totalPrice,ownerFullName,ownerPhoneNumber,studentID;
+                var studentFullName,unitCity,unitID,unitAddress,startOrder,endOrder,totalTime,totalPrice,ownerFullName,ownerPhoneNumber;
                 element.forEach(column =>{
                   switch(column.metadata.colName)
                   {
@@ -198,12 +197,11 @@ class newOrders{
                     }
                     case 'ID': 
                     {
-                      studentID = column.value;
                       break;
                     }
                   }// end of switch 
                   });
-                  var order1 = new newOrder(orderID,totalPrice,null,ownerFullName,ownerPhoneNumber,null,unitCity,unitAddress,studentFullName,null,startOrder,endOrder,totalTime,null,0,0,0);
+                  var order1 = new newOrder(orderID,totalPrice,null,ownerFullName,ownerPhoneNumber,unitID,unitCity,unitAddress,studentFullName,null,startOrder,endOrder,totalTime,null,0,0,0);
                   return callback(order1);     
               });
             }
@@ -262,7 +260,7 @@ class newOrders{
                       
                       };
                       
-                      transporter.sendMail(mailOptions, function(err, data) {
+                      transporter.sendMail(mailOptions, function(err) {
                         if(err){
                           console.log(err);
                         } else{

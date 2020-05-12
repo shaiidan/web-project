@@ -2,7 +2,7 @@ const experss = require("express");
 const router = experss.Router();
 const RentalHousingUnit = require("../models/RentalHousingUnit");
 const units = require("../models/RentalHousingUnits");
-const upload = require("../models/UploadingImages");
+const upload = require("./UploadingImages");
 
 router.get("/uploadUnit",function(req, res){
     const id = req.query.id; 
