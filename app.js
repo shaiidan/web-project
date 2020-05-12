@@ -39,17 +39,6 @@ app.use(session({
 		secure: "samiroom"
 	}
 }));
-dotenv.config();
-const connection = new Connection(dbConfig);
-connection.connect(); 
-// Attempt to connect and execute queries if connection goes through
-connection.on("connect", err => {
-	if (err) {
-	  console.error(err.message);
-	} else {
-	  console.log("DB connection success");
-	}
-});
 
 dotenv.config();
 app.set("view engine", "ejs");
