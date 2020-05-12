@@ -14,18 +14,18 @@ router.get("/ApartmentOwnerHomepage",function(req, res){
 
     try{
         units.getRentalHousingUnitsByOwnerId(id, function(result){
-            if(result != false ){
+            if(result != false){
                  res.render('ApartmentOwnerHomepage',{fullName:full_name,id:id,rows:result});
             }
             else {
                 console.log("Something wrong happend with request="+req.ip);
-                res.redirect('/');
+                res.redirect('/',404);
             }
         });    
     }
     catch(e){
         console.log("Error!!\n" +e);
-        res.redirect('/');
+        res.redirect('/',404);
     }
 });
 

@@ -8,7 +8,6 @@
     width: 80vw;
     height: 30%;
   }
-
   #searchingUnit {
     float: right ;
   }
@@ -16,20 +15,28 @@
   #tableUnits {
   font-family: arial, sans-serif;
   border-collapse: collapse;
-  width: 80vw;
   padding: 20px;
   margin: 40px;
+  width: auto;
 }
 
+th{
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+  background-color:#252525;  
+  color:white;
 
-td, th {
+}
+
+td {
   border: 1px solid #dddddd;
   text-align: left;
   padding: 8px;
 }
 
 tr:nth-child(even) {
-  background-color: rgb(39, 197, 181) ;
+  background-color:#54cc21 ;
 }
 
 #tableUnits thead > tr > th.detail,
