@@ -1,4 +1,4 @@
-const session = require('express-session');
+/*const session = require('express-session');
 const express = require("express");
 const app = express();
 
@@ -22,4 +22,4 @@ const redirectHome = (req, res, next) =>{
 	}
 }
 
-exports.redirectHome = redirectHome;
+exports.redirectHome = redirectHome;*/
