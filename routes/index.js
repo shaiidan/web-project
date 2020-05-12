@@ -3,15 +3,15 @@ const router = express.Router();
 const { Connection, Request } = require("tedious");
 const dbConfig = require ('../models/dbconfig');
 const alert = require("alert-node");
-
+const app = express();
+app.set("view engine", "ejs");
 
 router.get("/", function(req, res){
-	res.render("index");
+	res.render("index",);
 });
 
 //login post request:
 router.post("/index", function(req, res){
-
 	const email = req.body.email;
 	const password = req.body.password;
 	const userType = req.body.userType;
@@ -36,8 +36,9 @@ router.post("/index", function(req, res){
 				} else {
 					  console.log(`${rowCount} row(s) returned`);
 					if(rowCount == 0){
-						console.log("login failed, wrong email or password");
-						alert("Login failed, wrong Email or Password");
+						res.render('index', {
+							msg: 'Login faild, email is not exist'
+						  });
 					}
 					else
 					{
@@ -64,18 +65,24 @@ router.post("/index", function(req, res){
 									}
 								}
 							});
+							const user = id;
 							if(password == pass){
 								if(exp< Date.now()){
 									console.log("no validation");
-									alert("Your account is not valid yet");
 									res.redirect("/upload?email="+email);
 									connection.close();
 								}
 								else{
 									console.log("Login success by user: " +id);
+									req.session.userId = user;
 									res.redirect("/StudentHomePage?id="+id+'&fullName='+full_name);
 									connection.close();
 								}
+							}
+							else{
+								res.render('index', {
+									msg: 'Incorrect password'
+								  });
 							}
 						});
 					}
@@ -102,8 +109,9 @@ router.post("/index", function(req, res){
 				}else {
 					console.log(`${rowCount} row(s) returned`);
 					if(rowCount == 0){
-						console.log("login failed, wrong email or password");
-						alert("Login failed, wrong Email or Password");
+						res.render('index', {
+							msg: 'Login faild, email is not exist'
+						  });
 						connection.close();
 					}
 					else
@@ -127,10 +135,17 @@ router.post("/index", function(req, res){
 									}
 								}
 							});
+							const user = id;
 							if(password == pass){
 								console.log("Login success by user: " +id);
+								req.session.userId = user;
 								res.redirect("/ApartmentOwnerHomePage?id="+id+'&fullName='+full_name);
 								connection.close();
+								}
+							else{
+								res.render('index', {
+									msg: 'Incorrect password'
+								  });
 								}
 							});
 					}

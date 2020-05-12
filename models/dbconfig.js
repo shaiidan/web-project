@@ -2,8 +2,8 @@
 module.exports = config = {
 	authentication: {
 	  options: {
-		userName: process.env.AZURENAME, 
-		password: process.env.PASS
+		userName: "samiroom", 
+		password: "Lucas2020"
 	  },
 	  type: "default"
 	},
@@ -15,4 +15,4 @@ module.exports = config = {
 	  rowCollectionOnRequestCompletion:true,
 	  trustServerCertificate: true,
 	}
-  };
+

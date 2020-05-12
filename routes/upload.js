@@ -45,6 +45,7 @@ router.use(express.static('./public'));
 
 
 router.get("/upload",function(req, res){
+
   const email = req.query.email;
   res.render('upload',{email:email});
 });
