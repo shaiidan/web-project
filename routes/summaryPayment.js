@@ -1,8 +1,5 @@
 const express = require ("express");
 const router = express.Router();
-const { Connection, Request } = require("tedious");
-const alert = require("alert-node");
-const order = require("../models/newOrder");
 const orders = require("../models/newOrders");
 const unit = require("../models/RentalHousingUnits");
 
@@ -25,43 +22,45 @@ router.get("/summaryPayment", function(req, res){
 				}, 900000);
 			}
 			else{
-				unit.changeStatusForOrder(order.unitID,1,function()
+				orders.getUnitIDfromOrderID(order_id,function(unitID){
+					unit.changeStatusForOrder(unitID,1,function()
 				{
-					orders.deleteOrder(order.orderID,function(){
+					orders.deleteOrder(order_id,function(){
 						res.redirect('/studentHomePage?id='+user_id+"&fullName="+full_name,404);});
 					});
+					})
+			
 				}
 
 		});
 	}
 	catch(e){
 		console.log("Error!!"+e);
-		unit.changeStatusForOrder(order.unitID,1,function()
+		orders.getUnitIDfromOrderID(order_id,function(unitID){
+		unit.changeStatusForOrder(unitID,1,function()
 				{
-					orders.deleteOrder(order.orderID,function(){
+					orders.deleteOrder(orderID,function(){
 						res.redirect('/studentHomePage?id='+user_id+"&fullName="+full_name,404);});
 					});
+				});
 				}
 });
 
 
 //registerstudent post request:
 router.post("/summaryPayment", function(req, res, file){
-	const CreditCardNumber = req.body.creditCard;
-	const cvvNumber = req.body.cvvNumber;
-	const expiry = req.body.expiry;
 	const orderID = req.body.orderId;
 	const user_id = req.body.id;
 	const full_name = req.body.fullName;
-	const unit_id = req.body.unitId;
 
-	orders.sendOwnerMail(orderID,function(result){
-	});
-	orders.updateOrderStatus(orderID,function(chack){
-		unit.updatePopularCount(unit_id,function(result){
+	orders.getUnitIDfromOrderID(orderID ,function(unit_id){
+		orders.sendOwnerMail(orderID,function(result){
 		});
-		res.redirect('/studentHomePage?id='+user_id+"&fullName="+full_name);
+		orders.updateOrderStatus(orderID,function(chack){
+			unit.updatePopularCount(unit_id,function(resul){
+			});
+			res.redirect('/studentHomePage?id='+user_id+"&fullName="+full_name);
+		});
 	});
-
 });
 module.exports = router;

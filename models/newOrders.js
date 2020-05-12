@@ -334,10 +334,48 @@ class newOrders{
     }
 
    
-  }
-  function chackTimer()
+  
+  static getUnitIDfromOrderID(orderId,callback)
   {
-    console.log("shai ya gaun");
-  }
+    let connection = new Connection(config);       
+    connection.on("connect", err => {
+    if (err) {
+      console.error(err.message);
+      connection.close();
+      return callback(false);
+    } 
+    else
+    { 
+        const request = new Request( 
+            `SELECT [Order].[unitID]
+            FROM [Order]
+            WHERE [Order].[orderNumber] =`+orderId,
+          (err, rowCount,rows) => {
+            if (err) {
+              console.error(err.message);
+              connection.close();
+              return callback(false);
+              
+            } else {
+              connection.close();
+              if(rowCount != 0){
+                var number;
+                rows.forEach(e =>{
+                  e.forEach(column =>{
+                    number = column.value;
+                  });
+                });
+                return callback(number);
+              } else{
+                return callback(false);
+              }
+            }
+          }
+        );
+        connection.execSql(request);
+    }
+  });   
+}
+}
 
 module.exports = newOrders;
