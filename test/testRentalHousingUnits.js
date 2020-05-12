@@ -153,3 +153,24 @@ describe("Check get rentaul housing units by unit id",()=> {
         })
     });
 });
+
+// check function updatePipoularCount
+describe("Check update popular field",()=> {
+    it("unit is not unit class! send string",()=>{
+        units.updatePopularCount("shai",function (result) {
+            assert.deepEqual(result,false);
+        })
+    });
+    it("unit is not unit class! send null",()=>{
+        units.updatePopularCount(null,function (result) {
+            assert.deepEqual(result,false);
+        })
+    });
+    
+    it("unit is unit class, but send nulls",()=>{
+        units.updatePopularCount(new unit(null,null,null,null,null
+            ,null,null,null,null,null,null,null,null,null,null,null),function (result) {
+            assert.deepEqual(result,false);
+        })
+    });
+});
