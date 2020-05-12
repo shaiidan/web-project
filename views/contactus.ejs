@@ -10,20 +10,20 @@
     <form action="contactus" method="POST">
         <div class="form-group">
           <label for="email">Email address</label>
-          <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
+          <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
         </div>
         <div class="form-group">
             <label for="name">Name</label>
-            <input type="text" class="form-control" id="name" name="name"placeholder="your name">
+            <input type="text" class="form-control" id="name" name="name"placeholder="your name" required>
           </div>
         
         <div class="form-group">
           <label for="message">Message</label>
-          <textarea class="form-control" id="message" name="message" rows="3" placeholder="your message"></textarea>
+          <textarea class="form-control" id="message" name="message" rows="3" placeholder="your message" required></textarea>
         </div>
          <br>
             <!-- <input type="submit" value="Send"> -->
-            <button type="submit" class="btn btn-lg" style="color: #54cc21;">send</button>
+            <button type="submit" class="btn btn-dark text-light">send</button>
     </form>
     	
 </div>

@@ -1,7 +1,6 @@
 const express = require ("express");
 const router = express.Router();
 const { Connection, Request } = require("tedious");
-const dbConfig = require ('../models/dbconfig');
 const alert = require("alert-node");
 const registerUtils = require('../models/registerUtils');
 
@@ -17,37 +16,32 @@ router.post("/registerstudent", function(req, res, file){
 	const email = req.body.email;
 	const password = req.body.password;
 	const validation = 0;
-
+	const confirm = req.body.confirm;
+	if(confirm!=password){
+		res.render('registerstudent', {
+			msg: 'Password are not match, try again'
+		  });
+	}
+	else{
 	registerUtils.checkEmailAndId(email,id,function(result){
-		if(result===0){
-        	const connection = new Connection(dbConfig);
-        	connection.connect();
-        	connection.on("connect", err => {
-            	if (err) {
-              	console.error(err.message);
-            	} else {
-              	queryDatabase();
-            	}
-          	});
-        	function queryDatabase() {
-		    	const request = new Request(
-				`INSERT INTO StudentUser VALUES ('${id}', '${name}', '${phone}', '${email}', '${password}', '${validation}', null)`,
-				(err, rowCount) => {
-					if (err) {
-			  		console.error(err.message);
-					} else {
-				  	console.log(`${rowCount} row(s) returned`);
-				  	console.log("user is succesfuly registered!");
-					}
-			});	  
-        	connection.execSql(request);
-		}}
+		if(result==true){
+      registerUtils.addStudent(email, id, phone, name, password, validation,function(result){
+        if(result == true){
+          res.redirect("/upload?email="+email);
+        }
+        else{
+            console.log("somthingwrong");
+            res.redirect("/registerstudent");
+        }
+      });
+    }
 		else{
-			console.log("login failed,Email or ID already exist");
-			alert("Login failed,Email or ID already exist");
-		}
-	});
-		res.render("index");
+			res.render('registerstudent', {
+				msg: 'Email or ID already exist'
+			  });
+    }
+});
+	}
 });
 
 module.exports = router;
