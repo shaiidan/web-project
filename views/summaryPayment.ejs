@@ -1,0 +1,174 @@
+
+<%- include('partials/header_student') %>
+<div class="container mt-5">
+
+  <% if(typeof order !== 'undefined'){%>
+    <body onload="startTimer()"> 
+
+    <div class="row">
+      <div class="col-sm-8">
+        <div class="card">
+          <div class="card-body">
+            <h1>Summary  </h1>
+            <br>
+            <p>
+
+              <b>hello <%=order.studentName%></b><br>
+              <b>you are about to complet your order from <%=order.ownerName%></b>
+              <b>and his phone number his <%=order.ownerPhone%>.</b><br>
+              <b>the apartment you chose to stay located in <%=order.unitCity%></b>
+                <b> city at <%=order.unitAdress%> adress.</b><br>
+              <b>the reservation is from <%= order.startOrderDate.getDate() +'/' +(order.startOrderDate.getMonth() +1)+'/' +order.startOrderDate.getFullYear()%> to <%= order.endOrderDate.getDate() +'/' +(order.endOrderDate.getMonth()+1 )+'/' +order.endOrderDate.getFullYear()%> total of <%=order.totalTime%> days. </b><br>
+              <b>the total cost of your reservation is <%=order.totalPrice%> NIS.</b>
+              <b>if you are happy with your choise please insert you payment detail in the right pannel, else press on the upstairs buttom "home" to go to your home page. </b><br>
+              <b>to prevent duble orders we are saving your choice for 15 minutes, if you are not complet the order in that time you will send to your home page.  </b>
+              <html>
+
+                <body>
+                
+                <p style= "text-align: center; font-size: 30px; margin-top: 0px;color:rgb(107, 36, 36);" id="demo"></p>
+
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  
+  <h1>payment</h1>
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="card">
+        <div class="card-body">
+
+          <!-- Makes POST request to /register route -->
+          <form action="/summaryPayment" method="POST" id="summaryPayment">
+            <div class="form-group">
+              <label for="credit card number">Credit Card Number</label>
+              <input type="text" class="form-control" name="creditCard" required pattern="^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$||^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$" title="credit card number must contain 9 or 16 numbers" required onchange="chackCreditCareNumber()">
+            </div>
+            <div class="form-group">
+              <label for="cvv number">cvv number (3 numbers behind the card)</label>
+              <input type="text" class="form-control" name="cvvNumber" required pattern="^[0-9][0-9][0-9]$" title="the cvv numer is the 3 number in the back of the credit card" required onchange="chackCVV()">
+            </div>
+            <div class="form-group">
+              <label for="expiry date">Expiry Date</label>
+              <input type="date" class="form-control" name="expiry" id="expiry" required onchange=" checkExpiryDate()"  >
+            </div>
+            <div class="form-group">
+              <label for="ID">ID of the owner credit card</label>
+              <input type="text"  class="form-control" name="ID" required pattern="^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$" title="id must contain 9 numbers between 0 to 9" id="ID" required onchange="chackID()">
+            </div>
+            
+            <input type="hidden" value="<%=fullName%>" id="fullName" name="fullName">
+            <input type="hidden" value="<%=order.orderID%>" id="orderId" name="orderId">
+
+            
+          </form>
+            <button type="submit" class="btn btn-dark" form="summaryPayment">confrim</button>
+            <button type="button" class="btn btn-dark" onclick="backToHome('<%=order.orderID%>','<%=fullName%>')">cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<% }%>
+<%- include('partials/footer') %>
+
+<script>
+    function backToHome(id,full_name)
+    {
+      return location.replace('./studentHomePage?id='+id+"&fullName="+full_name);
+    }
+   function checkExpiryDate()
+ {
+   var start = new Date(document.getElementById("expiry").value);
+   var today = new Date();
+   if(start.getTime() < today.getTime())
+   {
+     alert("expiry date must be longer than today date");
+     document.getElementById("expiry").value = '';
+    }
+ }
+ function chackID()
+ {
+   var i;
+   var identity = document.getElementById("ID").value;
+   for (i=0; i<(identity.length); i++)
+   {
+      if (identity[i]<0&&identity[i]>9)
+      {
+        alert("id must contain 9 numbers between 0 to 9");
+        document.getElementById("ID").value = '';
+      }
+
+
+   }
+ }
+ function chackCreditCareNumber()
+ {
+   var i;
+   var temp = document.getElementsByName("creditCard").value;
+   for (i=0; i<(temp.length); i++)
+   {
+      if (identity[i]<0&&identity[i]>9)
+      {
+        alert("credit card number must contain 9 or 16 numbers between 0 to 9");
+        document.getElementsByName("creditCard").value = '';
+      }
+    }
+ }
+ function startTimer()
+ {
+  setTimeout(() => {
+    alert("your session is over"); 
+    window.location.replace("./StudentHomepage?id="+"<%=id%>"+"&fullName="+"<%=fullName%>");
+					
+				}, 900000);
+			
+ }
+ function chackCVV()
+ {
+   var i;
+   var temp = document.getElementsByName("cvvNumber").value;
+   for (i=0; i<(temp.length); i++)
+   {
+      if (identity[i]<0&&identity[i]>9)
+      {
+        alert("the cvv numer is the 3 number in the back of the credit card");
+        document.getElementsByName("cvvNumber").value = '';
+      }
+
+
+   }
+ }
+ // Set the date we're counting down to
+var countDownDate = new Date();
+countDownDate.setMinutes(countDownDate.getMinutes() +15);
+countDownDate = countDownDate.getTime();
+// Update the count down every 1 second
+var x = setInterval(function() {
+
+  // Get today's date and time
+  var now = new Date().getTime();
+
+  // Find the distance between now and the count down date
+  var distance = countDownDate - now;
+
+  // Time calculations for days, hours, minutes and seconds
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  // Output the result in an element with id="demo"
+  document.getElementById("demo").innerHTML = minutes + "m " + seconds + "s ";
+
+  // If the count down is over, write some text
+  if (distance < 0) {
+    clearInterval(x);
+    document.getElementById("demo").innerHTML = "EXPIRED";
+  }
+}, 1000)
+</script>
+</body>
+</html>
