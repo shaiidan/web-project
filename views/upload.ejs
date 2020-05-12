@@ -1,0 +1,21 @@
+<%- include('partials/header') %>
+  <div class="container  text-center">
+    <% if(typeof email !== 'undefined'){%>
+    <br>
+   <h1>Upload your student card</h1>
+
+    <p>In oreder to validate your account, you need to upload a photo of your student card </p>
+    <%= typeof msg1 != 'undefined' ? msg1 : '' %>
+    <%= typeof msg != 'undefined' ? msg : '' %>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+      <div class="file-field input-field">
+        <input type="hidden" value="<%=email%>" id="email" name="email">
+          <input name="myImage" type="file">
+      </div>
+      <button type="submit" class="btn btn-lg pr-5">Submit</button>
+    </form>
+    <br>
+    <img src="<%= typeof file != 'undefined' ? file : '' %>" class="responsive-img">
+  </div>
+  <%} %>
+  <%- include('partials/footer') %>

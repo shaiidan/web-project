@@ -36,7 +36,7 @@ router.post("/contactus", function(req, res){
 	  // send mail with defined transport object
 	let mailOptions = {
 		from: process.env.EMAIL_ADRESS, // sender address
-		to: 'samiroomgroup3@gmail.com', // list of receivers oruzal85@gmail.com orbarberdog@gmail.com
+		to: 'samiroomgroup3@gmail.com',
 		subject: "you have a new message", // Subject line
 		text: "Hello", // plain text body
 		html: output // html body

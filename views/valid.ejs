@@ -1,0 +1,32 @@
+<%- include("partials/header") %>
+
+
+
+<div class="container" id="validatestudent">
+    <br>
+    <h1>Validate student</h1>
+    <br><br>
+    
+    <form action="/valid/<%=param.email%>" method="POST">
+        <div class="form-group">
+         
+          <label for="Password">Exp date</label>
+          <input type="date" class="form-control" id="date" name="date" required>
+        </div>
+          <div class="form-group">
+          </div>
+         <br>
+            <!-- <input type="submit" value="Send"> -->
+            <button type="submit" class="btn btn-dark text-light">validate</button>
+            <br>
+            <br>
+            <br>
+          </form>
+    <form action="/reject/<%=param.email%>" method="POST">
+          <button type="submit" class="btn btn-dark text-light">reject</button>
+  </form>
+</div>
+
+
+<br><br><br><br><br><br>
+<%- include("partials/footer") %>

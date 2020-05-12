@@ -5,10 +5,9 @@
   <div class="container">
     <h1 class="display-3">Welcome</h1>
     <hr>
-        
+
       <div class="container mt-5">
         <h1>Login</h1>
-
         <div class="row">
           <div class="col-sm-8">
             <div class="card">
@@ -22,6 +21,13 @@
                     <label for="password">Password</label>
                     <input type="password" class="form-control" name="password" required>
                   </div>
+                  <% if(typeof msg !== 'undefined'){%>
+                    <strong>
+                      <div class="alert alert-bg-light" role="alert">
+                        <%= typeof msg != 'undefined' ? msg : '' %>
+                      </div>
+                    </strong>
+                    <% } %>
                   <div>
                     <input type="radio" id="student" name="userType" value="student" required>
                     <label for="student"><h5>Student</h5></label>
@@ -30,6 +36,7 @@
                   </div>
                   <button type="submit" class="btn btn-dark" onclick="moveToHomePage()">Login</button>
                 </form>
+                <a href="/recoveryPassword"> <button type="submit" class="btn btn-sm btn-dark mt-2">I Forgot my password</button></a>
               </div>
             </div>
           </div>
@@ -37,6 +44,7 @@
 
         <a class="btn btn-light btn-md" href="/registerowner" role="button">Register as an Apartment Owner</a>
         <a class="btn btn-light btn-md" href="/registerstudent" role="button">Register as a Student</a>
+
       </div>
   </div>
 </div>

@@ -1,4 +1,166 @@
 <%- include('partials/header_ApartmentOwner') %>
+<head>
+    <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/Homepage.css">
+</head>
+
+<script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="//code.jquery.com/jquery-2.1.0.js" ></script>
+<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>
 
 
+
+
+<body onload="loading()">
+<div class="container mt-5">
+    <% if(typeof fullName !== 'undefined' && typeof id !== 'undefined'){%>
+        <b style="font-size: x-large;color:#54cc21">Hello  <%= fullName %></b><br>
+    <table  id="tableUnits" data-toggle="table" data-detail-view="true"
+     data-detail-formatter="detailFormatter" data-sortable="true" >
+     <thead>
+        <tr>
+          <th></th>
+          <th><b>Publishing<br>date</b></th>
+          <th><b>City</b></th>
+          <th><b>Address</b></th>
+          <th><b>Number of rooms</b></th>
+          <th><b>Unit types</b></th>
+          <th><b>Popular</b></th>
+          <th><b>Min rental period</b></th>
+          <th><b>Max rental period</b></th>
+          <th><b>Price per month</b></th>
+          <th data-sortable="true"><b>Unit's status</b></th>
+        </tr>
+    </thead>
+    <tbody>
+        <% if(typeof rows !== 'undefined'){ %>
+        <% if(rows) { %>
+            <%for (var i = 0; i < rows.length; i++) { %>
+                <tr  class="tableclass" >
+                    <td id="td<%=i%>"><b style="color:black; font-size:x-large;">+</b></td>
+                    <td><%= rows[i].PublishingDate.getDate() + '/' +(rows[i].PublishingDate.getMonth()+1) + '/' + rows[i].PublishingDate.getFullYear() %></td>
+                    <td><%= rows[i].City %></td>
+                    <td><%= rows[i].Adderss %></td>
+                    <td><%= rows[i].NumberOfRooms %></td>
+                    <td><%= rows[i].UnitTypes %></td>
+                    <td><%= rows[i].NumberOfTimes %></td>
+                    <td><%= rows[i].MinRentalPeriod %></td>
+                    <td><%= rows[i].MaxRentalPeriod %></td>
+                    <td><%= rows[i].PricePerMonth %></td>
+                    <td><%= rows[i].Status %></td>
+                <span style="display: none;" id="desc<%=i%>">
+                    <h4>Details:</h4>
+                    <br>
+                    <div>
+                    <p>
+                        <b>Unit id: </b> <%= rows[i].UnitID %>.<br>
+                        <b>Publishing date: </b> <%= rows[i].PublishingDate.getDate() + '/' + (rows[i].PublishingDate.getMonth()+1) + '/' + rows[i].PublishingDate.getFullYear() %>.
+                        <br>
+                        <b>City: </b> <%= rows[i].City %>. <br>
+                        <b>Adderss: </b> <%= rows[i].Adderss %>.
+                        <br>
+                        <b>Number of Rooms: </b><%= rows[i].NumberOfRooms %>.<br>
+                        <b>Unit types: </b><%= rows[i].UnitTypes %>. <br>
+                        <b>Minimum rental period: </b><%= rows[i].MinRentalPeriod %>. <br>
+                        <b>Maximoum rental period: </b><%= rows[i].MaxRentalPeriod %>. <br>
+                        <b>Price per month: </b><%= rows[i].PricePerMonth %>.  <br>
+                        <b>Number of times ordered: </b><%= rows[i].NumberOfTimes %>.  <br>
+                        <b>Status: </b><%= rows[i].Status %>.<br>
+                        <b>Discription: </b><%= rows[i].DescriptionApartment %>.<br><br>
+                    </p>
+                        <div style="float:inline-start;" >
+                            <% var pic = rows[i].Pictures; 
+                            pic = pic.split(","); 
+                            for(var j=0 ; j< pic.length -1; j++)
+                            { 
+                            %>
+                                <img width="200" height="170" src="uploadsImages/<%=pic[j]%>">
+                            <%}%>
+                        </div>
+                        <br>
+                        <input type="hidden" value="<%=fullName %>" id="fullName" name="fullName">
+                        <% if (rows[i].Status == 'available'){ %>
+                            <button  type="button" value="Update" id="update_unit" onclick="updateUnit('<%= rows[i].UnitID %>','<%= id %>','<%=fullName%>')" class="btn btn-dark">Update</button>
+                            <button type="button" value="Delete" id="delete_unit" onclick="deleteUnit('<%= rows[i].UnitID %>')" class="btn btn-dark">Delete</button>
+                        <% } %>
+                </div>
+                </span>
+            </tr>                               
+            <% }}} %>
+        </tbody>
+      </table>
+    </div>
+<div class="container mt-5"></div>
+</body>
+<script>
+
+function loading()
+{
+    "<% if(typeof rows !== 'undefined'){ %>"
+    "<% if(!rows) { %>"
+    alert("You don't uploading units yet...\nPlease go to upload unit and uploading to start!");
+       "<% }}%>"   
+}
+
+ var $table = $('#tableUnits');
+
+$table.on('expand-row.bs.table', function(e, index, row, $detail) {
+  var res = $("#desc" + index).html();
+  var td_open = document.getElementById("td"+index);
+  td_open.innerHTML ='<b>-</b>';
+  td_open.style = "color: black; font-size: x-large;";
+  $detail.html(res);
+});
+
+$table.on("click-row.bs.table", function(e, row, $tr) {
+  if ($tr.next().is('tr.detail-view')) {
+    $table.bootstrapTable('collapseRow', $tr.data('index'));
+    var td_close = document.getElementById("td"+$tr.data('index'));
+    td_close.style = "color: black; font-size: x-large;";
+    td_close.innerHTML ='<b>+</b>';
+    
+  } else {
+    $table.bootstrapTable('expandRow', $tr.data('index')); 
+  }
+});
+
+function deleteUnit(unit_id)
+{
+    if(confirm("Are you sure you want to delete?")){
+        fetch(window.location.href +'&unitID='+unit_id, {
+            method: 'delete'
+        })
+        .then(function(meg){
+            if(meg.status == 300){
+                alert("Sorry, something wrong!\nThe unit wasn't deleted");
+            }
+            else{
+                alert("The unit was deleted, its status became unavailable")
+                location.reload();
+            }
+        })
+        .catch(function(error){
+            alert("Sorry, something wrong!\n"+error);
+            return;
+        });
+    }
+    else
+    {
+        return;
+    }
+}
+
+// update unit go to update page
+function updateUnit(unit_id,id,full_name)
+{
+    location.replace("./updateUnit?id="+id +"&fullName="+ full_name +"&unitId="+unit_id);
+}
+
+
+
+</script>
+<% } %>
 <%- include("partials/footer") %>

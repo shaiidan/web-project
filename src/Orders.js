@@ -21,113 +21,47 @@ const config = {
 };
 class Orders
 {
-  static getFilteredTable(apartmentOwnerId, startDate, endDate,location, numberOfRooms, fromPrice, unitTypes, orderNumber, callback){
-     console.log(apartmentOwnerId, startDate, endDate,location, numberOfRooms, fromPrice, unitTypes, orderNumber);
-      console.log("in getFilteredTable function");
-    //   let connection = new Connection(config);
-    //   connection.on("connect", err => {
-    //     if (err) {
-    //       console.error(err.message);
-    //     } else {
-    //     const request = new Request( 
-    //         `SELECT a.orderNumber, a.unitID, b.unitTypes, b.city, b.numberOfrooms, a.startOrder, a.endOrder, a.totalPrice, s.FullName, s.EmailAddress
-    //         FROM [dbo].[Order] AS a , RentalHousingUnit AS b, StudentUser as s
-    //         WHERE a.unitID=b.unitId AND a.studentId = s.ID AND b.city = b.city AND a.apartmentOwnerId = ` + apartmentOwnerId,
-    //       (err, rowCount,rows) => {
-    //         if (err) {
-    //           console.error(err.message);
-    //           return callback(false);
-    //         } 
-    //         else {
-    //           console.log(`${rowCount} row(s) returned`);
-    //           connection.close();
-    //           var orders =[];
-    //           rows.forEach(element => {
-    //             var orderNumber, unitID, unitTypes, city, numberOfrooms, startOrder, endOrder, totalPrice, FullName, EmailAddress;
-    //             element.forEach(column =>{
-    //               switch(column.metadata.colName)
-    //               {
-    //                 case 'orderNumber': 
-    //                 {
-    //                   orderNumber = column.value;
-    //                   break;
-    //                 }
-    //                 case 'unitID': 
-    //                 {
-    //                   unitID = column.value;
-    //                   break;
-    //                 }
-    //                 case 'unitTypes': 
-    //                 {
-    //                     unitTypes = column.value;
-    //                   break;
-    //                 }
-    //                 case 'city': 
-    //                 {
-    //                     city = column.value;
-    //                   break;
-    //                 }
-    //                 case 'numberOfrooms': 
-    //                 {
-    //                     numberOfrooms = column.value;
-    //                   break;
-    //                 }
-    //                 case 'startOrder': 
-    //                 {
-    //                     startOrder = column.value;
-    //                   break;
-    //                 }
-    //                 case 'endOrder': 
-    //                 {
-    //                     endOrder = column.value;
-    //                   break;
-    //                 }                    
-    //                 case 'totalPrice': 
-    //                 {
-    //                     totalPrice = column.value;
-    //                   break;
-    //                 }    
+  static getFilteredTable(apartmentOwnerId, unitID, startDate, endDate, location, numberOfRooms, fromPrice, unitTypes, orderNumber, callback){
+    var months = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" ]; 
+    if(unitID == " ")
+      unitID = 1;
+    
+    if(location == "' '")
+      location='b.city';  
 
-    //                 case 'FullName': 
-    //                 {
-    //                   FullName = column.value;
-    //                   break;
-    //                 }       
-                    
-    //                 case 'EmailAddress': 
-    //                 {
-    //                   EmailAddress = column.value;
-    //                   break;
-    //                 }       
-    //                 EmailAddress     
-                              
-    //               }// end of switch 
-    //             });
-    //               var order = new Order(orderNumber, unitID, unitTypes, city, numberOfrooms, startOrder, endOrder, totalPrice, FullName, EmailAddress);
-    //               orders.push(order); 
-    //           });
-    //           return callback(orders);
-    //         }
-    //       }
-    //     );
-    //     connection.execSql(request);
-    //   }
-    // }); 
-  }
+    if(fromPrice == " ")  
+      fromPrice= parseFloat(0);
+    
+    if(orderNumber == " ")  
+      orderNumber='a.orderNumber';   
+      
+    if(unitTypes == "' '")  
+      unitTypes ='b.unitTypes';
+    
+    if(startDate=="''")
+      startDate= "'1990-10-01'";  
+   
+    if(endDate=="''")
+      endDate= "'2050-01-01'";   
+    
+    console.log('startDate:' +startDate+  ', endDate:' +endDate);
 
-
-
-  static getOrders(apartmentOwnerId,callback)
-  {
       let connection = new Connection(config);
       connection.on("connect", err => {
         if (err) {
           console.error(err.message);
         } else {
+    
         const request = new Request( 
-            `SELECT a.orderNumber, a.unitID, b.unitTypes, b.city, b.numberOfrooms, a.startOrder, a.endOrder, a.totalPrice, s.FullName, s.EmailAddress
-            FROM [dbo].[Order] AS a , RentalHousingUnit AS b, StudentUser as s
-            WHERE a.unitID=b.unitId AND a.studentId = s.ID AND a.apartmentOwnerId = ` + apartmentOwnerId,
+            `SELECT a.orderNumber, a.unitID, b.unitTypes, b.city, b.numberOfrooms, a.startOrder, a.endOrder, a.totalPrice, s.FullName, s.EmailAddress, c.count
+            FROM [dbo].[Order] AS a , RentalHousingUnit AS b, StudentUser as s, (SELECT unitID, count(*) as count
+                                                                                FROM [dbo].[Order] 
+                                                                                GROUP BY unitID) AS c
+            WHERE a.unitID = c.unitID AND a.status=1 AND a.unitID >=`+unitID+` AND b.numberOfrooms >= `+numberOfRooms+` 
+            AND b.unitId >=`+unitID+` AND a.unitID=b.unitId AND a.totalPrice  >= `+fromPrice+` 
+            AND b.city = `+location+`  AND b.unitTypes = `+unitTypes+` AND a.studentId = s.ID 
+            AND a.orderNumber = `+orderNumber+` AND
+            (a.startOrder>=` +startDate+ `AND a.endOrder <= ` +endDate+`) AND a.apartmentOwnerId = ` + apartmentOwnerId,
           (err, rowCount,rows) => {
             if (err) {
               console.error(err.message);
@@ -138,10 +72,117 @@ class Orders
               connection.close();
               var orders =[];
               rows.forEach(element => {
-                var orderNumber, unitID, unitTypes, city, numberOfrooms, startOrder, endOrder, totalPrice, FullName, EmailAddress;
+                var orderNumber, unitID, unitTypes, city, numberOfrooms, startOrder, endOrder, totalPrice, FullName, EmailAddress, numberOfTimes , totalIncome;
                 element.forEach(column =>{
                   switch(column.metadata.colName)
                   {
+                    case 'count': 
+                    {
+                      numberOfTimes = column.value;
+                      break;
+                    }
+                    case 'orderNumber': 
+                    {
+                      orderNumber = column.value;
+                      break;
+                    }
+                    case 'unitID': 
+                    {
+                      unitID = column.value;
+                      break;
+                    }
+                    case 'unitTypes': 
+                    {
+                      unitTypes = column.value;
+                      break;
+                    }
+                    case 'city': 
+                    {
+                      city = column.value;
+                      break;
+                    }
+                    case 'numberOfrooms': 
+                    {
+                      numberOfrooms = column.value;
+                      break;
+                    }
+                    case 'startOrder': 
+                    {
+                      startOrder =  String(column.value.getDate()+'/'+months[column.value.getMonth()]+'/'+ column.value.getFullYear()) ;                
+                      break;
+                    }
+                    case 'endOrder': 
+                    {
+                      endOrder = String(column.value.getDate()+'/'+months[column.value.getMonth()]+'/'+ column.value.getFullYear());
+                      break;
+                    }                      
+                    case 'totalPrice': 
+                    {
+                      totalPrice = column.value;
+                      break;
+                    }    
+
+                    case 'FullName': 
+                    {
+                      FullName = column.value;
+                      break;
+                    }       
+                    
+                    case 'EmailAddress': 
+                    {
+                      EmailAddress = column.value;
+                      break;
+                    }                                     
+                  }// end of switch 
+                });
+                console.log(numberOfTimes);
+                var order = new Order(orderNumber, unitID, unitTypes, city, numberOfrooms, startOrder, endOrder, totalPrice, FullName, EmailAddress, numberOfTimes);
+                  orders.push(order); 
+              });
+              return callback(orders);
+            }
+          });
+        connection.execSql(request);
+      }
+    }); 
+  }
+
+
+
+  static getOrders(apartmentOwnerId,callback)
+  {
+    console.log("in get orders");
+      let connection = new Connection(config);
+      connection.on("connect", err => {
+        if (err) {
+          console.error(err.message);
+        } else {
+        const request = new Request( 
+            `SELECT a.orderNumber, a.unitID, b.unitTypes, b.city, b.numberOfrooms, a.startOrder, a.endOrder, a.totalPrice, s.FullName, s.EmailAddress, c.count
+            FROM [dbo].[Order] AS a, RentalHousingUnit AS b, StudentUser as s, (SELECT unitID, count(*) as count
+                                                                                  FROM [dbo].[Order] 
+                                                                                  GROUP BY unitID) AS c
+            WHERE a.unitID = c.unitID AND a.status=1 AND a.unitID=b.unitId AND a.studentId = s.ID AND a.apartmentOwnerId = ` + apartmentOwnerId,
+          (err, rowCount,rows) => {
+            if (err) {
+              console.error(err.message);
+              return callback(false);
+            } 
+            else {
+              console.log(`${rowCount} row(s) returned`);
+              connection.close();
+              var orders =[];
+              rows.forEach(element => {
+                var months = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" ];
+                var orderNumber, unitID, unitTypes, city, numberOfrooms, startOrder, endOrder, totalPrice, FullName, EmailAddress, numberOfTimes, totalIncome;
+                element.forEach(column =>{
+                  switch(column.metadata.colName)
+                  {
+                    case 'count': 
+                    {
+                      numberOfTimes = column.value;
+                      break;
+                    }
                     case 'orderNumber': 
                     {
                       orderNumber = column.value;
@@ -169,17 +210,19 @@ class Orders
                     }
                     case 'startOrder': 
                     {
-                        startOrder = column.value;
+                        startOrder =  String(column.value.getDate()+'/'+months[column.value.getMonth()]+'/'+ column.value.getFullYear()) ;
+
                       break;
                     }
                     case 'endOrder': 
                     {
-                        endOrder = column.value;
+                      endOrder = String(column.value.getDate()+'/'+months[column.value.getMonth()]+'/'+ column.value.getFullYear());
                       break;
                     }                    
                     case 'totalPrice': 
                     {
                         totalPrice = column.value;
+                        totalIncome += totalPrice; 
                       break;
                     }    
 
@@ -193,12 +236,11 @@ class Orders
                     {
                       EmailAddress = column.value;
                       break;
-                    }       
-                    EmailAddress     
-                              
+                    }                                     
                   }// end of switch 
                 });
-                  var order = new Order(orderNumber, unitID, unitTypes, city, numberOfrooms, startOrder, endOrder, totalPrice, FullName, EmailAddress);
+
+                  var order = new Order(orderNumber, unitID, unitTypes, city, numberOfrooms, startOrder, endOrder, totalPrice, FullName, EmailAddress, numberOfTimes);
                   orders.push(order); 
               });
               return callback(orders);

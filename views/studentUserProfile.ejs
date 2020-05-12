@@ -1,0 +1,59 @@
+<%- include('partials/header_student') %>
+<link rel="stylesheet" href="css/userInformation.css">
+
+<!-- <body onload="loading()">  -->
+<div class="jumbotron centered" id="b">
+  <div class="container">
+    <h1 class="display-3">User Profile</h1>
+    <hr>
+        
+      <div class="container mt-5">
+          <h1><i class="far fa-user-circle" style="font-size:80px; color: #252525;"></i></h1>
+        <div class="row">
+          <div class="col-sm-8">
+            <div class="card">
+              <div class="card-body">
+              <% if(typeof id !== 'undefined'){%>
+ 
+                <form action="/studentUserProfile" method="POST" id="edit">
+                    <div class="form-group row">
+                        <label class=  "col-4 col-form-label">Full name:</label>
+                        <input class="form-control" id="FullName" name="FullName" type="text" value="<%= rows[0].FullName %>">
+                    </div>
+
+                    <div class="form-group row">
+                        <label class=  "col-4 col-form-label" >User ID:</label>
+                        <input class="form-control" id="id" name="id" type="text" value="<%= rows[0].ID %>" readonly>
+                    </div>
+
+                    <div class="form-group row">
+                        <label  class=  "col-4 col-form-label" >Email:</label>
+                        <input class="form-control" id="EmailAddress" name="EmailAddress" type="text" value="<%= rows[0].EmailAddress %>" readonly>
+                    </div>
+                    
+                    <div class="form-group row">                       
+                        <label class=  "col-4 col-form-label">Phone number:</label>
+                        <input class="form-control" id="PhoneNumber" name="PhoneNumber" type="text" value="<%= rows[0].PhoneNumber %>">
+                    </div>
+
+                    <div class="form-group row">
+                        <label></label>
+                            <input type="reset" class="btn btn-secondary" value="Cancel">
+                            <input type="submit"  form="edit" value="Save Changes">
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>  
+      </div>
+  </div>
+</div>
+<!-- </body> -->
+
+<script src="/routes/studentUserProfile.js"></script>
+<script src="/models/userInfo.js"></script>   
+<% } %>
+
+<%- include("partials/footer") %>
+     

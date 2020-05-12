@@ -1,3 +1,4 @@
+  
 module.exports = config = {
   authentication: {
     options: {
@@ -15,4 +16,3 @@ module.exports = config = {
     trustServerCertificate: true,
   }
 };
-

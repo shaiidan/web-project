@@ -1,0 +1,26 @@
+<%- include("partials/header") %>
+
+<div class="container" id="uploadnew">
+    <br>
+    <h1>Enter your email address</h1>
+    <br><br>
+    
+    <% if(typeof msg !== 'undefined'){%>
+      <strong>
+        <div class="alert alert-bg-light" role="alert">
+          <%= typeof msg != 'undefined' ? msg : '' %>
+        </div>
+      </strong>
+      <% } %>
+    <form action="uploadnew" method="POST">
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+        </div>
+         <br>
+            <!-- <input type="submit" value="Send"> -->
+            <button type="submit" class="btn btn-dark text-light">send</button>
+    </form>
+</div>
+<br><br><br><br><br><br>
+<%- include("partials/footer") %>
