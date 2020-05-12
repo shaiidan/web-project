@@ -2,8 +2,9 @@
 const experss = require("express");
 const router = experss.Router();
 const units = require("../models/RentalHousingUnits");
+const authenticate = require("./authenticate").redirectHome;
 
-router.get("/ApartmentOwnerHomepage",function(req, res){
+router.get("/ApartmentOwnerHomepage",authenticate,function(req, res){
     if(typeof req.query.id == 'undefined' && typeof req.query.fullName == 'undefined' )
     {
         console.log("Something wrong happend with request="+req.ip);
@@ -11,21 +12,25 @@ router.get("/ApartmentOwnerHomepage",function(req, res){
     }
     const id = req.query.id;
     const full_name = req.query.fullName;
-    console.log(id);
-    try{
-        units.getRentalHousingUnitsByOwnerId(id, function(result){
-            if(result != false){
-                 res.render('ApartmentOwnerHomepage',{fullName:full_name,id:id,rows:result});
-            }
-            else {
-                console.log("Something wrong happend with request="+req.ip);
-                res.redirect('/',404);
-            }
-        });    
+    if(user_id===req.session.userId){
+        try{
+            units.getRentalHousingUnitsByOwnerId(id, function(result){
+                if(result != false){
+                     res.render('ApartmentOwnerHomepage',{fullName:full_name,id:id,rows:result});
+                }
+                else {
+                    console.log("Something wrong happend with request="+req.ip);
+                    res.redirect('/',404);
+                }
+            });    
+        }
+        catch(e){
+            console.log("Error!!\n" +e);
+            res.redirect('/',404);
+        }
     }
-    catch(e){
-        console.log("Error!!\n" +e);
-        res.redirect('/',404);
+    else{
+        res.render("Error");
     }
 });
 

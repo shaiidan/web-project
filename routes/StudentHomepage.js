@@ -5,13 +5,17 @@ const units = require("../models/RentalHousingUnits");
 const MONTH_TO_DAY = 30;
 const order = require("../models/newOrder");
 const orders = require("../models/newOrders");
+const authenticate = require("./authenticate").redirectHome;
 
-
-router.get("/StudentHomepage",function(req, res){
+router.get("/StudentHomepage",authenticate,function(req, res){
     const user_id = req.query.id;
-    
     const full_name = req.query.fullName;
-    res.render('StudentHomepage',{id:user_id,fullName:full_name});
+    if(user_id===req.session.userId){
+        res.render('StudentHomepage',{id:user_id,fullName:full_name});
+    }
+    else{
+        res.render("Error");
+    }
 });
 
 router.post("/StudentHomepage",function(req,res){

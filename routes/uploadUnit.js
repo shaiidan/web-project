@@ -3,11 +3,17 @@ const router = experss.Router();
 const RentalHousingUnit = require("../models/RentalHousingUnit");
 const units = require("../models/RentalHousingUnits");
 const upload = require("./UploadingImages");
+const authenticate = require("./authenticate").redirectHome;
 
-router.get("/uploadUnit",function(req, res){
+router.get("/uploadUnit",authenticate,function(req, res){
     const id = req.query.id; 
     const full_name = req.query.fullName;
-    return res.render('uploadUnit',{id:id,fullName:full_name});
+    if(user_id===req.session.userId){
+        return res.render('uploadUnit',{id:id,fullName:full_name});
+    }
+    else{
+        res.render("Error");
+    }
 });
 
 router.post("/uploadUnit",upload.array("uploadImage",4),function(req, res,next){

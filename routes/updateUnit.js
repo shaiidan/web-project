@@ -3,25 +3,31 @@ const router = experss.Router();
 const RentalHousingUnit = require("../models/RentalHousingUnit");
 const units = require("../models/RentalHousingUnits");
 const upload = require("./UploadingImages");
+const authenticate = require("./authenticate").redirectHome;
 
-router.get("/updateUnit",function(req, res,next){
+router.get("/updateUnit",authenticate,function(req, res,next){
     const full_name= req.query.fullName;
     const user_id = req.query.id;
     const unit_id = req.query.unitId;
-    try{
-        units.getRentalHousingUnitByUnitId(unit_id,function(result){
-            if(result instanceof RentalHousingUnit){
-                 res.render('updateUnit',{fullName:full_name,id:user_id,unit:result});
-            }
-            else{
-                console.log("Update don't get unit is!!\n");
-                res.redirect('/',404);
-            }
-        });
+    if(user_id===req.session.userId){
+        try{
+            units.getRentalHousingUnitByUnitId(unit_id,function(result){
+                if(result instanceof RentalHousingUnit){
+                     res.render('updateUnit',{fullName:full_name,id:user_id,unit:result});
+                }
+                else{
+                    console.log("Update don't get unit is!!\n");
+                    res.redirect('/',404);
+                }
+            });
+        }
+        catch(e){
+            console.log("Error!!\n" +e);
+            res.redirect('/',404);
+        }
     }
-    catch(e){
-        console.log("Error!!\n" +e);
-        res.redirect('/',404);
+    else{
+        res.render("Error");
     }
 });
 
