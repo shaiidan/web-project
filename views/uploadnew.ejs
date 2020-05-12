@@ -5,6 +5,13 @@
     <h1>Enter your email address</h1>
     <br><br>
     
+    <% if(typeof msg !== 'undefined'){%>
+      <strong>
+        <div class="alert alert-bg-light" role="alert">
+          <%= typeof msg != 'undefined' ? msg : '' %>
+        </div>
+      </strong>
+      <% } %>
     <form action="uploadnew" method="POST">
         <div class="form-group">
           <label for="email">Email address</label>

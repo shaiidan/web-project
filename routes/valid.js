@@ -5,7 +5,7 @@ const alert = require("alert-node");
 const registerUtils = require('../models/registerUtils');
 const authenticate = require("./authenticate").redirectHome;
 router.get('/valid/:email',authenticate, function(req, res) {
-	if("admin@admin"===req.session.userId){
+	if("samiroomgroup3@gmail.com"===req.session.userId){
         res.render('valid',{param:req.params});
     }
     else{

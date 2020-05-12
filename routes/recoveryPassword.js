@@ -14,8 +14,9 @@ router.post('/recoveryPassword', function(req, res, next){
     console.log(email);
     registerUtils.checkEmail(email,function(result) {
         if (result===0){
-            console.log ('No account with that email address exists.');
-            alert("No account with that email address exists"); 
+            res.render('recoveryPassword', {
+                msg: 'Email is not exist'
+              }); 
             }
         else{
             const output = `

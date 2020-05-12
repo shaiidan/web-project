@@ -20,7 +20,9 @@ router.post("/registerowner", function(req, res){
 	const phone = req.body.phone;
 	const confirm = req.body.confirm;
 	if(confirm!=password){
-		alert("Password not match");
+		res.render('registerowner', {
+			msg: 'Password are not match, try again'
+		  });
 	}
 	else{
     registerUtils.checkEmailAndId(email,id,function(result){ 
@@ -36,8 +38,9 @@ router.post("/registerowner", function(req, res){
             });
         }
         else {
-            console.log("register failed, Email or ID already exist");
-		    alert("register failed,Email or ID already exist");
+			res.render('registerowner', {
+				msg: 'Email or ID already exist'
+			  });
         }
 	});
 }

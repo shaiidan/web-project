@@ -5,8 +5,8 @@
    <h1>Upload your student card</h1>
 
     <p>In oreder to validate your account, you need to upload a photo of your student card </p>
+    <%= typeof msg1 != 'undefined' ? msg1 : '' %>
     <%= typeof msg != 'undefined' ? msg : '' %>
-
     <form action="/upload" method="POST" enctype="multipart/form-data">
       <div class="file-field input-field">
         <input type="hidden" value="<%=email%>" id="email" name="email">

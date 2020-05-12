@@ -18,7 +18,9 @@ router.post("/registerstudent", function(req, res, file){
 	const validation = 0;
 	const confirm = req.body.confirm;
 	if(confirm!=password){
-		alert("Password not match, try again");
+		res.render('registerstudent', {
+			msg: 'Password are not match, try again'
+		  });
 	}
 	else{
 	registerUtils.checkEmailAndId(email,id,function(result){
@@ -34,8 +36,9 @@ router.post("/registerstudent", function(req, res, file){
       });
     }
 		else{
-			console.log("login failed,Email or ID already exist");
-			alert("Login failed,Email or ID already exist");
+			res.render('registerstudent', {
+				msg: 'Email or ID already exist'
+			  });
     }
 });
 	}
