@@ -15,4 +15,4 @@ module.exports = config = {
 	  rowCollectionOnRequestCompletion:true,
 	  trustServerCertificate: true,
 	}
-  };
+

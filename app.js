@@ -54,24 +54,3 @@ app.use(upload);
 app.use(validate);
 app.use(uploadnew);
 
-app.get('/logout', function(req,res){
-	req.session.destroy(function(err){
-		if(err){
-			return res.redirect('/');
-		}
-		console.log("User loged out");
-		res.clearCookie("samiroom");
-		res.redirect('/');
-	});
-});
-app.get('/error', function(req,res){
-	res.render("Error");
-});
-
- app.listen(process.env.PORT, process.env.IP, function(){
- 	console.log("Server has started");
- });
-
-// app.listen(3000, function(){
-// 	console.log("server listen on port 3000");
-// });
