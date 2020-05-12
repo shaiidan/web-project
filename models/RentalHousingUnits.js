@@ -431,7 +431,7 @@ class RentalHousingUnits
                   }// end of switch 
                   });
                   var unit = new RentalHousingUnit(unitId,owner_id,city,address,number_of_rooms,price_per_month,
-                    unit_types,number_of_times,publishing_date,status,max_rental_period,min_rental_period,
+                    unit_types,number_of_times,publishing_date,status,max_rental_period,min_rental_period,description_apartment,null,null);
                     unit.Pictures = pic;
                    
                   units.push(unit); 
