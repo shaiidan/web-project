@@ -37,6 +37,8 @@ app.use(session({
 		maxAge: 1000*60*60*2,
 		sameSite:true,
 		secure: "samiroom"
+	}
+}));
 dotenv.config();
 const connection = new Connection(dbConfig);
 connection.connect(); 
@@ -47,8 +49,7 @@ connection.on("connect", err => {
 	} else {
 	  console.log("DB connection success");
 	}
-}));
-
+});
 
 dotenv.config();
 app.set("view engine", "ejs");
