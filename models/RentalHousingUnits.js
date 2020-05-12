@@ -191,7 +191,7 @@ class RentalHousingUnits
     from [dbo].[RentalHousingUnit] u, [dbo].[ApartmentOwnerUser] ow
     where`+filter_query +` u.[apartmentOwnerId] = ow.ID and u.[UnitStatus] = 'available'and u.[minRentalPeriod] <= `+min_period+`
     and u.[maxRentalPeriod] >=`+min_period +`and unitId not in (select unitId from [dbo].[Order] o
-    where  (CAST('`+start_date+`' as date)  BETWEEN o.[startOrder] AND o.[endOrder]) or
+    where o.[status] = 1 and (CAST('`+start_date+`' as date)  BETWEEN o.[startOrder] AND o.[endOrder]) or
         (CAST('`+end_date+`' as date)  BETWEEN o.[startOrder] AND o.[endOrder]))`,
           (err, rowCount,rows) => {
             if (err) {
@@ -566,7 +566,52 @@ class RentalHousingUnits
       }
     });
   }
+
+  // update the number of time to ordered
+  static updatePopularCount(unit_id,callback)
+  {
+    RentalHousingUnits.getRentalHousingUnitByUnitId(unit_id,function(result){
+      if(result instanceof RentalHousingUnit){
+        let connection = new Connection(config);       
+            connection.on("connect", err => {
+            if (err) {
+              console.error("Error sql: " +err.message);
+              connection.close();
+              return callback(false);
+            } 
+            else
+            {
+              var query =`UPDATE RentalHousingUnit
+              SET numberOfTimes =` + (result.NumberOfTimes + 1) +
+              "WHERE unitid = " + result.UnitID; 
+                const request = new Request( 
+                    query,
+                  (err, rowCount) => {
+                    if (err) {
+                      console.error("Error sql: " +err.message);
+                      connection.close();
+                      return callback(false);
+                      
+                    } else {
+                      connection.close();
+                      if(rowCount != 0){
+                         return callback(true);
+                      }
+                      else{
+                         return callback(false);
+                      }
+                    }}
+                );
+                connection.execSql(request);
+            }
+          });
+        }
+        else{
+          return callback(false);
+        }
+      });
+  }
+
 } // end of class
 
 module.exports = RentalHousingUnits;
-

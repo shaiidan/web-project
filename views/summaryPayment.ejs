@@ -53,8 +53,10 @@
               <input type="text"  class="form-control" name="ID" required pattern="^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$" title="id must contain 9 numbers between 0 to 9" id="ID" required onchange="chackID()">
             </div>
             
+            <input type="hidden" value="<%=id%>" id="id" name="id">
             <input type="hidden" value="<%=fullName%>" id="fullName" name="fullName">
             <input type="hidden" value="<%=order.orderID%>" id="orderId" name="orderId">
+            <input type="hidden" value="<%=order.unitID%>" id="unitId" name="unitId">
             
           </form>
             <button type="submit" class="btn btn-dark" form="summaryPayment">confrim</button>

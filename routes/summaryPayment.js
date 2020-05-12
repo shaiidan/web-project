@@ -16,16 +16,15 @@ router.get("/summaryPayment", function(req, res){
 		orders.getOrder(order_id,function(result){
 			if(result != false){
 				res.render('summaryPayment',{order:result,id:user_id,fullName:full_name});
-				setTimeout(() => {unit.changeStatusForOrder(order.unitID,1,function(){
-					if(order)
-					orders.deleteOrder(order.orderID,function(){
+				setTimeout(() => {unit.changeStatusForOrder(result.unitID,1,function(){
+					if(result)
+					orders.deleteOrder(result.orderID,function(){
 					res.redirect('/studentHomePage?id='+user_id+"&fullName="+full_name,404);});
 				});
 					
 				}, 900000);
 			}
 			else{
-				
 				unit.changeStatusForOrder(order.unitID,1,function()
 				{
 					orders.deleteOrder(order.orderID,function(){
@@ -52,13 +51,15 @@ router.post("/summaryPayment", function(req, res, file){
 	const cvvNumber = req.body.cvvNumber;
 	const expiry = req.body.expiry;
 	const orderID = req.body.orderId;
-	const user_id = req.query.id;
-	const full_name = req.query.fullName;
-	console.log(orderID);
+	const user_id = req.body.id;
+	const full_name = req.body.fullName;
+	const unit_id = req.body.unitId;
+
 	orders.sendOwnerMail(orderID,function(result){
 	});
 	orders.updateOrderStatus(orderID,function(chack){
-
+		unit.updatePopularCount(unit_id,function(result){
+		});
 		res.redirect('/studentHomePage?id='+user_id+"&fullName="+full_name);
 	});
 
