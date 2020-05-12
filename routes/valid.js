@@ -3,10 +3,15 @@ const router = express.Router();
 const nodemailer = require('nodemailer');
 const alert = require("alert-node");
 const registerUtils = require('../models/registerUtils');
-//const authenticate = require("./authenticate").redirectHome;
+const authenticate = require("./authenticate").redirectHome;
 
-router.get('/valid/:email', function(req, res) {
-	res.render('valid',{param:req.params});
+router.get('/valid/:email',authenticate, function(req, res) {
+	if("samiroomgroup3@gmail.com"===req.session.userId){
+        res.render('valid',{param:req.params});
+    }
+    else{
+		res.render("Error");
+	}
 });
 
 router.post('/valid/:email', function(req, res) {

@@ -66,14 +66,14 @@ app.use(apartmentOwnerUserProfileRouter);
 
 
 app.get('/logout', function(req,res){
-	//req.session.destroy(function(err){
-	//	if(err){
-	//		return res.redirect('/');
-	//	}
-	//	console.log("User loged out");
-	//	res.clearCookie("samiroom");
+	req.session.destroy(function(err){
+		if(err){
+			return res.redirect('/');
+		}
+		console.log("User loged out");
+		res.clearCookie("samiroom");
 		res.redirect('/');
-	//});
+	});
 });
 
 app.get('/error', function(req,res){
