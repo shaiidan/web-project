@@ -70,6 +70,11 @@ app.use(reset);
 app.use(upload);
 app.use(validate);
 app.use(uploadnew);
+app.use(updateUnit);
+app.use(summaryPayment);
+app.use(rentalHistoryRouter);
+app.use(studentUserProfileRouter);
+app.use(apartmentOwnerUserProfileRouter);
 
 app.get('/logout', function(req,res){
 	req.session.destroy(function(err){
