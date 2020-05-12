@@ -9,6 +9,7 @@ const orders = require("../models/newOrders");
 
 router.get("/StudentHomepage",function(req, res){
     const user_id = req.query.id;
+    
     const full_name = req.query.fullName;
     res.render('StudentHomepage',{id:user_id,fullName:full_name});
 });

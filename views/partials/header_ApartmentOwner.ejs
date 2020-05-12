@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/footer.css">
 
 
+
 </head>
 <body class="bg-light">
   <% if(typeof fullName !== 'undefined' && typeof id !== 'undefined'){%>
@@ -25,8 +26,9 @@
           <ul class="navbar-nav mr-auto"> 
               <a class="nav-link" href="/ApartmentOwnerHomepage?id=<%=id%>&fullName=<%=fullName%>">Home <span class="sr-only">(current)</span></a>
               <a class="nav-link" href="/uploadUnit?id=<%=id%>&fullName=<%=fullName%>">Upload unit <span class="sr-only">(current)</span></a>
-            
-            </ul>
-            </nav>
+              <a class="nav-link" href="/apartmentOwnerUserProfile?id=<%=id%>&fullName=<%=fullName%>">Profile <span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="/rentalHistory?id=<%=id%>&fullName=<%=fullName%>">Rental history <span class="sr-only">(current)</span></a>
 
+            </ul>
+          </nav>
   <% } %>

@@ -17,6 +17,9 @@ const ApartmentOwnerHomepage = require('./routes/ApartmentOwnerHomepage');
 const uploadUnit = require('./routes/uploadUnit');
 const updateUnit = require('./routes/updateUnit');
 const summaryPayment = require('./routes/summaryPayment');
+const rentalHistoryRouter = require('./routes/rentalHistory');
+const studentUserProfileRouter = require('./routes/studentUserProfile');
+const apartmentOwnerUserProfileRouter = require('./routes/apartmentOwnerUserProfile');
 
 dotenv.config();
 const connection = new Connection(dbConfig);
@@ -45,10 +48,13 @@ app.use(ApartmentOwnerHomepage);
 app.use(uploadUnit);
 app.use(updateUnit);
 app.use(summaryPayment);
+app.use(rentalHistoryRouter);
+app.use(studentUserProfileRouter);
+app.use(apartmentOwnerUserProfileRouter);
 
- //app.listen(process.env.PORT, process.env.IP, function(){
- //	console.log("Server has started");
- //});
+//  app.listen(process.env.PORT, process.env.IP, function(){
+//  	console.log("Server has started");
+//  });
 
  
 app.listen(3000, function(){

@@ -1,0 +1,64 @@
+*
+{
+    margin: 0;
+    padding: 0;
+}
+form{
+  border: 3px solid #252525;
+  border-collapse: collapse;
+  margin-bottom: 6px;
+
+}
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 80vw;
+  padding: 20px;
+  margin: 40px;
+  }
+
+  td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+  
+  .thead-dark{
+    background-color: #252525;
+    border : 3px solid #252525;
+
+  }
+  
+  .thead-dark th{
+      color: white;
+  }
+  tr:nth-child(even) {
+    background-color: rgb(39, 197, 181) ;
+  }
+  #last {
+    border : 3px ;
+  }
+ 
+  input{
+    padding: 4px 7px;
+    margin: 5px 0;
+    box-sizing: border-box;
+  }
+  label{
+    margin: 8px 0;
+    padding: 3px;
+
+  }
+
+table.dataTable thead .sorting:after,
+table.dataTable thead .sorting:before,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_asc:before,
+table.dataTable thead .sorting_asc_disabled:after,
+table.dataTable thead .sorting_asc_disabled:before,
+table.dataTable thead .sorting_desc:after,
+table.dataTable thead .sorting_desc:before,
+table.dataTable thead .sorting_desc_disabled:after,
+table.dataTable thead .sorting_desc_disabled:before {
+  bottom: .5em;
+}

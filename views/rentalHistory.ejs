@@ -1,0 +1,130 @@
+<%- include('partials/header_ApartmentOwner') %>
+<link rel="stylesheet" href="css/rentalHistory.css">
+
+<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+     <div class="container">
+        <hr> 
+        <div class="row">
+            <% if(typeof fullName !== 'undefined' && typeof id !== 'undefined' ){%>
+            <div class="rentalHistory">
+                <div class = "Filter">   
+                    <form id="filtering" action="/rentalHistory" method="POST">       
+                        
+                        <input type="hidden" value="<%=fullName%>" id="fullName" name="fullName">
+                        <input type="hidden" value="<%=id%>" id="id" name="id">
+
+                        <label for="unitID">unit ID: </label>
+                        <input type="text" id="unitID" name="unitID" onkeypress="return isNumberKey(event)" value= " ">
+
+                        <label for="Location">Location: </label>
+                        <select id = "Location" name = "Location" placeholder="Choose location">  
+                            <option value=" "></option>
+                            <option value='Ashdod'>Ashdod</option>
+                            <option value='Beer Sheva'>Beer Sheva</option>
+                        </select>
+
+                        <label for="Unittype">Unit type: </label>
+                        <select id = "Unittype" name = "Unittype" placeholder="Choose unit type"> 
+                            <option value=" "></option>
+                            <option value='vila'>vila</option>
+                            <option value='loft'>loft</option>
+                            <option value='apartment'>apartment</option>
+                            <option value='basement'>basement</option>
+                        </select>                        
+                     
+                        <label for="numberOfRooms">Number of rooms:  </label>
+                        <input type="number" id="numberOfRooms" name="numberOfRooms" min="1" max="6" step="0.5" value=1 >
+
+                        <label for="totalPrice">From price: </label>
+                        <input type="text" id="totalPrice" name="totalPrice" onkeypress="return isNumberKey(event)" value=" ">
+                        
+                        <label for="startDate" >Start date: </label>
+                        <input type="date" id="startDate" name="startDate" value=" ">
+
+                        <label for="endDate">End date: </label>
+                        <input type="date" id="endDate" name="endDate"  onchange="checkEndDate()" value=" ">
+
+                        <label for="orderNumber">Order number: </label>
+                        <input type="text" id="orderNumber" name="orderNumber" onkeypress="return isNumberKey(event)" value=" ">
+
+                        <button type="submit" class="btn btn-dark" form="filtering">Search</button>
+                    </form>        
+                </div>
+                <table class="sortable" id="order">
+                    <thead class="thead-dark">
+                      <tr id="firts">
+                        <th scope="col">Order number  </th>
+                        <th scope="col">Unit ID  </th>
+                        <th scope="col">Unit type  </th>
+                        <th scope="col">Location  </th> 
+                        <th scope="col">Number of rooms  </th>
+                        <th scope="col">Start date  </th>
+                        <th scope="col">End date  </th>
+                        <th scope="col">Price  </th> 
+                        <th scope="col">Student full name  </th> 
+                        <th scope="col">Student email address  </th> 
+                        <th scope="col" >Number of orders  </th> 
+                      </tr>
+                    </thead>                  
+                    <tbody>
+                    </tr>
+                    <% if(typeof rows !== 'undefined'){%>
+                        <%for (var i = 0; i < rows.length; i++) { %>
+                            <tr>
+                                <td><%= rows[i].orderNumber %></td>
+                                <td><%= rows[i].unitID %></td>
+                                <td><%= rows[i].unitType %></td>
+                                <td><%= rows[i].city %></td>
+                                <td><%= rows[i].numberOfRooms %></td>
+                                <td><%= rows[i].startOrder%></td>
+                                <td><%= rows[i].endOrder%></td>
+                                <td class="totalPrice"><%= rows[i].totalPrice %></td>
+                                <td><%= rows[i].FullName %></td>
+                                <td><%= rows[i].EmailAddress %></td>   
+                                <td><%= rows[i].numberOfTimes %></td>  
+                            </tr>
+                        <% }} %>
+                    </tbody>
+                    <tfoot>
+                      <tr id="last">
+                        <td colspan="2" >Total income: </td> 
+                        <td colspan="9" id="totalIncome"> </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+            </div>
+        </div>
+    </div>  
+
+<script>//calculate sum of toatlPrice column
+  var tds = document.getElementById('order').getElementsByTagName('td');
+  var sum = 0;
+  for(var i = 0; i < tds.length; i ++) {
+      if(tds[i].className == 'totalPrice') {
+          sum += isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML);
+      }
+  }
+  document.getElementById('totalIncome').innerHTML += sum+ '₪' ;
+</script>
+
+
+<script>
+    function checkEndDate()
+    {
+      var start = new Date(document.getElementById("startDate").value);
+      var end = new Date(document.getElementById("endDate").value);
+      if(start.getTime() >= end.getTime())
+      {
+          alert("Please enter a date greater than to start's date");
+          document.getElementById("endDate").value = '';
+      }
+    }   
+</script>
+
+<script src="/routes/rentalHistory.js"></script>
+<script src="/src/Order.js"></script>
+<script src="/src/Orders.js"></script>
+<% } %>
+
+<%- include('partials/footer') %>
+
