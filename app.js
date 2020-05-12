@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const bodyParser = require("body-parser");
 const express = require("express");
 const app = express();
@@ -19,6 +20,11 @@ const validate = require("./routes/valid");
 const uploadnew = require('./routes/uploadnew');
 const session = require('express-session');
 var expressSession = require('express-session');
+const updateUnit = require('./routes/updateUnit');
+const summaryPayment = require('./routes/summaryPayment');
+const rentalHistoryRouter = require('./routes/rentalHistory');
+const studentUserProfileRouter = require('./routes/studentUserProfile');
+const apartmentOwnerUserProfileRouter = require('./routes/apartmentOwnerUserProfile');
 
 
 app.use(expressSession({secret: 'your secret', saveUninitialized: true, resave: false}));
@@ -31,6 +37,15 @@ app.use(session({
 		maxAge: 1000*60*60*2,
 		sameSite:true,
 		secure: "samiroom"
+dotenv.config();
+const connection = new Connection(dbConfig);
+connection.connect(); 
+// Attempt to connect and execute queries if connection goes through
+connection.on("connect", err => {
+	if (err) {
+	  console.error(err.message);
+	} else {
+	  console.log("DB connection success");
 	}
 }));
 
@@ -38,7 +53,8 @@ app.use(session({
 dotenv.config();
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended:true}));
-app.use(express.static("./public"));
+app.use(bodyParser.json());
+app.use(express.static("public"));
 app.use(indexRoutes);
 app.use(registerOnwerRoutes);
 app.use(registerStudentRoutes);
@@ -64,6 +80,7 @@ app.get('/logout', function(req,res){
 		res.redirect('/');
 	});
 });
+
 app.get('/error', function(req,res){
 	res.render("Error");
 });

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable no-use-before-define */
 const express = require ("express");
 const router = express.Router();

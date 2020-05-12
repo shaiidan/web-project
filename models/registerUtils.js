@@ -1,3 +1,5 @@
+const express = require ("express");
+const router = express.Router();
 const { Connection, Request } = require("tedious");
 const config = require("./dbconfig");
 
@@ -244,3 +246,4 @@ static updatePassword(email, password)
 }
 }
 module.exports = registerUtils;
+

@@ -1,24 +1,26 @@
 <%- include('partials/header_student') %>
 <head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" type="text/css" href="css/Homepage.css">
-    <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="css/Homepage.css">
 </head>
 
-<script type="text/javascript" src="//code.jquery.com/jquery-2.1.0.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="//code.jquery.com/jquery-2.1.0.js" ></script>
 <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>
 
+
 <body onload="loading()">   
 <div class="container mt-5" >
+  <% if(typeof id !== 'undefined' && typeof fullName !== 'undefined'){%>
+    <b style="font-size: x-large;color:#54cc21">Hello  <%= fullName %></b><br>
     <div class="row">
         <div class="col-sm-8">
           <div class="card">
             <div class="card-body">
-    <% if(typeof id !== 'undefined' && typeof fullName !== 'undefined'){%>
-        <h6 id="messageNoDate">Enter dates to start...</h6>
+        <h5 id="messageNoDate">Enter dates to start...</h5>
         <form id="filtering" action="/StudentHomepage" method="POST">
             <input type="hidden" value="<%=fullName%>" id="fullName" name="fullName">
             <input type="hidden" value="<%=id%>" id="id" name="id">
@@ -84,29 +86,31 @@
 </div>
 </div>
 </div>
+
 <div class="container mt-5" id="divTable">
     <table  id="tableUnits" data-toggle="table" data-detail-view="true"
      data-detail-formatter="detailFormatter" data-sortable="true" >
      <thead>
         <tr>
           <th></th>
-          <th data-sortable="true">Publishing date <img src="image/sort-icon.jpg"  style="height: 3ch; width: 3ch;"></th>
-          <th data-sortable="true">City <img src="image/sort-icon.jpg"  style="height: 3ch; width: 3ch;"></th>
-          <th data-sortable="true">Address <img src="image/sort-icon.jpg"  style="height: 3ch; width: 3ch;"></th>
-          <th data-sortable="true">Number of rooms <img src="image/sort-icon.jpg"  style="height: 3ch; width: 3ch;"></th>
-          <th data-sortable="true">Unit types <img src="image/sort-icon.jpg"  style="height: 3ch; width: 3ch;"></th>
-          <th data-sortable="true">Number of times ordered <img src="image/sort-icon.jpg"  style="height: 3ch; width: 3ch;"></th>
-          <th data-sortable="true">Minimum rental period <img src="image/sort-icon.jpg"  style="height: 3ch; width: 3ch;"></th>
-          <th data-sortable="true">Maximum rental period <img src="image/sort-icon.jpg"  style="height: 3ch; width: 3ch;"></th>
-          <th data-sortable="true">Price per month <img src="image/sort-icon.jpg"  style="height: 3ch; width: 3ch;"></th>
+          <th data-sortable="true"><b>Publishing<br>date</b></th>
+          <th data-sortable="true"><b>City</b></th>
+          <th data-sortable="true"><b>Address</b></th>
+          <th data-sortable="true"><b>Number of rooms</b></th>
+          <th data-sortable="true"><b>Unit types</b></th>
+          <th data-sortable="true"><b>Popular</b></th>
+          <th data-sortable="true"><b>Min<br>rental period</b></th>
+          <th data-sortable="true"><b>Max<br>rental period</b></th>
+          <th data-sortable="true"><b>Price per month</b></th>
         </tr>
     </thead>
     <tbody>
-        <% if(typeof rows !== 'undefined'){%>
+      <% if(typeof rows !== 'undefined'){ %>
+        <% if(rows){%>
             <%for (var i = 0; i < rows.length; i++) { %>
                 <tr class="tableclass" >
                     <td id="td<%=i%>"><b style="color:black; font-size:x-large;">+</b></td>
-                    <td><%= rows[i].PublishingDate.getDate() + '/' +rows[i].PublishingDate.getMonth() + '/' + rows[i].PublishingDate.getFullYear() %></td>
+                    <td><%= rows[i].PublishingDate.getDate() + '/' + (rows[i].PublishingDate.getMonth() +1) + '/' + rows[i].PublishingDate.getFullYear() %></td>
                     <td><%= rows[i].City %></td>
                     <td><%= rows[i].Adderss %></td>
                     <td><%= rows[i].NumberOfRooms %></td>
@@ -120,7 +124,7 @@
                     <h4>Details:</h4>
                     <br>
                     <p>
-                        <b>Publishing date: </b> <%= rows[i].PublishingDate.getDate() + '/' +rows[i].PublishingDate.getMonth() + '/' + rows[i].PublishingDate.getFullYear() %>.
+                        <b>Publishing date: </b> <%= rows[i].PublishingDate.getDate() + '/' +(rows[i].PublishingDate.getMonth()+1) + '/' + rows[i].PublishingDate.getFullYear() %>.
                         <br>
                         <b>City: </b> <%= rows[i].City %>. <br>
                         <b>Adderss: </b> <%= rows[i].Adderss %>.
@@ -146,14 +150,45 @@
                     </p>
                 </span>
             </tr>                               
-            <% }} %>
+            <% }}} %>
         </tbody>
       </table>
     </div>
     <div class="container mt-5"></div>
+
 </body>
+
 <script>
-      
+
+function loading()
+{
+  // put he's search
+  `<% if(typeof startDate !== 'undefined' && typeof endDate !== 'undefined' &&
+   typeof city !== 'undefined' && typeof numberOfRooms !== 'undefined' &&
+    typeof unitTypes !== 'undefined' && typeof fromPrice !== 'undefined' &&
+    typeof toPrice !== 'undefined'){ %>`
+      document.getElementById("startDate").value = "<%= startDate %>";
+      document.getElementById("endDate").value = "<%= endDate %>";
+      document.getElementById("city").value = "<%= city %>";
+      document.getElementById("numberOfRooms").value = "<%= numberOfRooms %>";
+      document.getElementById("unitTypes").value = "<%= unitTypes %>";
+        "<% if(!isNaN(fromPrice) && !isNaN(toPrice)) { %>"
+         document.getElementById("fromPrice").value = "<%= fromPrice %>";
+         document.getElementById("toPrice").value = "<%= toPrice %>";
+         "<% } else { %>"
+         document.getElementById("fromPrice").value = "";
+         document.getElementById("toPrice").value = "";
+          "<% } %>"
+    "<% } %>"
+
+  // if no result
+  "<% if(typeof rows !== 'undefined'){ %>"
+  "<% if(!rows.length) { %>"
+    alert("Sorry no rental units match your search.\nTry to change the dates ");
+       "<% }}%>"
+}
+
+
 function orderUnit(start_date,end_date,full_name,user_id,unit_id,owner_id,price_per_month)
 {
   const data = {startDate:start_date,endDate:end_date,fullName:full_name,
@@ -182,6 +217,7 @@ function orderUnit(start_date,end_date,full_name,user_id,unit_id,owner_id,price_
             return;
         });
 }
+
  function checkStartDate()
  {
    var start = new Date(document.getElementById("startDate").value);
@@ -202,7 +238,9 @@ function orderUnit(start_date,end_date,full_name,user_id,unit_id,owner_id,price_
      document.getElementById("endDate").value = '';
     }
  }
+
  var $table = $('#tableUnits');
+
 $table.on('expand-row.bs.table', function(e, index, row, $detail) {
   var res = $("#desc" + index).html();
   var td_open = document.getElementById("td"+index);
@@ -210,6 +248,7 @@ $table.on('expand-row.bs.table', function(e, index, row, $detail) {
   td_open.style = "color: black; font-size: x-large;";
   $detail.html(res);
 });
+
 $table.on("click-row.bs.table", function(e, row, $tr) {
   if ($tr.next().is('tr.detail-view')) {
     $table.bootstrapTable('collapseRow', $tr.data('index'));
@@ -221,6 +260,7 @@ $table.on("click-row.bs.table", function(e, row, $tr) {
     $table.bootstrapTable('expandRow', $tr.data('index')); 
   }
 });
+
 </script>
 <% } %>
 <%- include("partials/footer") %>

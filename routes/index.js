@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 const express = require ("express");
 const router = express.Router();
 const { Connection, Request } = require("tedious");
@@ -39,6 +40,7 @@ router.post("/index", function(req, res){
 						res.render('index', {
 							msg: 'Login faild, email is not exist'
 						  });
+
 					}
 					else
 					{
@@ -65,6 +67,7 @@ router.post("/index", function(req, res){
 									}
 								}
 							});
+
 							const user = id;
 							if(password == pass){
 								if(exp< Date.now()){
@@ -112,6 +115,7 @@ router.post("/index", function(req, res){
 						res.render('index', {
 							msg: 'Login faild, email is not exist'
 						  });
+
 						connection.close();
 					}
 					else
