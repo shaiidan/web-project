@@ -26,7 +26,6 @@ const rentalHistoryRouter = require('./routes/rentalHistory');
 const studentUserProfileRouter = require('./routes/studentUserProfile');
 const apartmentOwnerUserProfileRouter = require('./routes/apartmentOwnerUserProfile');
 
-
 app.use(expressSession({secret: 'your secret', saveUninitialized: true, resave: false}));
 app.use(session({
 	name: "samiroom",
@@ -65,6 +64,7 @@ app.use(rentalHistoryRouter);
 app.use(studentUserProfileRouter);
 app.use(apartmentOwnerUserProfileRouter);
 
+
 app.get('/logout', function(req,res){
 	req.session.destroy(function(err){
 		if(err){
@@ -83,3 +83,7 @@ app.get('/error', function(req,res){
  app.listen(process.env.PORT, process.env.IP, function(){
  	console.log("Server has started");
  });
+
+ //app.listen(3000, function(){
+	//console.log("server listen on port 3000");
+//});
