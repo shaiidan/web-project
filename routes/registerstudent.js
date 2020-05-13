@@ -25,7 +25,7 @@ router.post("/registerstudent", function(req, res, file){
 		if(result==true){
       registerUtils.addStudent(email, id, phone, name, password, validation,function(result){
         if(result == true){
-          res.redirect("/upload?email="+email);
+          res.redirect("/upload?email="+email+"&msg="+"Register successed");
         }
         else{
             console.log("somthingwrong");
