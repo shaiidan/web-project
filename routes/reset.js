@@ -2,10 +2,10 @@ const express = require ("express");
 const router = express.Router();
 const registerUtils = require ('../models/registerUtils');
 const nodemailer = require('nodemailer');
-const alert = require("alert-node");
+
 
 router.get('/reset/:token', function(req, res) {
-    res.render('reset',{param:req.params});
+    res.render('reset',{param:req.params, msg:''});
 });
  
 router.post('/reset/:token', function(req, res) {
@@ -43,8 +43,7 @@ router.post('/reset/:token', function(req, res) {
         res.redirect('/');
     }
     else{
-        console.log("passwords not match");
-        alert("passwords not match");
+        res.render('reset',{param:req.params, msg:'passwords are not match'});
 }
 });
 
