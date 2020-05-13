@@ -36,7 +36,7 @@ td {
 }
 
 tr:nth-child(even) {
-  background-color:#54cc21 ;
+  background-color: lightgreen;
 }
 
 #tableUnits thead > tr > th.detail,
