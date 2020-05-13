@@ -4,13 +4,18 @@ const router = experss.Router();
 const Orders = require("../src/Orders");
 
 
-router.get("/rentalHistory", function(req,res){
-     const user_id = req.query.id;
-     const full_name = req.query.fullName;
+router.get("/rentalHistory",authenticate, function(req,res){
+    const user_id = req.query.id;
+    const full_name = req.query.fullName;
 
-     Orders.getOrders(user_id, function(result){ //במקום 12 צריך להיות פונקציה שלוקחת את הת.ז של בעל הדירה שמחובר!
-        res.render("rentalHistory" ,{fullName:full_name,id:user_id,rows:result});
-    });
+   if(user_id===req.session.userId){
+        Orders.getOrders(user_id, function(result){ 
+            res.render("rentalHistory", {fullName:full_name,id:user_id,rows:result});
+         });
+     }
+     else{
+         res.render("Error");
+    }
 });
 
 router.post("/rentalHistory", function(req,res){
