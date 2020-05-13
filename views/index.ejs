@@ -1,51 +1,163 @@
-<%- include("partials/header") %>
+const express = require ("express");
+const router = express.Router();
+const { Connection, Request } = require("tedious");
+const dbConfig = require ('../models/dbconfig');
+const app = express();
+const md5 = require('md5');
+app.set("view engine", "ejs");
+
+router.get("/", function(req, res){
+	res.render("index",);
+});
 
 
-<div class="jumbotron centered" id="jumbo">
-  <div class="container">
-    <h1 class="display-3">Welcome</h1>
-    <hr>
+router.get("/index", function(req, res){
+	res.render("index",);
+});
 
-      <div class="container mt-5">
-        <h1>Login</h1>
-        <div class="row">
-          <div class="col-sm-8">
-            <div class="card">
-              <div class="card-body">
-                <form action="/index" method="POST">
-                  <div class="form-group">
-                    <label for="email mb-0">Email</label>
-                    <input type="email" class="form-control" name="email" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" class="form-control" name="password" required>
-                  </div>
-                  <% if(typeof msg !== 'undefined'){%>
-                    <strong>
-                      <div class="alert alert-bg-light" role="alert">
-                        <%= typeof msg != 'undefined' ? msg : '' %>
-                      </div>
-                    </strong>
-                    <% } %>
-                  <div>
-                    <input type="radio" id="student" name="userType" value="student" required>
-                    <label for="student"><h5>Student</h5></label>
-                    <input type="radio" id="owner" name="userType" value="owner" required>
-                    <label for="owner"><h5>Owner</h5></label>
-                  </div>
-                  <button type="submit" class="btn btn-dark" onclick="moveToHomePage()">Login</button>
-                </form>
-                <a href="/recoveryPassword"> <button type="submit" class="btn btn-sm btn-dark mt-2">I Forgot my password</button></a>
-              </div>
-            </div>
-          </div>
-        </div>  
 
-        <a class="btn btn-light btn-md" href="/registerowner" role="button">Register as an Apartment Owner</a>
-        <a class="btn btn-light btn-md" href="/registerstudent" role="button">Register as a Student</a>
+//login post request:
+router.post("/index", function(req, res){
+	const email = req.body.email;
+	const password = md5(req.body.password);
+	const userType = req.body.userType;
 
-      </div>
-  </div>
-</div>
-<%- include("partials/footer") %>
+	if(userType == 'student'){
+		const connection = new Connection(dbConfig);
+		connection.connect(); 
+		connection.on("connect", err => {
+            if (err) {
+			  console.error(err.message);
+            } else {
+              queryDatabase();
+            }
+          });
+        function queryDatabase() {
+		const request = new Request(
+			`SELECT Password, Exp, ID, FullName FROM StudentUser WHERE EmailAddress=('${email}')`,
+			(err, rowCount,rows) => {
+				if (err) {
+				  console.error(err.message);
+				  connection.close();
+				} else {
+					  console.log(`${rowCount} row(s) returned`);
+					if(rowCount == 0){
+						res.render('index', {
+							msg: 'Login faild, email is not exist'
+						  });
+					}
+					else
+					{
+						rows.forEach(element => {
+							var pass,full_name,id, exp;
+							element.forEach(column =>{
+								switch(column.metadata.colName)
+								{
+									case 'Password':{
+										pass = column.value;
+										break;
+									}
+									case 'ID':{
+										id = column.value;
+										break;
+									}
+									case 'FullName':{
+										full_name = column.value;
+										break;
+									}
+									case 'Exp':{
+										exp = column.value;
+										break;
+									}
+								}
+							});
+							const user = id;
+							if(password == pass){
+								if(exp< Date.now()){
+									console.log("no validation");
+									res.redirect("/upload?email="+email);
+									connection.close();
+								}
+								else{
+									console.log("Login success by user: " +id);
+									req.session.userId = user;
+									res.redirect("/StudentHomePage?id="+id+'&fullName='+full_name);
+									connection.close();
+								}
+							}
+							else{
+								res.render('index', {
+									msg: 'Incorrect password'
+								  });
+							}
+						});
+					}
+				}});
+				connection.execSql(request);
+			}
+		}
+	else if(userType == 'owner'){
+		const connection = new Connection(dbConfig);
+		connection.connect(); 
+		connection.on("connect", err => {
+            if (err) {
+              console.error(err.message);
+            } else {
+			  queryDatabase();
+            }
+          });
+        function queryDatabase() {
+		const request = new Request(
+			`SELECT Password, ID, FullName FROM ApartmentOwnerUser WHERE EmailAddress=('${email}')`,
+			(err, rowCount, rows) => {
+				if (err) {
+					console.error(err.message);
+				}else {
+					console.log(`${rowCount} row(s) returned`);
+					if(rowCount == 0){
+						res.render('index', {
+							msg: 'Login faild, email is not exist'
+						  });
+						connection.close();
+					}
+					else
+					{
+						rows.forEach(element => {
+							var pass, full_name, id;
+							element.forEach(column =>{
+								switch(column.metadata.colName)
+								{
+									case 'Password':{
+										pass = column.value;
+										break;
+									}
+									case 'ID':{
+										id = column.value;
+										break;
+									}
+									case 'FullName':{
+										full_name = column.value;
+										break;
+									}
+								}
+							});
+							const user = id;
+							if(password == pass){
+								console.log("Login success by user: " +id);
+								req.session.userId = user;
+								res.redirect("/ApartmentOwnerHomePage?id="+id+'&fullName='+full_name);
+								connection.close();
+								}
+							else{
+								res.render('index', {
+									msg: 'Incorrect password'
+								  });
+								}
+							});
+					}
+				}});
+				connection.execSql(request);
+			}
+			}
+});
+module.exports = router;
