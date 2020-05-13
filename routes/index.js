@@ -75,7 +75,7 @@ router.post("/index", function(req, res){
 							if(password == pass){
 								if(exp< Date.now()){
 									console.log("no validation");
-									res.redirect("/upload?email="+email);
+									res.redirect("/upload?email="+email +"&msg="+"your account is not validate yet");
 									connection.close();
 								}
 								else{
