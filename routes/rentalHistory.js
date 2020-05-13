@@ -22,7 +22,7 @@ router.post("/rentalHistory", function(req,res){
     const user_id = req.body.id;
     const full_name = req.body.fullName;
 
-    const unitID =parseInt(req.body.unitID);
+    const unitID =req.body.unitID;
     const startDate = "'"+req.body.startDate+"'";
     const endDate = "'"+req.body.endDate+"'";
     const location = "'"+req.body.Location+"'"; //default empty
