@@ -3,6 +3,7 @@ const router = express.Router();
 const { Connection, Request } = require("tedious");
 const dbConfig = require ('../models/dbconfig');
 const app = express();
+const md5 = require('md5');
 app.set("view engine", "ejs");
 
 router.get("/", function(req, res){
@@ -10,10 +11,15 @@ router.get("/", function(req, res){
 });
 
 
+router.get("/index", function(req, res){
+	res.render("index",);
+});
+
+
 //login post request:
 router.post("/index", function(req, res){
 	const email = req.body.email;
-	const password = req.body.password;
+	const password = md5(req.body.password);
 	const userType = req.body.userType;
 
 	if(userType == 'student'){
