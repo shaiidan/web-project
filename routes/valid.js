@@ -6,7 +6,7 @@ const registerUtils = require('../models/registerUtils');
 const authenticate = require("./authenticate").redirectHome;
 
 router.get('/valid/:email',authenticate, function(req, res) {
-	if("samiroomgroup3@gmail.com"===req.session.userId){
+	if("samiroom"===req.session.userId){
         res.render('valid',{param:req.params});
     }
     else{
