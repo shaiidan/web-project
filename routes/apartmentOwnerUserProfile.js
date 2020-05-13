@@ -3,7 +3,7 @@
 const experss = require("express");
 const router = experss.Router();
 const User = require("../models/userInfo");
-
+const authenticate = require("./authenticate").redirectHome;
 
 
 router.get("/apartmentOwnerUserProfile",authenticate, function(req,res){
