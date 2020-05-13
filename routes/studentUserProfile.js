@@ -3,6 +3,7 @@
 const experss = require("express");
 const router = experss.Router();
 const User = require("../models/userInfo");
+const authenticate = require("./authenticate").redirectHome;
 
 router.get("/studentUserProfile",authenticate, function(req,res){
     const user_id = req.query.id;
