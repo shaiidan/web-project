@@ -10,11 +10,6 @@ router.get("/", function(req, res){
 });
 
 
-router.get("/index", function(req, res){
-	res.render("index",);
-});
-
-
 //login post request:
 router.post("/index", function(req, res){
 	const email = req.body.email;
