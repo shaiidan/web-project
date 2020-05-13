@@ -1,8 +1,9 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-use-before-define */
 const express = require ("express");
 const router = express.Router();
 const { Connection, Request } = require("tedious");
-const alert = require("alert-node");
+const md5 = require('md5');
 const registerUtils = require ('../models/registerUtils');
 
 
@@ -15,9 +16,9 @@ router.post("/registerowner", function(req, res){
 	const id = req.body.id;
 	const full_name = req.body.name;
 	const email = req.body.email;
-	const password = req.body.password;
+	const password = md5(req.body.password);
 	const phone = req.body.phone;
-	const confirm = req.body.confirm;
+	const confirm = md5(req.body.confirm);
 	if(confirm!=password){
 		res.render('registerowner', {
 			msg: 'Password are not match, try again'
