@@ -57,8 +57,8 @@ class Orders
             FROM [dbo].[Order] AS a , RentalHousingUnit AS b, StudentUser as s, (SELECT unitID, count(*) as count
                                                                                 FROM [dbo].[Order] 
                                                                                 GROUP BY unitID) AS c
-            WHERE a.unitID = c.unitID AND a.status=1 AND a.unitID >=`+unitID+` AND b.numberOfrooms >= `+numberOfRooms+` 
-            AND b.unitId >=`+unitID+` AND a.unitID=b.unitId AND a.totalPrice  >= `+fromPrice+` 
+            WHERE a.unitID = c.unitID AND a.status=1 AND a.unitID =`+unitID+` AND b.numberOfrooms >= `+numberOfRooms+` 
+            AND b.unitId =`+unitID+` AND a.unitID=b.unitId AND a.totalPrice  >= `+fromPrice+` 
             AND b.city = `+location+`  AND b.unitTypes = `+unitTypes+` AND a.studentId = s.ID 
             AND a.orderNumber = `+orderNumber+` AND
             (a.startOrder>=` +startDate+ `AND a.endOrder <= ` +endDate+`) AND a.apartmentOwnerId = ` + apartmentOwnerId,
