@@ -8,7 +8,7 @@ const authenticate = require("./authenticate").redirectHome;
 router.get("/uploadUnit",authenticate,function(req, res){
     const id = req.query.id; 
     const full_name = req.query.fullName;
-    if(user_id===req.session.userId){
+    if(id===req.session.userId){
         return res.render('uploadUnit',{id:id,fullName:full_name});
     }
     else{

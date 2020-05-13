@@ -12,7 +12,7 @@ router.get("/ApartmentOwnerHomepage",authenticate,function(req, res){
     }
     const id = req.query.id;
     const full_name = req.query.fullName;
-    if(user_id===req.session.userId){
+    if(id===req.session.userId){
         try{
             units.getRentalHousingUnitsByOwnerId(id, function(result){
                 if(result != false){
