@@ -21,10 +21,9 @@ const config = {
 };
 class Orders
 {
-  static getFilteredTable(apartmentOwnerId, unitID, startDate, endDate, location, numberOfRooms, fromPrice, unitTypes, orderNumber, callback){
+  static getFilteredTable(apartmentOwnerId, startDate, endDate, location, numberOfRooms, fromPrice, unitTypes, orderNumber, callback){
     var months = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" ]; 
-    if(unitID == " ")
-      unitID = 1;
+    
     
     if(location == "' '")
       location='b.city';  
@@ -57,8 +56,8 @@ class Orders
             FROM [dbo].[Order] AS a , RentalHousingUnit AS b, StudentUser as s, (SELECT unitID, count(*) as count
                                                                                 FROM [dbo].[Order] 
                                                                                 GROUP BY unitID) AS c
-            WHERE a.unitID = c.unitID AND a.status=1 AND a.unitID =`+unitID+` AND b.numberOfrooms >= `+numberOfRooms+` 
-            AND b.unitId =`+unitID+` AND a.unitID=b.unitId AND a.totalPrice  >= `+fromPrice+` 
+            WHERE a.unitID = c.unitID AND a.status=1 AND b.numberOfrooms >= `+numberOfRooms+` 
+             AND a.unitID=b.unitId AND a.totalPrice  >= `+fromPrice+` 
             AND b.city = `+location+`  AND b.unitTypes = `+unitTypes+` AND a.studentId = s.ID 
             AND a.orderNumber = `+orderNumber+` AND
             (a.startOrder>=` +startDate+ `AND a.endOrder <= ` +endDate+`) AND a.apartmentOwnerId = ` + apartmentOwnerId,
