@@ -5,15 +5,21 @@ const router = experss.Router();
 const User = require("../models/userInfo");
 
 
-router.get("/apartmentOwnerUserProfile", function(req,res){
+
+router.get("/apartmentOwnerUserProfile",authenticate, function(req,res){
     const user_id = req.query.id;
     const full_name = req.query.fullName;
 
-    console.log(user_id);
-    User.getapartmentOwnerUserrInfo(user_id, function(result){ //במקום 12 צריך להיות פונקציה שלוקחת את הת.ז של בעל הדירה שמחובר!
-       res.render("apartmentOwnerUserProfile",{fullName:full_name,id:user_id,rows:result});
-   });
+   if(user_id===req.session.userId){
+        User.getapartmentOwnerUserrInfo(user_id, function(result){ 
+            res.render("apartmentOwnerUserProfile", {fullName:full_name,id:user_id,rows:result});
+         });
+     }
+     else{
+         res.render("Error");
+    }
 });
+
 router.post("/apartmentOwnerUserProfile", function(req,res){
     const user_id = req.body.id;
     const FullName =req.body.FullName;
