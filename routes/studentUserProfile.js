@@ -4,15 +4,21 @@ const experss = require("express");
 const router = experss.Router();
 const User = require("../models/userInfo");
 
-router.get("/studentUserProfile", function(req,res){
+router.get("/studentUserProfile",authenticate, function(req,res){
     const user_id = req.query.id;
     const full_name = req.query.fullName;
 
-    console.log(user_id);
-    User.getStudentUserInfo(user_id, function(result){ //במקום 12 צריך להיות פונקציה שלוקחת את הת.ז של בעל הדירה שמחובר!
-       res.render("studentUserProfile", {fullName:full_name,id:user_id,rows:result});
-   });
+   if(user_id===req.session.userId){
+        User.getStudentUserInfo(user_id, function(result){ 
+            res.render("studentUserProfile", {fullName:full_name,id:user_id,rows:result});
+         });
+     }
+     else{
+         res.render("Error");
+    }
 });
+
+
 router.post("/studentUserProfile", function(req,res){
     const user_id = req.body.id;
     const FullName =req.body.FullName;
