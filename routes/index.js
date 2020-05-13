@@ -7,7 +7,7 @@ const md5 = require('md5');
 app.set("view engine", "ejs");
 
 router.get("/", function(req, res){
-	res.clearCookie("samiroom");
+	
 	res.render("index");
 });
 
