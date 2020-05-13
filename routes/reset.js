@@ -2,7 +2,7 @@ const express = require ("express");
 const router = express.Router();
 const registerUtils = require ('../models/registerUtils');
 const nodemailer = require('nodemailer');
-
+const md5 = require('md5');
 
 router.get('/reset/:token', function(req, res) {
     res.render('reset',{param:req.params, msg:''});
@@ -10,8 +10,8 @@ router.get('/reset/:token', function(req, res) {
  
 router.post('/reset/:token', function(req, res) {
     const email = req.params.token;
-    const password = req.body.Password; 
-    const confirm = req.body.confirm;
+    const password = md5(req.body.Password); 
+    const confirm = md5(req.body.confirm);
      
     if(password===confirm){
         registerUtils.updatePassword(email,password);
