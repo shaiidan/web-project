@@ -29,8 +29,7 @@ router.post("/rentalHistory", function(req,res){
     const fromPrice = req.body.totalPrice;
     const unitTypes = "'"+req.body.Unittype+"'";
     const orderNumber = req.body.orderNumber;
-    console.log( user_id, unitID, startDate, endDate, location, numberOfRooms, fromPrice, unitTypes, orderNumber);
-    Orders.getFilteredTable(user_id, unitID, startDate, endDate, location, numberOfRooms, fromPrice, unitTypes, orderNumber ,function(result){ //במקום 12 צריך להיות פונקציה שלוקחת את הת.ז של בעל הדירה שמחובר!
+    Orders.getFilteredTable(user_id, startDate, endDate, location, numberOfRooms, fromPrice, unitTypes, orderNumber ,function(result){ //במקום 12 צריך להיות פונקציה שלוקחת את הת.ז של בעל הדירה שמחובר!
         res.render('rentalHistory',{fullName:full_name,id:user_id,rows:result});
     });
 
