@@ -2,7 +2,7 @@
 const experss = require("express");
 const router = experss.Router();
 const Orders = require("../src/Orders");
-
+const authenticate = require("./authenticate").redirectHome;
 
 router.get("/rentalHistory",authenticate, function(req,res){
     const user_id = req.query.id;
