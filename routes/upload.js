@@ -6,7 +6,6 @@ const router = express.Router();
 const app = express();
 const nodemailer = require('nodemailer');
 const fs = require('fs');
-const alert = require("alert-node");
 app.use(express.static("./public"));
 
 // Set The Storage Engine
@@ -20,7 +19,7 @@ const storage = multer.diskStorage({
 // Init Upload
 const upload = multer({
   storage: storage,
-  limits:{fileSize: 100000000000},
+  limits:{fileSize: 10000000},
   fileFilter: function(req, file, cb){
     checkFileType(file, cb);
   }
@@ -46,19 +45,21 @@ router.use(express.static('./public'));
 
 
 router.get("/upload",function(req, res){
-
   const email = req.query.email;
-  res.render('upload',{email:email});
+  res.render('upload',{email:email, msg:req.query.msg});
 });
 
 router.post('/upload', (req, res) => {
 const email=req.body.email;
+console.log("email");
   upload(req, res, (err) => {
     if(err){
-      alert("Try again");
+      console.log(req.body.email);
+      res.redirect("/upload?email="+req.body.email+'&msg='+'Try to upload again');
     } else {
       if(req.file == undefined){
-        alert("Try again");
+        console.log(req.body.email);
+        res.redirect("/upload?email="+req.body.email+'&msg='+'Try again');
       } else {
         
         const output = `
