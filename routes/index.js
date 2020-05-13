@@ -1,15 +1,19 @@
-/* eslint-disable no-use-before-define */
 const express = require ("express");
 const router = express.Router();
 const { Connection, Request } = require("tedious");
 const dbConfig = require ('../models/dbconfig');
-const alert = require("alert-node");
 const app = express();
 app.set("view engine", "ejs");
 
 router.get("/", function(req, res){
 	res.render("index",);
 });
+
+
+router.get("/index", function(req, res){
+	res.render("index",);
+});
+
 
 //login post request:
 router.post("/index", function(req, res){
@@ -40,7 +44,6 @@ router.post("/index", function(req, res){
 						res.render('index', {
 							msg: 'Login faild, email is not exist'
 						  });
-
 					}
 					else
 					{
@@ -67,7 +70,6 @@ router.post("/index", function(req, res){
 									}
 								}
 							});
-
 							const user = id;
 							if(password == pass){
 								if(exp< Date.now()){
@@ -115,7 +117,6 @@ router.post("/index", function(req, res){
 						res.render('index', {
 							msg: 'Login faild, email is not exist'
 						  });
-
 						connection.close();
 					}
 					else
