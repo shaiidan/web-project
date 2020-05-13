@@ -65,6 +65,8 @@ router.post("/summaryPayment", function(req, res, file){
 		orders.sendOwnerMail(orderID,function(result){
 		});
 		orders.updateOrderStatus(orderID,function(chack){
+			unit.changeStatusForOrder(unit_id,1,function(result) {
+			});
 			unit.updatePopularCount(unit_id,function(resul){
 			});
 			res.redirect('/studentHomePage?id='+user_id+"&fullName="+full_name);
