@@ -4,7 +4,6 @@ const path = require("path");
 const storage = multer.diskStorage({
     destination: './public/uploadsImages/',
     filename: function(_req, file, cb){
-        req=null;
         cb(null,"unit" + "-" + Date.now() + 
         path.extname(file.originalname));
     }
@@ -33,7 +32,6 @@ const upload = multer({
         console.log(data.length + ' of ' + file.fieldname + ' arrived............................');
     },
     onFileUploadComplete: function (file, _req, _res) {
-        _req = null;
         console.log(file.fieldname + '........................... uploaded to  ' + file.path);
         done=true;
     }

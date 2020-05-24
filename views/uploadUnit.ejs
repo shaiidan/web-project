@@ -4,6 +4,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 </head>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<style>
+    label{
+        font-size:large;
+    }
+</style>
 
 <body onload="loading()">
 <div class="container mt-5"> 
@@ -53,16 +58,16 @@
                       </select>
                       </div>
                       <div class="form-group">
-                      <label for="="minRentalPeriod ><b>Minmum rental period (months)</b><small style="color:red">&nbsp&nbspThe default is 12 month</small></label>
+                      <label for="minRentalPeriod" ><b>Minmum rental period (months)</b><small style="color:red">&nbsp&nbspThe default is 12 month</small></label>
                       <input class="form-control"  onchange="checkMinMax()" type="number" value="12" name="minRentalPeriod" id="minRentalPeriod" min=1 max=36>
                       </div>
                       <div class="form-group">
-                      <label for="="maxRentalPeriod ><b>Maxmum rental period (months)</b><small style="color:red">&nbsp&nbspThe default is 36 months</small></label>
+                      <label for="maxRentalPeriod" ><b>Maxmum rental period (months)</b><small style="color:red">&nbsp&nbspThe default is 36 months</small></label>
                       <input type="number" onchange="checkMinMax()" class="form-control" value="36" name="maxRentalPeriod" id="maxRentalPeriod" min=1 max=36>
                       </div>
                       <div class="file-field input-field">
                           <div class="btn">
-                              <span>Upload images</span>
+                              <span>Upload images of unit</span>
                               <label for= "uploadImage"><small style="color:red">&nbsp&nbspYou can upload maximun 4 images!</small></label>
                               <input id="uploadImage" name="uploadImage" type="file" multiple>
                             </div>
@@ -74,12 +79,220 @@
                       <label for="descriptionUnit"><b>Description</b></label>
                       <textarea class="form-control" name="descriptionUnit" id="descriptionUnit" rows="5" cols="50"></textarea>
                       </div>
+                      <div class="form-group">
+                          <h3>Attractions</h3>
+                          <label for= "attractionsNumber">Select amount of attractions</label>
+                          <select onchange="addattractions()" class="form-control" id="attractionsNumber" name="attractionsNumber" required>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select> <br>
+                        <div id="attraction1"  class="form-group">
+                            <b style="font-size: medium;"><u>Add attraction number 1</u></b><br><br>
+                            <div class="form-group">
+                                <label for="name_attraction1"><b>Attraction's name:</b></label>
+                                <input required type="text" class="form-control" name="name_attraction1" id="name_attraction1">
+                            </div>
+                            <div class="form-group">
+                                <label for="discount1"><b>Attraction's discount:</b></label>
+                                <input required type="number" min="0" max="100" class="form-control" name="discount1" id="discount1" >
+                            </div>
+                            <div class="form-group">
+                                <label for="distance1"><b>Driving distance:</b></label>
+                                <select required class="form-control" id="distance1" name="distance1" >
+                                    <option value="Up to 5 minutes">Up to 5 minutes</option>
+                                    <option value="Up to 15 minutes">Up to 15 minutes</option>
+                                    <option value="Up to 30 minutes">Up to 30 minutes</option>
+                                    <option value="To an hour">To an hour</option>
+                                    <option value="An hour or more">An hour or more</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="description_attraction1"><b>Attraction's description:</b></label>
+                                <input required type="text" class="form-control" name="description_attraction1" id="description_attraction1">
+                            </div>
+                            <div class="file-field input-field">
+                                <div class="btn">
+                                    <span>Upload images of attraction</span>
+                                    <label for= "uploadImage_attraction1"><small style="color:red">&nbsp&nbspYou can upload maximun 4 images!</small></label>
+                                    <input id="uploadImage_attraction1" name="uploadImage_attraction1" type="file" multiple>
+                                  </div>
+                                  <div class="file-path-wrapper">
+                                      <input class="file-path validate" type="text" placeholder="Upload one or more images">
+                                  </div>
+                              </div>
+                      </div><br>
+                      <div id="attraction2"  class="form-group" hidden>
+                        <b style="font-size: medium;"><u>Add attraction number 2</u></b><br><br>
+                        <div class="form-group">
+                            <label for="name_attraction2"><b>Attraction's name:</b></label>
+                            <input type="text" class="form-control" name="name_attraction2" id="name_attraction2">
+                        </div>
+                        <div class="form-group">
+                            <label for="discount2"><b>Attraction's discount:</b></label>
+                            <input type="number" min="0" max="100" class="form-control" name="discount2" id="discount2" >
+                        </div>
+                        <div class="form-group">
+                            <label for="distance2"><b>Driving distance:</b></label>
+                            <select class="form-control" id="distance2" name="distance2" >
+                                <option value="Up to 5 minutes">Up to 5 minutes</option>
+                                <option value="Up to 15 minutes">Up to 15 minutes</option>
+                                <option value="Up to 30 minutes">Up to 30 minutes</option>
+                                <option value="To an hour">To an hour</option>
+                                <option value="An hour or more">An hour or more</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="description_attraction2"><b>Attraction's description:</b></label>
+                            <input type="text" class="form-control" name="description_attraction2" id="description_attraction2">
+                        </div>
+                        <div class="file-field input-field">
+                            <div class="btn">
+                                <span>Upload images of attraction</span>
+                                <label for= "uploadImage_attraction2"><small style="color:red">&nbsp&nbspYou can upload maximun 4 images!</small></label>
+                                <input id="uploadImage_attraction2" name="uploadImage_attraction2" type="file" multiple>
+                              </div>
+                              <div class="file-path-wrapper">
+                                  <input class="file-path validate" type="text" placeholder="Upload one or more images">
+                              </div>
+                          </div>
+                  </div><br>
+                  <div id="attraction3"  class="form-group" hidden>
+                    <b style="font-size: medium;"><u>Add attraction number 3</u></b><br><br>
+                    <div class="form-group">
+                        <label for="name_attraction3"><b>Attraction's name:</b></label>
+                        <input type="text" class="form-control" name="name_attraction3" id="name_attraction3">
+                    </div>
+                    <div class="form-group">
+                        <label for="discount3"><b>Attraction's discount:</b></label>
+                        <input type="number" min="0" max="100" class="form-control" name="discount3" id="discount3" >
+                    </div>
+                    <div class="form-group">
+                        <label for="distance3"><b>Driving distance:</b></label>
+                        <select class="form-control" id="distance3" name="distance3" >
+                            <option value="Up to 5 minutes">Up to 5 minutes</option>
+                            <option value="Up to 15 minutes">Up to 15 minutes</option>
+                            <option value="Up to 30 minutes">Up to 30 minutes</option>
+                            <option value="To an hour">To an hour</option>
+                            <option value="An hour or more">An hour or more</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="description_attraction3"><b>Attraction's description:</b></label>
+                        <input type="text" class="form-control" name="description_attraction3" id="description_attraction3">
+                    </div>
+                    <div class="file-field input-field">
+                        <div class="btn">
+                            <span>Upload images of attraction</span>
+                            <label for= "uploadImage_attraction3"><small style="color:red">&nbsp&nbspYou can upload maximun 4 images!</small></label>
+                            <input id="uploadImage_attraction3" name="uploadImage_attraction3" type="file" multiple>
+                          </div>
+                          <div class="file-path-wrapper">
+                              <input class="file-path validate" type="text" placeholder="Upload one or more images">
+                          </div>
+                      </div>
+              </div><br>
+              <div id="attraction4" hidden class="form-group">
+                <b style="font-size: medium;"><u>Add attraction number 4</u></b><br><br>
+                <div class="form-group">
+                    <label for="name_attraction4"><b>Attraction's name:</b></label>
+                    <input type="text" class="form-control" name="name_attraction4" id="name_attraction4">
+                </div>
+                <div class="form-group">
+                    <label for="discount4"><b>Attraction's discount:</b></label>
+                    <input type="number" min="0" max="100" class="form-control" name="discount4" id="discount4" >
+                </div>
+                <div class="form-group">
+                    <label for="distance4"><b>Driving distance:</b></label>
+                    <select class="form-control" id="distance4" name="distance4" >
+                        <option value="Up to 5 minutes">Up to 5 minutes</option>
+                        <option value="Up to 15 minutes">Up to 15 minutes</option>
+                        <option value="Up to 30 minutes">Up to 30 minutes</option>
+                        <option value="To an hour">To an hour</option>
+                        <option value="An hour or more">An hour or more</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="description_attraction4"><b>Attraction's description:</b></label>
+                    <input type="text" class="form-control" name="description_attraction4" id="description_attraction4">
+                </div>
+                <div class="file-field input-field">
+                    <div class="btn">
+                        <span>Upload images of attraction</span>
+                        <label for= "uploadImage_attraction4"><small style="color:red">&nbsp&nbspYou can upload maximun 4 images!</small></label>
+                        <input id="uploadImage_attraction4" name="uploadImage_attraction4" type="file" multiple>
+                      </div>
+                      <div class="file-path-wrapper">
+                          <input class="file-path validate" type="text" placeholder="Upload one or more images">
+                      </div>
+                  </div>
+          </div><br>
+          <div id="attraction5" hidden  class="form-group">
+            <b style="font-size: medium;"><u>Add attraction number 5</u></b><br><br>
+            <div class="form-group">
+                <label for="name_attraction5"><b>Attraction's name:</b></label>
+                <input type="text" class="form-control" name="name_attraction5" id="name_attraction5">
+            </div>
+            <div class="form-group">
+                <label for="discount5"><b>Attraction's discount:</b></label>
+                <input  type="number" min="0" max="100" class="form-control" name="discount5" id="discount5" >
+            </div>
+            <div class="form-group">
+                <label for="distance5"><b>Driving distance:</b></label>
+                <select class="form-control" id="distance5" name="distance5" >
+                    <option value="Up to 5 minutes">Up to 5 minutes</option>
+                    <option value="Up to 15 minutes">Up to 15 minutes</option>
+                    <option value="Up to 30 minutes">Up to 30 minutes</option>
+                    <option value="To an hour">To an hour</option>
+                    <option value="An hour or more">An hour or more</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="description_attraction5"><b>Attraction's description:</b></label>
+                <input type="text" class="form-control" name="description_attraction5" id="description_attraction5">
+            </div>
+            <div class="file-field input-field">
+                <div class="btn">
+                    <span>Upload images of attraction</span>
+                    <label for= "uploadImage_attraction5"><small style="color:red">&nbsp&nbspYou can upload maximun 4 images!</small></label>
+                    <input id="uploadImage_attraction5" name="uploadImage_attraction5" type="file" multiple>
+                  </div>
+                  <div class="file-path-wrapper">
+                      <input class="file-path validate" type="text" placeholder="Upload one or more images">
+                  </div>
+              </div>
+      </div>
                       <button type="submit" class="btn btn-dark">Upload</button>
               </form>
           </div>
      </body>
 <%} %>
 <script>
+
+    function addattractions()
+    {
+        var attractions_number = parseInt(document.getElementById("attractionsNumber").value);
+        console.log(attractions_number);
+        for(var i=0;i<attractions_number;i++)
+        {
+            document.getElementById("attraction"+(i+1)).hidden = false;
+            document.getElementById("name_attraction"+(i+1)).required = true;
+            document.getElementById("discount"+(i+1)).required = true;
+            document.getElementById("distance"+(i+1)).required = true;
+            document.getElementById("description_attraction"+(i+1)).required = true;
+        }
+        for(var i=attractions_number+1; i<=5; i++)
+        {
+            document.getElementById("attraction"+i).hidden = true;
+            document.getElementById("name_attraction"+i).required = false;
+            document.getElementById("discount"+i).required = false;
+            document.getElementById("distance"+i).required = false;
+            document.getElementById("description_attraction"+i).required = false;   
+        }
+    }
+
     // for error 
     function loading()
     {

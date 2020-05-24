@@ -40,46 +40,6 @@ class newOrders{
         });
       }
  
-  static getNextOrderId(callback)
-  {
-      let connection = new Connection(config);       
-        connection.on("connect", err => {
-        if (err) {
-          console.error(err.message);
-          connection.close();
-          return callback(false);
-        } 
-        else
-        { 
-            const request = new Request( 
-                `SELECT IDENT_CURRENT('[dbo].[Order]')`,
-              (err, rowCount,rows) => {
-                if (err) {
-                  console.error(err.message);
-                  connection.close();
-                  return callback(false);
-                  
-                } else {
-                  connection.close();
-                  if(rowCount != 0){
-                    var number;
-                    rows.forEach(e =>{
-                      e.forEach(column =>{
-                        number = column.value;
-                      });
-                    });
-                    return callback(number+1);
-                  } else{
-                    return callback(false);
-                  }
-                }
-              }
-            );
-            connection.execSql(request);
-        }
-      });   
-  }
-
   static deleteOrder(orderID,callback)
     {
         let connection = new Connection(config);
@@ -299,15 +259,21 @@ class newOrders{
       } 
       else
       {
-        var query =  `INSERT INTO [Order](unitID,apartmentOwnerId,studentId,totalPrice,startOrder,endOrder,totalTime,status)
-        VALUES(` +
-        order.unitID + ",'"
-        + order.apartmentOwnerId +"','"+ order.studentID +"'," + order.totalPrice + ",'" +
-        order.startOrderDate + "','" + order.endOrderDate + "'," + order.totalTime +
-        "," + 0 + ")";
+        var query =  `SET XACT_ABORT ON;
+        BEGIN TRANSACTION
+           DECLARE @DataID int;
+           INSERT INTO [Order](unitID,apartmentOwnerId,studentId,totalPrice,startOrder,endOrder,totalTime,status)
+           VALUES(`+ order.unitID+`,'`+order.apartmentOwnerId+`',
+           '`+order.studentID+`',`+order.totalPrice+`,'`+order.startOrderDate+`',
+           '`+order.endOrderDate+`',`+order.totalTime+`,0)
+           SELECT @DataID = scope_identity();
+           SELECT [Order].[orderNumber]
+           from [order]
+           where [Order].[orderNumber] = @DataID
+        COMMIT`
           const request =  new Request( 
              query
-            ,(err, rowCount) => {
+            ,(err, rowCount,rows) => {
               if (err) {
                 console.error(err.message);
                 connection.close();
@@ -315,8 +281,17 @@ class newOrders{
               } else {
                 connection.close();
                 if(rowCount != 0){
-                  return callback(true);
-                } else{
+                  var order_number;
+                  rows.forEach(element => {
+                    element.forEach(column =>{
+                      if(column.metadata.colName == 'orderNumber'){
+                        order_number = column.value;
+                      }
+                    });
+                  });
+                  return callback(order_number);
+                }
+                else{
                   return callback(false);
                 }
               }
@@ -377,3 +352,4 @@ class newOrders{
 }
 
 module.exports = newOrders;
+

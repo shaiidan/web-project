@@ -60,9 +60,11 @@ router.post("/StudentHomepage",function(req,res){
     if(typeof start_date !== 'undefined' && typeof end_date !== 'undefined'){
         try{
             units.getAvailableUnits(start_date,end_date,min_period,filter,function(result){ 
-                res.render('StudentHomepage',{startDate:start_date,endDate:end_date,fullName:full_name,
-                    id:id,rows:result,city:city,numberOfRooms:number_of_rooms,
-                    unitTypes:unit_types,fromPrice:from_price,toPrice:to_price
+                units.getAttractions(function(attractions){
+                    res.render('StudentHomepage',{startDate:start_date,endDate:end_date,fullName:full_name,
+                        id:id,rows:result,city:city,numberOfRooms:number_of_rooms,
+                        unitTypes:unit_types,fromPrice:from_price,toPrice:to_price,attractions:attractions
+                    });
                 });
             });
         }
@@ -95,34 +97,20 @@ router.put("/StudentHomePage",function(req,res){
     const total_price = (price_per_month / MONTH_TO_DAY) * total_time;
     
     try{
-        orders.getNextOrderId(function(order_id){
-            if(order_id != false){
-                var newOrder = new order(order_id,total_price,owner_id,null,null,unit_id,null,null,full_name,student_id,start_date,
-                    end_date,total_time,0,null,null,null);
-                    orders.addOrder(newOrder,function(result){
-                        //success
-                        if(result != false){
-                            units.changeStatusForOrder(unit_id,0,function(result){
-                                if(result != false){
-                                    res.json({status:200, orderID:order_id,fullName:full_name,id:student_id});
-                                }
-                                else{
-                                    console.log("Error! The userId "+ student_id +"unsuccess to order!");
-                                    res.json({status:300}); // error!! 
-                                }
-                            });
-                        }
-                        else{
-                            console.log("Error! The userId "+ student_id +"unsuccess to order!");
-                            res.json({status:300}); // error!! 
-                        }
-                    });
+        var newOrder = new order(null,total_price,owner_id,null,null,unit_id,null,null,full_name,student_id,start_date,
+            end_date,total_time,0,null,null,null);
+        orders.addOrder(newOrder,function(order_number){
+            //success
+            if(order_number != false)
+            {
+                const order_id = order_number;
+                res.json({status:200,orderID:order_id,fullName:full_name,id:student_id});
             }
             else{
                 console.log("Error! The userId "+ student_id +"unsuccess to order!");
                 res.json({status:300}); // error!! 
             }
-        });
+        });    
     }
     catch(e){
         console.log("Error!!" +e);

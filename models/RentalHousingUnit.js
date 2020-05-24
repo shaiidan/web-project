@@ -1,3 +1,4 @@
+const Attraction = require("./Attraction");
 
 class RentalHousingUnit
 {
@@ -17,6 +18,7 @@ class RentalHousingUnit
     #unitTypes;
     #descriptionApartemnt;
     #numberOfTime;
+ 
 
     constructor(unit_id,owner_id,city,address,number_of_rooms, price_per_month,unit_types, number_of_times,publishing_date,
         status,max_rental_period,min_rental_period,description_apartemnt,full_name,phone_number)
@@ -119,7 +121,7 @@ class RentalHousingUnit
         return this.#descriptionApartemnt;
     }
 
-    set Status(status)
+    setStatus(status)
     {
         if(typeof status !== 'undefined')
         {
@@ -129,7 +131,7 @@ class RentalHousingUnit
         return false;
     }
 
-    set Pictures(pic){
+    setPictures(pic){
 
         if(typeof pic !== 'undefined'){
             this.#pictures = pic;

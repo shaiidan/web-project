@@ -52,8 +52,8 @@
                     <td><%= rows[i].PricePerMonth %></td>
                     <td><%= rows[i].Status %></td>
                 <span style="display: none;" id="desc<%=i%>">
-                    <h4>Details:</h4>
-                    <br>
+                    <b style="font-size: large;"><u>Details</u></b>
+                    <br><br>
                     <div>
                     <p>
                         <b>Unit id: </b> <%= rows[i].UnitID %>.<br>
@@ -79,6 +79,31 @@
                             %>
                                 <img width="200" height="170" src="uploadsImages/<%=pic[j]%>">
                             <%}%>
+                        </div>   
+                        <div>
+                            <% if(typeof attractions !== 'undefined' ) 
+                            {
+                                var count=1;%>
+                                <br><b style="font-size: large;"><u>Attracations</u></b>
+                                <br>
+                                <% for(var j=0; j< attractions.length; j++)
+                                { 
+                                    if(attractions[j].UnitId == rows[i].UnitID){%>
+                                <p><br>
+                                <b style="font-size: medium;"><u>The attraction number <%=count%></u></b><br>
+                                  <b>Attraction's name:  </b><%=attractions[j].NameAttraction%><br>
+                                  <b>Attraction's discount:  </b><%=attractions[j].Discount%>%<br>
+                                  <b>Attraction's drivingDistance:  </b><%=attractions[j].DrivingDistance%><br>
+                                  <b>Attraction's Description:  </b><%=attractions[j].Description%><br>
+                                  <br>
+                                  <% var pic = attractions[j].Pictures; 
+                                  pic = pic.split(",");
+                                  for(var h=0 ; h< pic.length-1; h++)
+                                  { %>
+                                     <img width="200" height="170" src="uploadsImages/<%=pic[h]%>">
+                                  <%}%>
+                                </p>
+                            <% count+=1;}}}%>
                         </div>
                         <br>
                         <input type="hidden" value="<%=fullName %>" id="fullName" name="fullName">

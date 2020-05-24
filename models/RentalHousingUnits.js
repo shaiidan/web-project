@@ -1,6 +1,7 @@
 const RentalHousingUnit = require("./RentalHousingUnit");
 const { Connection, Request } = require("tedious");
 const config = require("./dbconfig");
+const Attraction = require("./Attraction");
 
 class RentalHousingUnits
 {
@@ -50,7 +51,7 @@ class RentalHousingUnits
       if(status != null)
       {
         let connection = new Connection(config);
-      connection.on("connect", err => {
+        connection.on("connect", err => {
           if (err) {
             console.error("Error sql: " +err.message);
             connection.close();
@@ -59,7 +60,7 @@ class RentalHousingUnits
           else
           {
               const request = new Request( 
-                  "UPDATE RentalHousingUnit SET UnitStatus = '"+status+"' WHERE UnitId= " +unit_id,
+                  "UPDATE RentalHousingUnit SET UnitStatus = '"+status+"' WHERE unitId= " +unit_id,
                 (err, rowCount) => {
                   if (err) {
                     console.error("Error sql: "+ err.message);
@@ -130,26 +131,42 @@ class RentalHousingUnits
     }
 
     // add unit to DB, unit is instance of RentalHousingUnit
-    static addUnit(unit,callback)
+    static addUnit(unit,attractions,callback)
     {
-        if(unit instanceof RentalHousingUnit)
+      if(unit instanceof RentalHousingUnit && attractions instanceof Array)
+      {
+        var add_attractions = "";
+        for(var i=0; i< attractions.length; i++)
         {
-            let connection = new Connection(config);
-            connection.on("connect", err => {
-            if (err) {
-              console.error("Error sql: " +err.message);
-              connection.close();
-              return callback(false);
-            } 
-            else
+          if(attractions[i] instanceof Attraction)
             {
-              const query = `insert into RentalHousingUnit(apartmentOwnerId,city,UnitAddress,pricePerMonth,unitTypes,
+              add_attractions+= `INSERT into Attraction(attractionName,unitID,discount,distance,description,pictures)
+              VALUES('`+attractions[i].NameAttraction+`',@DataID,`+
+              attractions[i].Discount +`,'` +attractions[i].DrivingDistance +`','`+attractions[i].Description+`',
+              '`+attractions[i].Pictures+ `')\n`;
+            }
+        }    
+        let connection = new Connection(config);
+        connection.on("connect", err => {
+          if (err) {
+            console.error("Error sql: " +err.message);
+            connection.close();
+            return callback(false);
+          } 
+          else
+          {
+              const query = `SET XACT_ABORT ON;
+              BEGIN TRANSACTION
+                 DECLARE @DataID int;  
+                 insert into RentalHousingUnit(apartmentOwnerId,city,UnitAddress,pricePerMonth,unitTypes,
                 minRentalPeriod,maxRentalPeriod,pictures,numberOfrooms,descriptionApartment)
               values (` +
               unit.ApartmentOwnerId + ",'" + unit.City + "','"
               + unit.Adderss +"',"+ unit.PricePerMonth +",'" + unit.UnitTypes + "'," +
               unit.MinRentalPeriod + ',' + unit.MaxRentalPeriod + ",'" + unit.Pictures +
-              "'," + unit.NumberOfRooms + ",'" + unit.DescriptionApartment + "')";
+              "'," + unit.NumberOfRooms + ",'" + unit.DescriptionApartment + `')
+              SELECT @DataID = scope_identity();  ` + add_attractions +    
+              `COMMIT`;
                 const request =  new Request( query ,(err, rowCount) => {
                     if (err) {
                       console.error("Error sql: " +err.message);
@@ -304,8 +321,8 @@ class RentalHousingUnits
                   var unit = new RentalHousingUnit(unitId,owner_id,city,address,number_of_rooms,price_per_month,
                     unit_types,number_of_times,publishing_date,status,max_rental_period,min_rental_period,
                     description_apartment,full_name,phone_number);
-                    unit.Pictures = pic;
-                  units.push(unit); 
+                    unit.setPictures(pic);
+                    units.push(unit); 
               });
               return callback(units);
             }
@@ -318,7 +335,6 @@ class RentalHousingUnits
 
   static getRentalHousingUnitsByOwnerId(owner_id,callback)
   {
-    console.log("in function:"+owner_id);
     let connection = new Connection(config);
       connection.on("connect", err => {
         if (err) {
@@ -432,11 +448,9 @@ class RentalHousingUnits
                   });
                   var unit = new RentalHousingUnit(unitId,owner_id,city,address,number_of_rooms,price_per_month,
                     unit_types,number_of_times,publishing_date,status,max_rental_period,min_rental_period,description_apartment,null,null);
-                    unit.Pictures = pic;
-                   
-                  units.push(unit); 
+                    unit.setPictures(pic);
+                    units.push(unit); 
               });
-
               return callback(units);
             }
           }
@@ -559,7 +573,7 @@ class RentalHousingUnits
                   unit = new RentalHousingUnit(unitId,owner_id,city,address,number_of_rooms,price_per_month,
                     unit_types,number_of_times,publishing_date,status,max_rental_period,min_rental_period,
                     description_apartment,null,null); 
-                    unit.Pictures = pic;
+                    unit.setPictures(pic);
               });
               return callback(unit);
             }
@@ -615,6 +629,153 @@ class RentalHousingUnits
       });
   }
 
+  static getAttractions(callback)
+  {
+    let connection = new Connection(config);
+      connection.on("connect", err => {
+        if (err) {
+          connection.close();
+          console.error("Error sql: " +err.message);
+          return callback(false);
+        } else {
+        const request = new Request( 
+          `SELECT * from [dbo].[Attraction]`,
+          (err, rowCount,rows) => {
+            if (err) {
+              connection.close();
+              console.error("Error sql: " +err.message);
+              return callback(false);
+            } 
+            else {
+              connection.close();
+              if(rowCount == 0)
+                 return callback(null);
+              var attractions = [];
+              rows.forEach(element => {
+                var unit_id,name_attraction,discount,driving_distance,description,pictures; 
+                element.forEach(column =>{
+                  switch(column.metadata.colName)
+                  {
+                    case 'attractionName': 
+                    {
+                      name_attraction = column.value;
+                      break;
+                    }
+                    case 'unitID': 
+                    {
+                      unit_id = column.value;
+                      break;
+                    }
+                    case 'discount': 
+                    {
+                      discount = column.value;
+                      break;
+                    }
+                    case 'distance': 
+                    {
+                      driving_distance = column.value;
+                      break;
+                    }
+                    
+                    case 'description': 
+                    {
+                      description = column.value;
+                      break;
+                    }
+                    case 'pictures': 
+                    {
+                      pictures = column.value;
+                      break;
+                    }
+                    
+                  }// end of switch
+                  });
+                  var attraction = new Attraction(name_attraction,unit_id,discount,driving_distance,description,pictures);
+                  attractions.push(attraction); 
+              });
+              return callback(attractions);
+            }
+          }
+        );
+        connection.execSql(request);
+      }
+    });
+  }
+
+  // get all attractions of the unit by unit id, 
+  //if unit id is not exist so return null, if unit id is not type of int return false 
+  static getAttractionsByUnitId(unit_id,callback)
+  {
+    let connection = new Connection(config);
+      connection.on("connect", err => {
+        if (err) {
+          connection.close();
+          console.error("Error sql: " +err.message);
+          return callback(false);
+        } else {
+        const request = new Request( 
+          `SELECT * from [dbo].[Attraction] where unitID = `+unit_id,
+          (err, rowCount,rows) => {
+            if (err) {
+              connection.close();
+              console.error("Error sql: " +err.message);
+              return callback(false);
+            } 
+            else {
+              connection.close();
+              if(rowCount == 0)
+                 return callback(null);
+              var attractions = [];
+              rows.forEach(element => {
+                var unit_id,name_attraction,discount,driving_distance,description,pictures; 
+                element.forEach(column =>{
+                  switch(column.metadata.colName)
+                  {
+                    case 'attractionName': 
+                    {
+                      name_attraction = column.value;
+                      break;
+                    }
+                    case 'unitID': 
+                    {
+                      unit_id = column.value;
+                      break;
+                    }
+                    case 'discount': 
+                    {
+                      discount = column.value;
+                      break;
+                    }
+                    case 'distance': 
+                    {
+                      driving_distance = column.value;
+                      break;
+                    }
+                    
+                    case 'description': 
+                    {
+                      description = column.value;
+                      break;
+                    }
+                    case 'pictures': 
+                    {
+                      pictures = column.value;
+                      break;
+                    }
+                    
+                  }// end of switch
+                  });
+                  var attraction = new Attraction(name_attraction,unit_id,discount,driving_distance,description,pictures);
+                  attractions.push(attraction); 
+              });
+              return callback(attractions);
+            }
+          }
+        );
+        connection.execSql(request);
+      }
+    });
+  }
 } // end of class
 
 module.exports = RentalHousingUnits;
