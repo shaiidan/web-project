@@ -48,12 +48,12 @@ router.get("/summaryPayment",authenticate, function(req, res){
 		catch(e){
 			console.log("Error!!"+e);
 			orders.getUnitIDfromOrderID(order_id,function(unitID){
-			unit.changeStatusForOrder(unitID,1,function()
-					{
-						orders.deleteOrder(order_id,function(){
-							res.redirect('/studentHomePage?id='+user_id+"&fullName="+full_name,404);});
-						});
+				unit.changeStatusForOrder(unitID,1,function()
+				{
+					orders.deleteOrder(order_id,function(){
+						res.redirect('/studentHomePage?id='+user_id+"&fullName="+full_name,404);});
 					});
+				});
 		}
 	}
 	else{
@@ -68,25 +68,28 @@ router.post("/summaryPayment", function(req, res){
 	const user_id = req.body.id;
 	const full_name = req.body.fullName;
 
+	
 	orders.getUnitIDfromOrderID(orderID ,function(unit_id){
+		// send mail to apartment owner
 		orders.sendOwnerMail(orderID,function(result){
 		});
+		// get attractions for send them to the student
 		unit.getAttractionsByUnitId(unit_id, function(attr){
 			orders.getOrder(orderID, function(result1){
-				
+				// send mail to student with order details and attractions of the unit 
 				orders.sendStudentMail(orderID, user_id, result1.unitCity, result1.unitAdress, result1.startOrderDate, result1.endOrderDate, result1.totalPrice, attr, function(result){
 				});
 			});
-
 		});
-
+		// update status 
 		orders.updateOrderStatus(orderID,function(chack){
-			unit.changeStatusForOrder(unit_id,1,function(result) {
+			unit.changeStatusForOrder(unit_id,1,function(status) {
+				unit.updatePopularCount(unit_id,function(resul){
+					res.redirect('/studentHomePage?id='+user_id+"&fullName="+full_name);
+				});
 			});
-			unit.updatePopularCount(unit_id,function(resul){
-			});
-			res.redirect('/studentHomePage?id='+user_id+"&fullName="+full_name);
 		});
 	});
 }); 
+
 module.exports = router;
