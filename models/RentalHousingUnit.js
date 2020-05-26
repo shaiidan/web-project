@@ -1,4 +1,3 @@
-const Attraction = require("./Attraction");
 
 class RentalHousingUnit
 {
