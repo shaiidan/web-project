@@ -40,46 +40,6 @@ class newOrders{
         });
       }
  
-  static getNextOrderId(callback)
-  {
-      let connection = new Connection(config);       
-        connection.on("connect", err => {
-        if (err) {
-          console.error(err.message);
-          connection.close();
-          return callback(false);
-        } 
-        else
-        { 
-            const request = new Request( 
-                `SELECT IDENT_CURRENT('[dbo].[Order]')`,
-              (err, rowCount,rows) => {
-                if (err) {
-                  console.error(err.message);
-                  connection.close();
-                  return callback(false);
-                  
-                } else {
-                  connection.close();
-                  if(rowCount != 0){
-                    var number;
-                    rows.forEach(e =>{
-                      e.forEach(column =>{
-                        number = column.value;
-                      });
-                    });
-                    return callback(number+1);
-                  } else{
-                    return callback(false);
-                  }
-                }
-              }
-            );
-            connection.execSql(request);
-        }
-      });   
-  }
-
   static deleteOrder(orderID,callback)
     {
         let connection = new Connection(config);
@@ -285,6 +245,87 @@ class newOrders{
  
   }
 }
+
+static sendStudentMail(orderID, studentID, city, UnitAddress, startOrder, endOrder, totalPrice, attr, callback)
+{
+  {
+    var msg1 = "Congrats!!\n\nYou made a new reservation\n" + "Details - \n" + "Address -" + city + "," + UnitAddress + "\n" + "Rental period - "
+    + startOrder.getDate() + "/" + (startOrder.getMonth()+1) + "/" + startOrder.getFullYear() + "   -   " + endOrder.getDate() + "/" + (endOrder.getMonth()+1) + "/" + endOrder.getFullYear() + "\n" + "at a total price of - " + totalPrice + "\n"
+    var msg2 = "The attractions are:\n";
+  
+    let connection = new Connection(config);
+    for(var i=0; i<attr.length;i++){
+      msg2 +="Attraction number - " + i+1 + "\n" + "Attraction name - " + attr[i].NameAttraction + "\n" + "Discount - " + attr[i].Discount + "%" +"\n";
+      
+    }
+    msg2+= "This is your attractions code: "+orderID+"\n";
+    connection.on("connect", err => {
+      if (err) {
+        console.error(err.message);
+        return callback(false);
+      } else {
+      const request = new Request( 
+        `SELECT [StudentUser].[EmailAddress]
+        FROM [StudentUser]
+        WHERE [StudentUser].[ID]=`+studentID,
+        (err, rowCount,rows) => {
+          if (err) {
+            console.error(err.message);
+            return callback(false);
+          } 
+          else {
+            
+            connection.close();
+            rows.forEach(element => {
+              var StudentMail;
+              element.forEach(column =>{
+                switch(column.metadata.colName)
+                {
+                  case 'EmailAddress': 
+                  {
+                    StudentMail = column.value;
+                    let transporter = nodemailer.createTransport({
+                      service: 'gmail',
+                      // port: 587,
+                         // secure: false,
+                      auth: {
+                        user: 'samiroomgroup3@gmail.com',
+                        pass: 'xnqkgdtufxhewjvb' 
+                      }
+                    });
+                      // send mail with defined transport object
+                    let mailOptions = {
+                      from: process.env.EMAIL_ADRESS, // sender address
+                      to: StudentMail,
+                      subject: "you made a new reservation", // Subject line
+                      text: msg1 + msg2
+                    };
+                    
+                    transporter.sendMail(mailOptions, function(err) {
+                      if(err){
+                        console.log(err);
+                      } else{
+                        console.log('email sent!');
+                      }
+                    });
+            
+                    break;
+                  }
+            };
+            
+          });
+        });
+      
+
+        return callback(true);       
+      }
+            }    );
+      connection.execSql(request);
+    }
+  }); 
+
+}
+}
   
   static addOrder(order,callback)
   {
@@ -299,15 +340,21 @@ class newOrders{
       } 
       else
       {
-        var query =  `INSERT INTO [Order](unitID,apartmentOwnerId,studentId,totalPrice,startOrder,endOrder,totalTime,status)
-        VALUES(` +
-        order.unitID + ",'"
-        + order.apartmentOwnerId +"','"+ order.studentID +"'," + order.totalPrice + ",'" +
-        order.startOrderDate + "','" + order.endOrderDate + "'," + order.totalTime +
-        "," + 0 + ")";
+        var query =  `SET XACT_ABORT ON;
+        BEGIN TRANSACTION
+           DECLARE @DataID int;
+           INSERT INTO [Order](unitID,apartmentOwnerId,studentId,totalPrice,startOrder,endOrder,totalTime,status)
+           VALUES(`+ order.unitID+`,'`+order.apartmentOwnerId+`',
+           '`+order.studentID+`',`+order.totalPrice+`,'`+order.startOrderDate+`',
+           '`+order.endOrderDate+`',`+order.totalTime+`,0)
+           SELECT @DataID = scope_identity();
+           SELECT [Order].[orderNumber]
+           from [order]
+           where [Order].[orderNumber] = @DataID
+        COMMIT`
           const request =  new Request( 
              query
-            ,(err, rowCount) => {
+            ,(err, rowCount,rows) => {
               if (err) {
                 console.error(err.message);
                 connection.close();
@@ -315,8 +362,17 @@ class newOrders{
               } else {
                 connection.close();
                 if(rowCount != 0){
-                  return callback(true);
-                } else{
+                  var order_number;
+                  rows.forEach(element => {
+                    element.forEach(column =>{
+                      if(column.metadata.colName == 'orderNumber'){
+                        order_number = column.value;
+                      }
+                    });
+                  });
+                  return callback(order_number);
+                }
+                else{
                   return callback(false);
                 }
               }
@@ -377,3 +433,4 @@ class newOrders{
 }
 
 module.exports = newOrders;
+

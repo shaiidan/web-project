@@ -69,26 +69,26 @@ describe("Check update unit",()=> {
 
 describe("Check add unit",()=> {
     it("unit is not unit class! send string",()=>{
-        units.addUnit("shaii",function(result){
+        units.addUnit("shaii",null,function(result){
             assert.deepEqual(result,false);
         })     
     });
     
     it("unit is not unit class! send list",()=>{
-        units.addUnit([1,2,3],function(result){
+        units.addUnit([1,2,3],null,function(result){
             assert.deepEqual(result,false);
         })     
     });
     
     it("unit is not unit class! send null",()=>{
-        units.addUnit(null,function(result){
+        units.addUnit(null,null,function(result){
             assert.deepEqual(result,false);
         })     
     });
     
     it("unit is unit class, but send nulls",()=>{
         units.addUnit(new unit(null,null,null,null,null
-            ,null,null,null,null,null,null,null,null,null,null,null),function (result) {
+            ,null,null,null,null,null,null,null,null,null,null,null),null,function (result) {
             assert.deepEqual(result,false);
         })
     });
@@ -172,5 +172,29 @@ describe("Check update popular field",()=> {
             ,null,null,null,null,null,null,null,null,null,null,null),function (result) {
             assert.deepEqual(result,false);
         })
+    });
+});
+
+// check getAttractionsByUnitId
+describe("Check get attractions by unit id",()=> {
+    it("unit id is string, so return false",()=>{
+        units.getAttractionsByUnitId("shai",function (result) {
+            assert.deepEqual(result,false);
+        });
+    });
+    it("unit id is null, so return null",()=>{
+        units.getAttractionsByUnitId(null,function (result) {
+            assert.deepEqual(result,null);
+        });
+    });
+    it("unit id = -1 ,not exist, so return null",()=>{
+        units.getAttractionsByUnitId(-1,function (result) {
+            assert.deepEqual(result,null);
+        });
+    });
+    it("unit id is list, so return false",()=>{
+        units.getAttractionsByUnitId([1,2,3,4],function (result) {
+            assert.deepEqual(result,false);
+        });
     });
 });

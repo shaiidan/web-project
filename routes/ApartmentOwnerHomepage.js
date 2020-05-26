@@ -16,7 +16,10 @@ router.get("/ApartmentOwnerHomepage",authenticate,function(req, res){
         try{
             units.getRentalHousingUnitsByOwnerId(id, function(result){
                 if(result != false){
-                     res.render('ApartmentOwnerHomepage',{fullName:full_name,id:id,rows:result});
+                    units.getAttractions(function(attractions){
+                        res.render('ApartmentOwnerHomepage',{fullName:full_name,id:id,rows:result,attractions:attractions});
+
+                    });
                 }
                 else {
                     console.log("Something wrong happend with request="+req.ip);
@@ -31,7 +34,7 @@ router.get("/ApartmentOwnerHomepage",authenticate,function(req, res){
     }
     else{
         res.render("Error");
-    }
+   }
 });
 
 

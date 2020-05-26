@@ -121,8 +121,8 @@
                     <td><%= rows[i].PricePerMonth %></td>
     
                 <span style="display: none;" id="desc<%=i%>">
-                    <h4>Details:</h4>
-                    <br>
+                  <br><b style="font-size: large;"><u>Details</u></b>
+                    <br><br>
                     <p>
                         <b>Publishing date: </b> <%= rows[i].PublishingDate.getDate() + '/' +(rows[i].PublishingDate.getMonth()+1) + '/' + rows[i].PublishingDate.getFullYear() %>.
                         <br>
@@ -145,6 +145,32 @@
                               <img width="200" height="170" src="uploadsImages/<%=pic[j]%>">
                           <%}%>
                       </div>
+                      <div>
+                        <% if(typeof attractions !== 'undefined' ) 
+                        {
+                            var count=1;%>
+                            <br><b style="font-size: large;"><u>Attracations</u></b>
+                            <br>
+                            <% for(var j=0; j< attractions.length; j++)
+                            { 
+                                if(attractions[j].UnitId == rows[i].UnitID){%>
+                            <p><br>
+                            <b style="font-size: medium;"><u>The attraction number <%=count%></u></b><br>
+                              <b>Attraction's name:  </b><%=attractions[j].NameAttraction%><br>
+                              <b>Attraction's discount:  </b><%=attractions[j].Discount%>%<br>
+                              <b>Attraction's drivingDistance:  </b><%=attractions[j].DrivingDistance%><br>
+                              <b>Attraction's Description:  </b><%=attractions[j].Description%><br>
+                              <br>
+                              <% var pic = attractions[j].Pictures; 
+                              pic = pic.split(",");
+                              for(var h=0 ; h< pic.length-1; h++)
+                              { %>
+                                 <img width="200" height="170" src="uploadsImages/<%=pic[h]%>">
+                              <%}%>
+                            </p>
+                        <% count+=1;}}}%>
+                    </div>
+                    <br>
                       <br>
                         <button id="order" name="order" onclick="orderUnit('<%=startDate%>','<%=endDate%>','<%=fullName%>','<%=id%>','<%=rows[i].UnitID%>','<%= rows[i].ApartmentOwnerId%>','<%=rows[i].PricePerMonth%>')" type="button" class="btn btn-dark">Order</button>
                     </p>
