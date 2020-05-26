@@ -245,6 +245,87 @@ class newOrders{
  
   }
 }
+
+static sendStudentMail(orderID, studentID, city, UnitAddress, startOrder, endOrder, totalPrice, attr, callback)
+{
+  {
+    var msg1 = "Congrats!!\n\nYou made a new reservation\n" + "Details - \n" + "Address -" + city + "," + UnitAddress + "\n" + "Rental period - "
+    + startOrder.getDate() + "/" + (startOrder.getMonth()+1) + "/" + startOrder.getFullYear() + "   -   " + endOrder.getDate() + "/" + (endOrder.getMonth()+1) + "/" + endOrder.getFullYear() + "\n" + "at a total price of - " + totalPrice + "\n"
+    var msg2 = "The attractions are:\n";
+  
+    let connection = new Connection(config);
+    for(var i=0; i<attr.length;i++){
+      msg2 +="Attraction number - " + i+1 + "\n" + "Attraction name - " + attr[i].NameAttraction + "\n" + "Discount - " + attr[i].Discount + "%" +"\n";
+      
+    }
+    msg2+= "This is your attractions code: "+orderID+"\n";
+    connection.on("connect", err => {
+      if (err) {
+        console.error(err.message);
+        return callback(false);
+      } else {
+      const request = new Request( 
+        `SELECT [StudentUser].[EmailAddress]
+        FROM [StudentUser]
+        WHERE [StudentUser].[ID]=`+studentID,
+        (err, rowCount,rows) => {
+          if (err) {
+            console.error(err.message);
+            return callback(false);
+          } 
+          else {
+            
+            connection.close();
+            rows.forEach(element => {
+              var StudentMail;
+              element.forEach(column =>{
+                switch(column.metadata.colName)
+                {
+                  case 'EmailAddress': 
+                  {
+                    StudentMail = column.value;
+                    let transporter = nodemailer.createTransport({
+                      service: 'gmail',
+                      // port: 587,
+                         // secure: false,
+                      auth: {
+                        user: 'samiroomgroup3@gmail.com',
+                        pass: 'xnqkgdtufxhewjvb' 
+                      }
+                    });
+                      // send mail with defined transport object
+                    let mailOptions = {
+                      from: process.env.EMAIL_ADRESS, // sender address
+                      to: StudentMail,
+                      subject: "you made a new reservation", // Subject line
+                      text: msg1 + msg2
+                    };
+                    
+                    transporter.sendMail(mailOptions, function(err) {
+                      if(err){
+                        console.log(err);
+                      } else{
+                        console.log('email sent!');
+                      }
+                    });
+            
+                    break;
+                  }
+            };
+            
+          });
+        });
+      
+
+        return callback(true);       
+      }
+            }    );
+      connection.execSql(request);
+    }
+  }); 
+
+}
+}
   
   static addOrder(order,callback)
   {

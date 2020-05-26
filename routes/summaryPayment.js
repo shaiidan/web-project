@@ -71,6 +71,15 @@ router.post("/summaryPayment", function(req, res){
 	orders.getUnitIDfromOrderID(orderID ,function(unit_id){
 		orders.sendOwnerMail(orderID,function(result){
 		});
+		unit.getAttractionsByUnitId(unit_id, function(attr){
+			orders.getOrder(orderID, function(result1){
+				
+				orders.sendStudentMail(orderID, user_id, result1.unitCity, result1.unitAdress, result1.startOrderDate, result1.endOrderDate, result1.totalPrice, attr, function(result){
+				});
+			});
+
+		});
+
 		orders.updateOrderStatus(orderID,function(chack){
 			unit.changeStatusForOrder(unit_id,1,function(result) {
 			});
@@ -79,5 +88,5 @@ router.post("/summaryPayment", function(req, res){
 			res.redirect('/studentHomePage?id='+user_id+"&fullName="+full_name);
 		});
 	});
-});
+}); 
 module.exports = router;
