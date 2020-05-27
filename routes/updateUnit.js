@@ -63,7 +63,7 @@ router.post("/updateUnit",upload.array("uploadImage",4),function(req,res){
             try{
                 const unit = new RentalHousingUnit(unit_id,owner_id,city,address,number_of_rooms,price_per_month,
                     unit_types,null,null,null,max_rental,min_rental,description_unit,null,null);
-                unit.Pictures = pictures;
+                unit.setPictures(pictures);
                 
                 units.updateUnit(unit,function(result){
                     if(result == true){
