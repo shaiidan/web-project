@@ -21,8 +21,6 @@ function sqlConnection(config_db,callback)
 }
 
 
-
-
 //check connection to sql
 
 describe("check connection to sql",()=> {
