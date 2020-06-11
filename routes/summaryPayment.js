@@ -12,12 +12,12 @@ router.get("/summaryPayment",authenticate, function(req, res){
 		try{
 			orders.getOrder(order_id,function(result){
 				if(result != false){
-					unit.changeStatusForOrder(result.unitID,0,function(unit_status){
+					unit.isChangeStatusForOrder(result.unitID,0,function(unit_status){
 						if(unit_status != false)
 						{
 							res.render('summaryPayment',{order:result,id:user_id,fullName:full_name});
 							setTimeout(() => {
-								unit.changeStatusForOrder(result.unitID,1,function(change_status){
+								unit.isChangeStatusForOrder(result.unitID,1,function(change_status){
 									if(change_status != false){
 										orders.deleteOrder(result.orderID,function(delete_otder){
 											res.end();
@@ -28,7 +28,7 @@ router.get("/summaryPayment",authenticate, function(req, res){
 						else
 						{
 							orders.getUnitIDfromOrderID(order_id,function(unitID){
-								unit.changeStatusForOrder(unitID,1,function()
+								unit.isChangeStatusForOrder(unitID,1,function()
 								{
 									orders.deleteOrder(order_id,function(){
 										res.redirect('/studentHomePage?id='+user_id+"&fullName="+full_name,404);});
@@ -48,7 +48,7 @@ router.get("/summaryPayment",authenticate, function(req, res){
 		catch(e){
 			console.log("Error!!"+e);
 			orders.getUnitIDfromOrderID(order_id,function(unitID){
-				unit.changeStatusForOrder(unitID,1,function()
+				unit.isChangeStatusForOrder(unitID,1,function()
 				{
 					orders.deleteOrder(order_id,function(){
 						res.redirect('/studentHomePage?id='+user_id+"&fullName="+full_name,404);});
@@ -83,7 +83,7 @@ router.post("/summaryPayment", function(req, res){
 		});
 		// update status 
 		orders.updateOrderStatus(orderID,function(chack){
-			unit.changeStatusForOrder(unit_id,1,function(status) {
+			unit.isChangeStatusForOrder(unit_id,1,function(status) {
 				unit.updatePopularCount(unit_id,function(resul){
 					res.redirect('/studentHomePage?id='+user_id+"&fullName="+full_name);
 				});
