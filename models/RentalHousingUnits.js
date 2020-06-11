@@ -218,119 +218,106 @@ class RentalHousingUnits
             } 
             else {
               connection.close();
-              var units =[];
-              rows.forEach(element => {
-                var pic,unitId,owner_id,city,address,number_of_rooms, price_per_month,unit_types,publishing_date,
-                max_rental_period,min_rental_period,description_apartment,status, number_of_times,phone_number,full_name;
-                element.forEach(column =>{
-                  switch(column.metadata.colName)
-                  {
-                    case 'unitId': 
-                    {
-                      unitId = column.value;
-                      break;
-                    }
-                    case 'apartmentOwnerId': 
-                    {
-                      owner_id = column.value;
-                      break;
-                    }
-                    case 'publishingDate': 
-                    {
-                      publishing_date = column.value;
-                      break;
-                    }
-                    case 'FullName': 
-                    {
-                      full_name = column.value;
-                      break;
-                    }
-                    case 'phoneNumber': 
-                    {
-                      phone_number = column.value;
-                      break;
-                    }
-                      
-                    case 'city': 
-                    {
-                      city = column.value;
-                      break;
-                    }
-                    
-                    case 'UnitAddress': 
-                    {
-                      address = column.value;
-                      break;
-                    }
-                    case 'pricePerMonth': 
-                    {
-                      price_per_month = column.value;
-                      break;
-                    }
-                    
-                    case 'unitTypes': 
-                    {
-                      unit_types = column.value;
-                      break;
-                    }
-            
-                    case 'UnitStatus':
-                      { 
-                        status = column.value;
-                        break;
-                      }
-                    case 'unitTypes': 
-                    {
-                      unit_types = column.value;
-                      break;
-                    }
-                    
-                    case 'minRentalPeriod': 
-                    {
-                      min_rental_period = column.value;
-                      break;
-                    }
-                    case 'maxRentalPeriod': 
-                    {
-                      max_rental_period = column.value;
-                      break;
-                    }
-                    case 'numberOfrooms': 
-                    {
-                      number_of_rooms = column.value;
-                      break;
-                    }
-                    case 'numberOftimes': 
-                    {
-                      number_of_times = column.value;
-                      break;
-                    }
-                    
-                    case 'descriptionApartment': 
-                    {
-                      description_apartment = column.value;
-                      break;
-                    }
-                    case 'pictures':
-                    {
-                      pic = column.value;
-                      break;
-                    }
-                  }// end of switch 
-                  });
-                  var unit = new RentalHousingUnit(unitId,owner_id,city,address,number_of_rooms,price_per_month,
-                    unit_types,number_of_times,publishing_date,status,max_rental_period,min_rental_period,
-                    description_apartment,full_name,phone_number);
-                    unit.setPictures(pic);
-                    units.push(unit); 
-              });
-              return callback(units);
+              if(rowCount == 0){
+                return callback(null);
+              }
+              
+              return callback(this.buildUnitFromTable(rows));
             }
           }
         );
         connection.execSql(request);
       }
     }); 
+  }
+
+  // build units from rows
+  static buildUnitFromTable(table)
+  {
+    var units = [];
+    var pic,unitId,owner_id,city,address,number_of_rooms, price_per_month,unit_types,publishing_date,
+    max_rental_period,min_rental_period,description_apartment,status, number_of_times,phone_number,full_name;
+    table.forEach(element => {
+      element.forEach(column =>{
+        switch(column.metadata.colName)
+        {
+          case 'unitId': {
+            unitId = column.value;
+            break;
+          }
+          case 'apartmentOwnerId':{
+             owner_id = column.value;
+             break;
+            }
+            case 'publishingDate':{
+              publishing_date = column.value;
+              break;
+            }
+            case 'FullName': {
+              full_name = column.value;
+              break;
+            }
+            case 'phoneNumber':{
+              phone_number = column.value;
+              break;
+            } 
+            case 'city': {
+              city = column.value;
+              break;
+            }           
+            case 'UnitAddress':{
+              address = column.value;
+              break;
+            }
+            case 'pricePerMonth':{
+              price_per_month = column.value;
+              break;
+            } 
+            case 'unitTypes':{
+              unit_types = column.value;
+              break;
+            }
+            case 'UnitStatus':{ 
+              status = column.value;
+              break;
+            }
+            case 'unitTypes': {
+              unit_types = column.value;
+              break;
+            }
+            case 'minRentalPeriod': {
+              min_rental_period = column.value;
+              break;
+            }
+             case 'maxRentalPeriod': {
+              max_rental_period = column.value;
+              break;
+            }
+            case 'numberOfrooms': {
+              number_of_rooms = column.value;
+              break;
+            }
+            case 'numberOftimes': {
+              number_of_times = column.value;
+              break;
+            }
+            case 'descriptionApartment': {
+              description_apartment = column.value;
+              break;
+            }
+            case 'pictures': {
+              pic = column.value;
+              break;
+            }
+        }// end of switch 
+      }); // end of loop 
+      var unit = new RentalHousingUnit(unitId,owner_id,city,address,number_of_rooms,price_per_month,
+        unit_types,number_of_times,publishing_date,status,max_rental_period,min_rental_period,
+        description_apartment,full_name,phone_number);
+      unit.setPictures(pic);
+      units.push(unit); 
+    });
+    return units; 
   }
 
   static getRentalHousingUnitsByOwnerId(owner_id,callback)
@@ -351,107 +338,11 @@ class RentalHousingUnits
               return callback(false);
             } 
             else {
-
               connection.close();
               if(rowCount == 0){
                 return callback(null);
               }
-              var units =[];
-              rows.forEach(element => {
-                var pic, unitId,owner_id,city,address,number_of_rooms, price_per_month,unit_types,publishing_date,
-                max_rental_period,min_rental_period,description_apartment,status, number_of_times;
-                element.forEach(column =>{
-                  switch(column.metadata.colName)
-                  {
-                    case 'unitId': 
-                    {
-                      unitId = column.value;
-                      break;
-                    }
-                    case 'apartmentOwnerId': 
-                    {
-                      owner_id = column.value;
-                      break;
-                    }
-                    case 'publishingDate': 
-                    {
-                      publishing_date = column.value;
-                      break;
-                    }
-                    case 'city': 
-                    {
-                      city = column.value;
-                      break;
-                    }
-                    
-                    case 'UnitAddress': 
-                    {
-                      address = column.value;
-                      break;
-                    }
-                    case 'pricePerMonth': 
-                    {
-                      price_per_month = column.value;
-                      break;
-                    }
-                    
-                    case 'unitTypes': 
-                    {
-                      unit_types = column.value;
-                      break;
-                    }
-            
-                    case 'UnitStatus':
-                      { 
-                        status = column.value;
-                        break;
-                      }
-                    case 'unitTypes': 
-                    {
-                      unit_types = column.value;
-                      break;
-                    }
-                    
-                    case 'minRentalPeriod': 
-                    {
-                      min_rental_period = column.value;
-                      break;
-                    }
-                    case 'maxRentalPeriod': 
-                    {
-                      max_rental_period = column.value;
-                      break;
-                    }
-                    case 'numberOfrooms': 
-                    {
-                      number_of_rooms = column.value;
-                      break;
-                    }
-                    case 'numberOftimes': 
-                    {
-                      number_of_times = column.value;
-                      break;
-                    }
-                    
-                    case 'descriptionApartment': 
-                    {
-                      description_apartment = column.value;
-                      break;
-                    }
-
-                    case 'pictures':
-                    {
-                      pic = column.value;
-                      break;
-                    }
-                  }// end of switch 
-                  });
-                  var unit = new RentalHousingUnit(unitId,owner_id,city,address,number_of_rooms,price_per_month,
-                    unit_types,number_of_times,publishing_date,status,max_rental_period,min_rental_period,description_apartment,null,null);
-                    unit.setPictures(pic);
-                    units.push(unit); 
-              });
-              return callback(units);
+              return callback(this.buildUnitFromTable(rows));
             }
           }
         );
@@ -479,103 +370,10 @@ class RentalHousingUnits
             } 
             else {
               connection.close();
-              if(rowCount == 0)
+              if(rowCount == 0){
                  return callback(null);
-              var unit;
-              rows.forEach(element => {
-                var pic, unitId,owner_id,city,address,number_of_rooms, price_per_month,unit_types,publishing_date,
-                max_rental_period,min_rental_period,description_apartment,status, number_of_times;
-                element.forEach(column =>{
-                  switch(column.metadata.colName)
-                  {
-                    case 'unitId': 
-                    {
-                      unitId = column.value;
-                      break;
-                    }
-                    case 'apartmentOwnerId': 
-                    {
-                      owner_id = column.value;
-                      break;
-                    }
-                    case 'publishingDate': 
-                    {
-                      publishing_date = column.value;
-                      break;
-                    }
-                    case 'city': 
-                    {
-                      city = column.value;
-                      break;
-                    }
-                    
-                    case 'UnitAddress': 
-                    {
-                      address = column.value;
-                      break;
-                    }
-                    case 'pricePerMonth': 
-                    {
-                      price_per_month = column.value;
-                      break;
-                    }
-                    
-                    case 'unitTypes': 
-                    {
-                      unit_types = column.value;
-                      break;
-                    }
-            
-                    case 'UnitStatus':
-                      { 
-                        status = column.value;
-                        break;
-                      }
-                    case 'unitTypes': 
-                    {
-                      unit_types = column.value;
-                      break;
-                    }
-                    
-                    case 'minRentalPeriod': 
-                    {
-                      min_rental_period = column.value;
-                      break;
-                    }
-                    case 'maxRentalPeriod': 
-                    {
-                      max_rental_period = column.value;
-                      break;
-                    }
-                    case 'numberOfrooms': 
-                    {
-                      number_of_rooms = column.value;
-                      break;
-                    }
-                    case 'numberOftimes': 
-                    {
-                      number_of_times = column.value;
-                      break;
-                    }
-                    
-                    case 'descriptionApartment': 
-                    {
-                      description_apartment = column.value;
-                      break;
-                    }
-                    case 'pictures':
-                    {
-                      pic = column.value;
-                      break;
-                    }
-                  }// end of switch 
-                  });
-                  unit = new RentalHousingUnit(unitId,owner_id,city,address,number_of_rooms,price_per_month,
-                    unit_types,number_of_times,publishing_date,status,max_rental_period,min_rental_period,
-                    description_apartment,null,null); 
-                    unit.setPictures(pic);
-              });
-              return callback(unit);
+              }
+              return callback(this.buildUnitFromTable(rows)[0]);
             }
           }
         );

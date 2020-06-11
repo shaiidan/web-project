@@ -131,7 +131,6 @@ class RentalHousingUnit
     }
 
     setPictures(pic){
-
         if(typeof pic !== 'undefined'){
             this.#pictures = pic;
             return true;
