@@ -84,7 +84,7 @@ router.post("/summaryPayment", function(req, res){
 		// update status 
 		orders.updateOrderStatus(orderID,function(chack){
 			unit.isChangeStatusForOrder(unit_id,1,function(status) {
-				unit.updatePopularCount(unit_id,function(resul){
+				unit.isUpdatePopularCount(unit_id,function(resul){
 					res.redirect('/studentHomePage?id='+user_id+"&fullName="+full_name);
 				});
 			});

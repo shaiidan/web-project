@@ -9,31 +9,27 @@ module.exports = class RentalHousingUnits
     {
       let connection = new Connection(config);
       connection.on("connect", err => {
-        if (err) { console.error("Error sql in delete: " + err.message); connection.close(); return callback(false);}
+        if (err) { connection.close(); console.error("Error sql in delete: " + err.message); return callback(false);}
         else {
           const request = new Request( 
             "UPDATE RentalHousingUnit SET UnitStatus = 'deleted' WHERE UnitId= " +unit_id,
             (err, rowCount) => {
-              if (err) { console.error("Error in delete: " + err.message); connection.close(); return callback(false);}
+              connection.close();
+              if (err) { console.error("Error in delete: " + err.message);  return callback(false);}
               else {
-                connection.close();
                 if(rowCount != 0) { return callback(true); }
                 return callback(false); 
-              }
-            }
-            );
-            connection.execSql(request);
-          }
-        });
+              }}); // close build request object 
+            connection.execSql(request); 
+          }}); // close build connection object
     }// end function deleteUnit
 
     // change status to unit. 
-    // codeStatus = 0 -> the unit in the order process
-    // codeStatus = 1 -> the unit is available
+    //codeStatus = 0 -> the unit in the order process, codeStatus = 1 -> the unit is available
     static isChangeStatusForOrder(unit_id,codeStatus,callback)
     {
       var status = null;
-      switch(codeStatus){
+      switch(codeStatus) {
         case 0: {status = 'Order process'; break;}
         case 1: {status = 'available'; break;}
         default: {status = null; break;}
@@ -41,22 +37,19 @@ module.exports = class RentalHousingUnits
       if(status != null) {
         let connection = new Connection(config);
         connection.on("connect", err => {
-          if (err) { console.error("Error sql in change status: " + err.message); connection.close(); return callback(false);}
+          if (err) { connection.close(); console.error("Error sql in change status: " + err.message); return callback(false);}
           else {
               const request = new Request( 
                   "UPDATE RentalHousingUnit SET UnitStatus = '"+status+"' WHERE unitId= " +unit_id,
                 (err, rowCount) => {
-                  if (err) { console.error("Error sql in change status: " + err.message); connection.close(); return callback(false);}
+                  connection.close();
+                  if (err) { console.error("Error sql in change status: " + err.message); return callback(false);}
                   else {
-                    connection.close();
                     if(rowCount != 0) {return callback(true);}
                     return callback(false);
-                  }
-                }
-              );
+                  }}); // close build request object 
               connection.execSql(request);
-          }
-        });
+          }}); // close build connection object
       }
       else { return callback(false); } // status = null
     } // end function isChangeStatusForOrder
@@ -66,7 +59,7 @@ module.exports = class RentalHousingUnits
         if(unit instanceof RentalHousingUnit) {
           let connection = new Connection(config);       
             connection.on("connect", err => {
-              if (err) { console.error("Error sql in update: " + err.message); connection.close(); return callback(false);}
+              if (err) { connection.close(); console.error("Error sql in update: " + err.message); return callback(false);}
               else {
                 const request = new Request( 
                     `UPDATE RentalHousingUnit
@@ -77,16 +70,14 @@ module.exports = class RentalHousingUnits
                      "',descriptionApartment =  '"+ unit.DescriptionApartment +
                      "' WHERE unitid = " + unit.UnitID,
                   (err, rowCount) => { 
-                    if (err) { console.error("Error sql in update: " + err.message); connection.close(); return callback(false);}
+                    connection.close();
+                    if (err) { console.error("Error sql in update: " + err.message); return callback(false);}
                     else {
-                      connection.close();
                       if(rowCount != 0) { return callback(true); }
                       return callback(false); 
-                    }}
-                );
+                    }});// close build request object 
                 connection.execSql(request);
-            }
-          });
+            }}); // close build connection object 
         }
         else { return callback(false); }
     } // end function updateUnit
@@ -104,31 +95,26 @@ module.exports = class RentalHousingUnits
         }    
         let connection = new Connection(config);
         connection.on("connect", err => {
-          if (err) { console.error("Error sql in add: " +err.message); connection.close(); return callback(false); }
+          if (err) { connection.close(); console.error("Error sql in add: " +err.message); return callback(false); }
           else{
               const query = `SET XACT_ABORT ON;
               BEGIN TRANSACTION
                  DECLARE @DataID int;  
                  insert into RentalHousingUnit(apartmentOwnerId,city,UnitAddress,pricePerMonth,unitTypes,
-                minRentalPeriod,maxRentalPeriod,pictures,numberOfrooms,descriptionApartment)
-              values (` +
-              unit.ApartmentOwnerId + ",'" + unit.City + "','"
-              + unit.Adderss +"',"+ unit.PricePerMonth +",'" + unit.UnitTypes + "'," +
-              unit.MinRentalPeriod + ',' + unit.MaxRentalPeriod + ",'" + unit.Pictures +
-              "'," + unit.NumberOfRooms + ",'" + unit.DescriptionApartment + `')
-              SELECT @DataID = scope_identity();  ` + add_attractions +    
+                 minRentalPeriod,maxRentalPeriod,pictures,numberOfrooms,descriptionApartment)
+                 values (` + unit.ApartmentOwnerId + ",'" + unit.City + "','" + unit.Adderss +"',"+ unit.PricePerMonth +",'" + unit.UnitTypes + "'," +
+                 unit.MinRentalPeriod + ',' + unit.MaxRentalPeriod + ",'" + unit.Pictures + "'," + unit.NumberOfRooms + ",'" + unit.DescriptionApartment + `')
+                 SELECT @DataID = scope_identity();  ` + add_attractions +    
               `COMMIT`;
                 const request =  new Request( query ,(err, rowCount) => {
-                  if (err) { console.error("Error sql in add: " +err.message); connection.close(); return callback(false); }
+                  connection.close();
+                  if (err) { console.error("Error sql in add: " +err.message); return callback(false); }
                     else {
-                      connection.close();
                       if(rowCount != 0) { return callback(true); }
                       return callback(false); 
-                    }}
-                );
+                    }}); // close build request object
                 connection.execSql(request);
-            }
-          });
+            }}); // close build connection object
         }
         else { return callback(false);}
     }// end function addUnit
@@ -137,7 +123,7 @@ module.exports = class RentalHousingUnits
     {
       let connection = new Connection(config);
       connection.on("connect", err => {
-        if (err) { console.error("Error sql in availabile units: " +err.message); connection.close(); return callback(false); }
+        if (err) { connection.close(); console.error("Error sql in availabile units: " +err.message); return callback(false); }
         else {
           const request = new Request( 
           `select DISTINCT u.[unitId],u.[apartmentOwnerId],u.[publishingDate],u.[city],u.[UnitAddress],u.[pricePerMonth],u.[unitTypes]
@@ -149,23 +135,19 @@ module.exports = class RentalHousingUnits
             where o.[status] = 1 and (CAST('`+start_date+`' as date)  BETWEEN o.[startOrder] AND o.[endOrder]) or
             (CAST('`+end_date+`' as date)  BETWEEN o.[startOrder] AND o.[endOrder]))`,
             (err, rowCount,rows) => {
-              if (err) { console.error("Error sql in availabile units: " +err.message); connection.close(); return callback(false); }
-              else {
               connection.close();
+              if (err) { console.error("Error sql in availabile units: " +err.message); return callback(false); }
+              else {
               if(rowCount == 0) { return callback(null); } 
-              return callback(this.buildUnitFromTable(rows));
-            }
-          }
-        );
+              return callback(RentalHousingUnits.buildUnitFromTable(rows));
+            }}); // close build request object
         connection.execSql(request);
-      }
-    }); 
+      }}); // close build connection object 
   } // end function getAvailableUnits
 
   static buildUnitFromTable(table)// build units from table
   {
-    var units = [];
-    var pic,unitId,owner_id,city,address,number_of_rooms, price_per_month,unit_types,publishing_date,
+    var units = [],pic,unitId,owner_id,city,address,number_of_rooms, price_per_month,unit_types,publishing_date,
     max_rental_period,min_rental_period,description_apartment,status, number_of_times,phone_number,full_name;
     table.forEach(element => {
       element.forEach(column =>{
@@ -207,17 +189,14 @@ module.exports = class RentalHousingUnits
         const request = new Request( 
           `SELECT * FROM RentalHousingUnit WHERE apartmentOwnerId =`+owner_id,
           (err, rowCount,rows) => {
-            if (err) { connection.close(); console.error("Error sql in unit by ownerId: " +err.message); return callback(false); } 
+            connection.close();
+            if (err) {console.error("Error sql in unit by ownerId: " +err.message); return callback(false); } 
             else {
-              connection.close();
               if(rowCount == 0) { return callback(null); }
-              return callback(this.buildUnitFromTable(rows));
-            }
-          }
-        );
+              return callback(RentalHousingUnits.buildUnitFromTable(rows));
+            }}); // close build request object
         connection.execSql(request);
-      }
-    }); 
+      }}); // close build connection object
   }// end function getRentalHousingUnitsByOwnerId
 
   static getRentalHousingUnitByUnitId(unit_id, callback) //return RentalHousinguUnit object by unit id
@@ -229,20 +208,17 @@ module.exports = class RentalHousingUnits
         const request = new Request( 
           `SELECT * from RentalHousingUnit where UnitId =`+unit_id,
           (err, rowCount,rows) => {
-            if (err) { connection.close(); console.error("Error sql in unit by unitId: " +err.message); return callback(false); } 
+            connection.close();
+            if (err) { console.error("Error sql in unit by unitId: " +err.message); return callback(false); } 
             else {
-              connection.close();
               if(rowCount == 0) { return callback(null); }
-              return callback(this.buildUnitFromTable(rows)[0]);
-            }
-          }
-        );
+              return callback(RentalHousingUnits.buildUnitFromTable(rows)[0]);
+            }});// close build request object
         connection.execSql(request);
-      }
-    });
+      }}); // close build connection object
   }// end function getRentalHousingUnitByUnitId
   
-  static updatePopularCount(unit_id,callback) // update the number of time to ordered
+  static isUpdatePopularCount(unit_id,callback) // update the number of time to ordered
   {
     RentalHousingUnits.getRentalHousingUnitByUnitId(unit_id,function(result){
       if(result instanceof RentalHousingUnit){
@@ -251,25 +227,21 @@ module.exports = class RentalHousingUnits
             if (err) { console.error("Error sql in update popular: " +err.message); connection.close(); return callback(false); } 
             else
             {
-              var query =`UPDATE RentalHousingUnit
-              SET numberOfTimes =` + (result.NumberOfTimes + 1) +
-              "WHERE unitid = " + result.UnitID; 
-                const request = new Request( 
-                    query, (err, rowCount) => {
-                      if (err) { console.error("Error sql in update popular: " +err.message); connection.close(); return callback(false); } 
-                      else {
-                      connection.close();
-                      if(rowCount != 0) { return callback(true); }
-                      else { return callback(false); }
-                    }}
-                );
+              const request = new Request( 
+                `UPDATE RentalHousingUnit SET numberOfTimes =` + (result.NumberOfTimes + 1) + "WHERE unitid = " + result.UnitID,
+                (err, rowCount) => {
+                  connection.close();
+                  if (err) { console.error("Error sql in update popular: " +err.message); return callback(false); } 
+                  else {
+                  if(rowCount != 0) { return callback(true); }
+                  else { return callback(false); }
+                }}); // close build request object
                 connection.execSql(request);
-            }
-          });
+            }}); // close build connection object
         }
-        else { return callback(false); }
-      });
-  }// end function updatePopularCount
+      else { return callback(false); }
+    }); // close the callback from function getRentalHousingUnitByUnitId
+  }// end function isUpdatePopularCount 
 
   static getAttractions(callback) // get all attractions from DB
   {
@@ -280,9 +252,9 @@ module.exports = class RentalHousingUnits
           const request = new Request( 
           `SELECT * from [dbo].[Attraction]`,
           (err, rowCount,rows) => {
-            if (err) { connection.close(); console.error("Error sql in get attractions: " +err.message); return callback(false); } 
+            connection.close();
+            if (err) { console.error("Error sql in get attractions: " +err.message); return callback(false); } 
             else {
-              connection.close();
               if(rowCount == 0) { return callback(null); } 
               var attractions = [];
               rows.forEach(element => {
@@ -296,17 +268,14 @@ module.exports = class RentalHousingUnits
                     case 'description': { description = column.value; break; }
                     case 'pictures': { pictures = column.value; break; }
                   }// end of switch
-                  });
-                  var attraction = new Attraction(name_attraction,unit_id,discount,driving_distance,description,pictures);
-                  attractions.push(attraction); 
+                });
+                var attraction = new Attraction(name_attraction,unit_id,discount,driving_distance,description,pictures);
+                attractions.push(attraction); 
               });
-              return callback(attractions);
-            }
-          }
-        );
+            return callback(attractions);
+            }}); // close build request object
         connection.execSql(request);
-      }
-    });
+      }}); // close build connection object
   } // end function getAttractions
 
   // get all attractions of the unit by unit id,if unit id is not exist so return null, if unit id is not type of int return false 
@@ -319,9 +288,9 @@ module.exports = class RentalHousingUnits
         const request = new Request( 
           `SELECT * from [dbo].[Attraction] where unitID = `+unit_id,
           (err, rowCount,rows) => {
-            if (err) { connection.close(); console.error("Error sql in get arrations by unitId: " +err.message); return callback(false); }    
+            connection.close();
+            if (err) { console.error("Error sql in get arrations by unitId: " +err.message); return callback(false); }    
             else {
-              connection.close();
               if(rowCount == 0) { return callback(null); }
               var attractions = [];
               rows.forEach(element => {
@@ -340,11 +309,8 @@ module.exports = class RentalHousingUnits
                   attractions.push(attraction); 
               });
               return callback(attractions);
-            }
-          }
-        );
+            }}); // close build request object
         connection.execSql(request);
-      }
-    });
+      }}); // close build connection object
   }//end of function getAttationsByUnitId
 } // end of class
