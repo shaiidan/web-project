@@ -1,6 +1,8 @@
 var assert = require('assert');
 const units = require('../models/RentalHousingUnits');
 const unit = require('../models/RentalHousingUnit');
+const Atrraction = require('../models/Attraction');
+const Attraction = require('../models/Attraction');
 
 //check function of units class
 
@@ -27,18 +29,18 @@ describe("check delete unit",()=> {
 // function changeUnitForOrder
 describe("Check change status for order",()=> {
     it("unit_id is not intager! send string",()=>{
-        units.changeStatusForOrder("string",0,function(result){
+        units.isChangeStatusForOrder("string",0,function(result){
             assert.deepEqual(result,false);
         })
     });
     it("unit_id is not intager! send null",()=>{
-        units.changeStatusForOrder(null,0,function(result){
+        units.isChangeStatusForOrder(null,0,function(result){
             assert.deepEqual(result,false);
         })
     });
     
     it("code status is null",()=>{
-        units.changeStatusForOrder(1,null,function(result){
+        units.isChangeStatusForOrder(1,null,function(result){
             assert.deepEqual(result,false);
         })
     });
@@ -157,18 +159,18 @@ describe("Check get rentaul housing units by unit id",()=> {
 // check function updatePipoularCount
 describe("Check update popular field",()=> {
     it("unit is not unit class! send string",()=>{
-        units.updatePopularCount("shai",function (result) {
+        units.isUpdatePopularCount("shai",function (result) {
             assert.deepEqual(result,false);
         })
     });
     it("unit is not unit class! send null",()=>{
-        units.updatePopularCount(null,function (result) {
+        units.isUpdatePopularCount(null,function (result) {
             assert.deepEqual(result,false);
         })
     });
     
     it("unit is unit class, but send nulls",()=>{
-        units.updatePopularCount(new unit(null,null,null,null,null
+        units.isUpdatePopularCount(new unit(null,null,null,null,null
             ,null,null,null,null,null,null,null,null,null,null,null),function (result) {
             assert.deepEqual(result,false);
         })
@@ -198,3 +200,44 @@ describe("Check get attractions by unit id",()=> {
         });
     });
 });
+
+// check Attration object
+describe("check Attraction object",()=> {
+    var attration = new Attraction("Park",123,50,"Up to 5 minutes","good location",null);
+    it("check get name",()=>{
+        assert.deepEqual("Park",attration.NameAttraction);
+    });
+    it("check get unit id",()=>{
+        assert.deepEqual(123,attration.UnitId);
+    });
+    it("check get discount",()=>{
+        assert.deepEqual(50,attration.Discount);
+    });
+    it("check get driving distance",()=>{
+        assert.deepEqual("Up to 5 minutes",attration.DrivingDistance);
+    });
+    it("check get description",()=>{
+        assert.deepEqual("good location",attration.Description);
+    });
+    it("check get pictures",()=>{
+        assert.deepEqual(null,attration.Pictures);
+    });
+   
+    it("check set discount",()=>{
+        attration.setDiscount(40);
+        assert.deepEqual(40,attration.Discount);
+    });
+    it("check set driving distance",()=>{
+        attration.setDrivingDistance("Up to 15 minutes");
+        assert.deepEqual("Up to 15 minutes",attration.DrivingDistance);
+    });
+    it("check set description",()=>{
+        attration.setDescription("good place");
+        assert.deepEqual("good place",attration.Description);
+    });
+    it("check set pictures",()=>{
+        attration.setPictures("");
+        assert.deepEqual("",attration.Pictures);
+    });
+});
+

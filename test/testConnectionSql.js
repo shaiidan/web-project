@@ -31,8 +31,23 @@ describe("check connection to sql",()=> {
     });
     
     it("sql connection wrong, send incorrect configuration",()=>{
-      sqlConnection(config,function(result){
-        assert.deepEqual(result,true)
+      sqlConnection({
+        authentication: {
+          options: {
+            userName: "samiroom", 
+            password: "nonee"
+          },
+          type: "default"
+        },
+        server: "samiroom.database.windows.net", 
+        options: {
+          database: "samiroomDB",
+          encrypt: true,
+          enableArithAbort: true,
+          rowCollectionOnRequestCompletion:true,
+          trustServerCertificate: true,
+        }},function(result){
+        assert.deepEqual(result,false)
       });
     });
 });
