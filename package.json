@@ -10,7 +10,7 @@
     "cover": "nyc --reporter=lcov --reporter=text mocha"
   },
   "dependencies": {
-    "@okta/oidc-middleware": "^4.0.1",
+    "@okta/oidc-middleware": "^5.0.0",
     "@typescript-eslint/eslint-plugin": "^2.27.0",
     "@typescript-eslint/parser": "^2.27.0",
     "accesscontrol": "^2.2.1",
